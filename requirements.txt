@@ -1,0 +1,17 @@
+# Danh sách thư viện cần thiết
+
+# Database
+sqlite3
+
+# Giao diện console
+colorama
+
+# Xuất báo cáo
+reportlab
+
+# Testing
+pytest
+pytest-cov
+
+# Utils
+python-dateutil

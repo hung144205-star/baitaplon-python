@@ -4,9 +4,9 @@
 Phần mềm quản lý dịch vụ cho thuê kho lưu trữ hàng hóa - Nhóm 12
 
 ## Thành viên nhóm
-- Nguyễn Văn Hiếu (Trưởng nhóm)
-- Lê Minh Đạt
-- Nguyễn Hữu Hải
+- Đoàn Mạnh Hùng (Trưởng nhóm)
+- Lương Hán Hải
+- Nguyễn Đồng Thanh
 
 ## Cấu trúc project
 ```

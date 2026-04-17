@@ -5,6 +5,8 @@ Tech Stack: Python 3.10+ + PyQt6
 """
 
 import sys
+import subprocess
+import os
 from datetime import datetime
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -850,16 +852,16 @@ class MainWindow(QMainWindow):
         
         # Nav links
         nav_items = [
-            ("Khách hàng", True),
-            ("Kho hàng", False),
-            ("Hợp đồng", False),
-            ("Hàng hóa", False),
-            ("Báo cáo", False),
+            ("Khách hàng", True, None),
+            ("Kho hàng", False, "khohang_demo.py"),
+            ("Hợp đồng", False, "hopdong_demo.py"),
+            ("Hàng hóa", False, None),
+            ("Báo cáo", False, None),
         ]
         
-        for text, active in nav_items:
-            link = QLabel(text)
+        for text, active, py_file in nav_items:
             if active:
+                link = QLabel(text)
                 link.setStyleSheet(f"""
                     font-family: {Design.FONT_FAMILY};
                     font-size: 15px;
@@ -867,15 +869,29 @@ class MainWindow(QMainWindow):
                     color: {Design.NOTION_BLUE};
                     padding: 0 16px;
                 """)
+                layout.addWidget(link)
             else:
-                link.setStyleSheet(f"""
-                    font-family: {Design.FONT_FAMILY};
-                    font-size: 15px;
-                    font-weight: 600;
-                    color: {Design.WARM_GRAY_500};
-                    padding: 0 16px;
+                btn = QPushButton(text)
+                btn.setStyleSheet(f"""
+                    QPushButton {{
+                        font-family: {Design.FONT_FAMILY};
+                        font-size: 15px;
+                        font-weight: 600;
+                        color: {Design.WARM_GRAY_500};
+                        padding: 0 16px;
+                        border: none;
+                        background: transparent;
+                    }}
+                    QPushButton:hover {{
+                        color: {Design.NOTION_BLACK};
+                    }}
                 """)
-            layout.addWidget(link)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
+                if py_file:
+                    btn.clicked.connect(lambda checked, f=py_file: self.open_other_demo(f))
+                else:
+                    btn.clicked.connect(lambda: QMessageBox.information(self, "Thông báo", "Tính năng đang phát triển"))
+                layout.addWidget(btn)
         
         layout.addStretch()
         
@@ -1032,6 +1048,25 @@ class MainWindow(QMainWindow):
         """Open customer detail dialog"""
         dialog = ChiTietKhachHangDialog(customer_data, self)
         dialog.exec()
+        
+    def open_other_demo(self, py_file):
+        """Open another demo file using subprocess"""
+        try:
+            # Get the directory of current file
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            target_file = os.path.join(current_dir, py_file)
+            
+            if os.path.exists(target_file):
+                # Run the other demo in a new process
+                subprocess.Popen(
+                    [sys.executable, target_file],
+                    cwd=current_dir,
+                    creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0
+                )
+            else:
+                QMessageBox.warning(self, "Lỗi", f"Không tìm thấy file: {py_file}")
+        except Exception as e:
+            QMessageBox.warning(self, "Lỗi", f"Không thể mở {py_file}:\n{str(e)}")
 
 
 # ==================== MAIN ENTRY ====================

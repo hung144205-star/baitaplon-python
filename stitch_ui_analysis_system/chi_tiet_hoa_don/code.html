@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hóa đơn &amp; Biên lai - Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1a1c1c",
+                        "tertiary-fixed-dim": "#cbc6bf",
+                        "surface": "#faf9f8",
+                        "on-secondary-fixed-variant": "#4a4642",
+                        "on-primary-container": "#fffeff",
+                        "outline": "#717784",
+                        "on-surface-variant": "#414753",
+                        "surface-dim": "#dadad9",
+                        "surface-container-highest": "#e3e2e1",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#a8c8ff",
+                        "surface-container-high": "#e9e8e7",
+                        "secondary": "#625e5a",
+                        "tertiary-fixed": "#e8e1db",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#d5e3ff",
+                        "background": "#faf9f8",
+                        "primary-container": "#0075de",
+                        "primary": "#005db2",
+                        "inverse-on-surface": "#f1f0ef",
+                        "on-primary-fixed-variant": "#00468a",
+                        "surface-bright": "#faf9f8",
+                        "outline-variant": "#c1c6d5",
+                        "on-tertiary-container": "#fffeff",
+                        "secondary-fixed": "#e8e1dc",
+                        "on-primary-fixed": "#001b3c",
+                        "surface-variant": "#e3e2e1",
+                        "surface-tint": "#005eb4",
+                        "on-tertiary-fixed": "#1d1b17",
+                        "secondary-fixed-dim": "#ccc5c0",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#1e1b18",
+                        "surface-container": "#efeeed",
+                        "tertiary": "#605c57",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#e5ded9",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-container-low": "#f4f3f2",
+                        "on-tertiary-fixed-variant": "#494641",
+                        "primary-fixed-dim": "#a8c8ff",
+                        "on-secondary-container": "#66625e",
+                        "tertiary-container": "#797570",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf9f8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .whisper-border { border: 1px solid rgba(0,0,0,0.1); }
+        .shadow-stack {
+            box-shadow: 0px 1px 2px rgba(0,0,0,0.02),
+                        0px 4px 8px rgba(0,0,0,0.03),
+                        0px 12px 24px rgba(0,0,0,0.04);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-padding { padding: 0 !important; }
+            body { background-color: white !important; }
+            .shadow-stack { box-shadow: none !important; }
+            .whisper-border { border: 1px solid rgba(0,0,0,0.1) !important; }
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- Top Navigation (Shell suppressed for focused task as per mandate) -->
+<header class="no-print sticky top-0 z-50 w-full bg-[#faf9f8]/80 backdrop-blur-md px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-secondary">arrow_back</span>
+</button>
+<span class="text-xl font-bold tracking-tight text-on-surface">Warehouse Curator</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-sm font-medium text-secondary">Xem trước hóa đơn</span>
+</div>
+</header>
+<main class="max-w-5xl mx-auto py-12 px-6 print-padding">
+<!-- Action Toolbar -->
+<div class="no-print flex justify-between items-center mb-8">
+<h1 class="text-2xl font-semibold tracking-tight">Hóa đơn số #DC-2023-0892</h1>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-medium whisper-border rounded-lg bg-surface-container-lowest hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                    Tải xuống PDF
+                </button>
+<button class="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-primary hover:bg-[#005db2] rounded-lg transition-all shadow-sm" onclick="window.print()">
+<span class="material-symbols-outlined text-[20px]">print</span>
+                    In hóa đơn
+                </button>
+</div>
+</div>
+<!-- Invoice Canvas -->
+<div class="bg-surface-container-lowest p-12 whisper-border rounded-xl shadow-stack">
+<!-- Header Section -->
+<div class="flex justify-between items-start mb-16">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xl font-bold tracking-tighter uppercase leading-none">Digital Curator</span>
+<span class="text-[10px] font-medium tracking-[0.1em] text-secondary uppercase">Warehouse Admin System</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-sm font-semibold">Bên cho thuê (Provider)</p>
+<p class="text-sm text-secondary leading-relaxed">Công ty TNHH Quản lý Kho bãi Curator<br/>Khu Công nghệ cao, Quận 9<br/>Thành phố Hồ Chí Minh, Việt Nam<br/>MST: 0101234567</p>
+</div>
+</div>
+<div class="text-right flex flex-col items-end">
+<h2 class="text-4xl font-bold tracking-[-2.125px] mb-4">HÓA ĐƠN</h2>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+<span class="text-secondary">Số hóa đơn:</span>
+<span class="font-medium text-right">#DC-2023-0892</span>
+<span class="text-secondary">Ngày phát hành:</span>
+<span class="font-medium text-right">24/10/2023</span>
+<span class="text-secondary">Ngày hết hạn:</span>
+<span class="font-medium text-right">08/11/2023</span>
+</div>
+</div>
+</div>
+<!-- Billing Details -->
+<div class="grid grid-cols-2 gap-12 mb-16">
+<div class="space-y-4">
+<p class="text-[12px] font-bold tracking-[0.05em] text-secondary uppercase">Bên thuê (Client)</p>
+<div class="space-y-1">
+<p class="text-lg font-semibold">Công ty Cổ phần LogiVina</p>
+<p class="text-sm text-secondary leading-relaxed">
+                            Người đại diện: Nguyễn Văn An<br/>
+                            Tòa nhà Bitexco, 02 Hải Triều, Quận 1<br/>
+                            Thành phố Hồ Chí Minh, Việt Nam<br/>
+                            Email: accounting@logivina.vn
+                        </p>
+</div>
+</div>
+<div class="space-y-4">
+<p class="text-[12px] font-bold tracking-[0.05em] text-secondary uppercase">Trạng thái thanh toán</p>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                        Chờ thanh toán
+                    </div>
+</div>
+</div>
+<!-- Services Table -->
+<div class="mb-12">
+<table class="w-full">
+<thead>
+<tr class="border-b border-black/10">
+<th class="py-4 text-left text-[12px] font-bold text-secondary uppercase tracking-wider">Mô tả dịch vụ</th>
+<th class="py-4 text-right text-[12px] font-bold text-secondary uppercase tracking-wider">Số lượng</th>
+<th class="py-4 text-right text-[12px] font-bold text-secondary uppercase tracking-wider">Đơn giá</th>
+<th class="py-4 text-right text-[12px] font-bold text-secondary uppercase tracking-wider">Thành tiền</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-black/5">
+<tr>
+<td class="py-6">
+<p class="font-medium">Thuê kho lạnh khu vực A12</p>
+<p class="text-sm text-secondary">Diện tích 150m2 - Kiểm soát nhiệt độ tự động</p>
+</td>
+<td class="py-6 text-right text-sm">1 tháng</td>
+<td class="py-6 text-right text-sm">45.000.000 đ</td>
+<td class="py-6 text-right text-sm font-medium">45.000.000 đ</td>
+</tr>
+<tr>
+<td class="py-6">
+<p class="font-medium">Phí quản lý &amp; Vận hành kho</p>
+<p class="text-sm text-secondary">Bao gồm an ninh 24/7 và hệ thống PCCC</p>
+</td>
+<td class="py-6 text-right text-sm">1 tháng</td>
+<td class="py-6 text-right text-sm">5.500.000 đ</td>
+<td class="py-6 text-right text-sm font-medium">5.500.000 đ</td>
+</tr>
+<tr>
+<td class="py-6">
+<p class="font-medium">Dịch vụ bốc xếp hàng hóa</p>
+<p class="text-sm text-secondary">Phí cố định theo hợp đồng khung</p>
+</td>
+<td class="py-6 text-right text-sm">100 tấn</td>
+<td class="py-6 text-right text-sm">25.000 đ</td>
+<td class="py-6 text-right text-sm font-medium">2.500.000 đ</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Totals Section -->
+<div class="flex justify-end mb-16">
+<div class="w-80 space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Tạm tính:</span>
+<span class="font-medium">53.000.000 đ</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Thuế GTGT (10%):</span>
+<span class="font-medium">5.300.000 đ</span>
+</div>
+<div class="pt-3 border-t border-black/10 flex justify-between items-baseline">
+<span class="text-lg font-bold">Tổng cộng:</span>
+<span class="text-2xl font-bold text-primary">58.300.000 đ</span>
+</div>
+</div>
+</div>
+<!-- Footer / Payment Instructions -->
+<div class="grid grid-cols-5 gap-12 pt-12 border-t border-black/10">
+<div class="col-span-3 space-y-4">
+<h4 class="text-sm font-bold uppercase tracking-wider">Hướng dẫn thanh toán</h4>
+<div class="bg-surface-container-low p-6 rounded-lg space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Chủ tài khoản:</span>
+<span class="font-medium">CONG TY TNHH QL KHO BAI CURATOR</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Số tài khoản:</span>
+<span class="font-medium">0071 000 999 888</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Ngân hàng:</span>
+<span class="font-medium">Vietcombank - Chi nhánh TP.HCM</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-secondary">Nội dung:</span>
+<span class="font-medium">THANH TOAN HOA DON DC-2023-0892</span>
+</div>
+</div>
+<p class="text-[11px] text-secondary leading-relaxed italic">
+                        * Vui lòng thanh toán trong vòng 15 ngày kể từ ngày phát hành hóa đơn. Mọi thắc mắc vui lòng liên hệ bộ phận kế toán qua số (028) 3999 8888.
+                    </p>
+</div>
+<div class="col-span-2 flex flex-col items-center justify-center space-y-4">
+<div class="w-32 h-32 whisper-border p-2 bg-white rounded-lg">
+<img alt="Payment QR Code" class="w-full h-full" data-alt="minimalist QR code on white background for digital payment scan with clear margins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqtVZHgzwRoR419wK1TnrPN2byKyIuUmjsnNZBwpmDRmpTyAPo6Vz80n9l-BYJ0jkDOQlkpEIEh7HXQ47UWmYI3ClQRCqclj4BlA3RDX1IzXRgKL6BtGFkeYaOOSeeVwC0Wp9IDKHJfMsi5zFBFcCs06byeAQc4EJgJI4FZiM3rCW3vKv7zqmdvgCxJyV5GjjjLeS9XgNFGgMmZPOYjMjyrqNyICWvn5HWOfWJSkyH-1PT_YH-mxPtcftUKwCsypy3oF4-Krg2Z6M"/>
+</div>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Quét để thanh toán nhanh</span>
+</div>
+</div>
+<!-- Bottom Disclaimer -->
+<div class="mt-16 pt-8 border-t border-black/5 text-center">
+<p class="text-[10px] text-secondary tracking-widest uppercase">Hóa đơn điện tử này được tạo bởi hệ thống Digital Curator © 2023</p>
+</div>
+</div>
+<!-- Additional Assistance (No print) -->
+<div class="no-print mt-12 flex items-start gap-4 p-8 bg-primary/5 rounded-xl whisper-border">
+<span class="material-symbols-outlined text-primary text-3xl">info</span>
+<div>
+<h3 class="font-semibold text-primary mb-1">Cần hỗ trợ về hóa đơn này?</h3>
+<p class="text-sm text-secondary leading-relaxed">
+                    Nếu bạn phát hiện sai sót trong thông tin thuê kho hoặc chi tiết dịch vụ, vui lòng liên hệ với Quản lý vận hành của bạn hoặc gửi email tới <a class="font-medium text-primary underline" href="#">support@digitalcurator.vn</a>.
+                </p>
+</div>
+</div>
+</main>
+<footer class="no-print border-t border-black/10 py-12 px-6">
+<div class="max-w-5xl mx-auto flex justify-between items-center text-sm text-secondary">
+<p>Digital Curator Framework v4.2</p>
+<div class="flex gap-6">
+<a class="hover:text-on-surface transition-colors" href="#">Điều khoản dịch vụ</a>
+<a class="hover:text-on-surface transition-colors" href="#">Chính sách bảo mật</a>
+</div>
+</div>
+</footer>
+</body></html>

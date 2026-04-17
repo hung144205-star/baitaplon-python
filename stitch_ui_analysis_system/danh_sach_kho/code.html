@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#1a1c1c",
+                    "on-tertiary-fixed-variant": "#494641",
+                    "inverse-on-surface": "#f1f0ef",
+                    "outline-variant": "#c1c6d5",
+                    "on-secondary-container": "#66625e",
+                    "on-primary-fixed": "#001b3c",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary": "#625e5a",
+                    "surface-container-low": "#f4f3f2",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#1e1b18",
+                    "surface-container": "#efeeed",
+                    "surface-container-highest": "#e3e2e1",
+                    "primary-container": "#0075de",
+                    "surface-variant": "#e3e2e1",
+                    "primary-fixed-dim": "#a8c8ff",
+                    "on-error": "#ffffff",
+                    "tertiary": "#605c57",
+                    "on-tertiary-fixed": "#1d1b17",
+                    "surface-dim": "#dadad9",
+                    "surface": "#faf9f8",
+                    "on-primary-fixed-variant": "#00468a",
+                    "secondary-fixed": "#e8e1dc",
+                    "on-surface-variant": "#414753",
+                    "on-secondary-fixed-variant": "#4a4642",
+                    "background": "#faf9f8",
+                    "primary": "#005db2",
+                    "tertiary-fixed-dim": "#cbc6bf",
+                    "inverse-surface": "#2f3130",
+                    "secondary-container": "#e5ded9",
+                    "outline": "#717784",
+                    "surface-bright": "#faf9f8",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#d5e3ff",
+                    "surface-tint": "#005eb4",
+                    "surface-container-high": "#e9e8e7",
+                    "on-tertiary-container": "#fffeff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#e8e1db",
+                    "inverse-primary": "#a8c8ff",
+                    "secondary-fixed-dim": "#ccc5c0",
+                    "on-primary-container": "#fffeff",
+                    "tertiary-container": "#797570",
+                    "on-background": "#1a1c1c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "4px",
+                    "lg": "4px",
+                    "xl": "12px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter", "sans-serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "label": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .compression-tight { letter-spacing: -0.02em; }
+        .compression-display { letter-spacing: -0.04em; }
+        .glass-header { background: rgba(250, 249, 248, 0.8); backdrop-filter: blur(12px); }
+        .shadow-stack { box-shadow: 0px 1px 2px rgba(0,0,0,0.02), 0px 4px 8px rgba(0,0,0,0.03), 0px 12px 24px rgba(0,0,0,0.04); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-[#f4f3f2] dark:bg-[#1e1e1e] flex flex-col justify-between py-6 z-50">
+<div>
+<div class="px-6 mb-8">
+<h1 class="text-lg font-bold tracking-tighter text-black/95 dark:text-white/95">Quản lý Kho</h1>
+<p class="text-xs text-secondary opacity-70">The Digital Curator</p>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center space-x-3 text-[#625e5a] dark:text-[#a1a1a1] px-4 py-3 hover:bg-[#e9e8e7] dark:hover:bg-[#2a2a2a] transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Tổng quan</span>
+</a>
+<a class="flex items-center space-x-3 border-l-4 border-[#0075de] bg-[#e9e8e7] dark:bg-[#2a2a2a] text-[#0075de] font-semibold px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-medium">Kho hàng</span>
+</a>
+<a class="flex items-center space-x-3 text-[#625e5a] dark:text-[#a1a1a1] px-4 py-3 hover:bg-[#e9e8e7] dark:hover:bg-[#2a2a2a] transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-medium">Vị trí lưu trữ</span>
+</a>
+<a class="flex items-center space-x-3 text-[#625e5a] dark:text-[#a1a1a1] px-4 py-3 hover:bg-[#e9e8e7] dark:hover:bg-[#2a2a2a] transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium">Báo cáo</span>
+</a>
+<a class="flex items-center space-x-3 text-[#625e5a] dark:text-[#a1a1a1] px-4 py-3 hover:bg-[#e9e8e7] dark:hover:bg-[#2a2a2a] transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Cài đặt</span>
+</a>
+</nav>
+<div class="px-4 mt-8">
+<button class="w-full bg-primary-container text-white py-2.5 rounded shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm font-semibold">
+<span class="material-symbols-outlined text-sm">add</span>
+                    Thêm kho mới
+                </button>
+</div>
+</div>
+<div class="px-4 space-y-1">
+<a class="flex items-center space-x-3 text-[#625e5a] px-4 py-2 hover:bg-[#e9e8e7] rounded transition-all text-sm" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Hỗ trợ</span>
+</a>
+<a class="flex items-center space-x-3 text-error px-4 py-2 hover:bg-error-container/20 rounded transition-all text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Đăng xuất</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-16 z-40 glass-header border-b border-black/5 dark:border-white/5 flex items-center justify-between px-8">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="bg-surface-container-low border-none rounded-full py-1.5 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Tìm kiếm kho hàng..." type="text"/>
+</div>
+<nav class="flex gap-6">
+<a class="text-[#0075de] border-b-2 border-[#0075de] pb-1 text-sm font-medium tracking-tight" href="#">Tất cả</a>
+<a class="text-[#625e5a] hover:text-black transition-opacity text-sm font-medium tracking-tight" href="#">Đang thuê</a>
+<a class="text-[#625e5a] hover:text-black transition-opacity text-sm font-medium tracking-tight" href="#">Bảo trì</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-secondary hover:text-black transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-secondary hover:text-black transition-all">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="professional portrait of a warehouse manager in a minimalist office setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc9-xt-pZilbuP82es_GdmvcZEOFbMNrjOHW8Sf9MTvomx6ueCcrPYmmc97wswqKi7jalPhArnVVaNlLvF9oCVYv1KNgTlmmTh26NPliBWtd7fUj5NGSYuIr9DO_X38Fz5ZkHVOLdboUDIIMVzgkvz5sXDZAR_6TWFKgDFJnBVUgYH1YE73fyTeLynk3bWitnMaojl_nVN_yo2GxAT6xWRRM-07lk2m-tDlVO6JkQsUShsVFesyyYt4LMzxYz2EZ18hZasXo4LYEA"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Hero Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+<div class="max-w-2xl">
+<h2 class="text-[56px] font-bold compression-display leading-tight mb-2">Danh sách kho hàng</h2>
+<p class="text-secondary text-lg leading-relaxed max-w-lg">
+                        Quản lý và giám sát hệ thống lưu trữ phân tán. Theo dõi mật độ lấp đầy và trạng thái vận hành theo thời gian thực.
+                    </p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-stack flex items-center gap-4 border border-black/5">
+<div class="w-10 h-10 bg-primary/10 rounded flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+<div>
+<p class="text-xs text-secondary font-medium">Tổng kho</p>
+<p class="text-xl font-bold">12</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-stack flex items-center gap-4 border border-black/5">
+<div class="w-10 h-10 bg-error/10 rounded flex items-center justify-center text-error">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="text-xs text-secondary font-medium">Cảnh báo lấp đầy</p>
+<p class="text-xl font-bold">03</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Inventory Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1: Warning State (>90%) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-stack overflow-hidden border border-black/5 flex flex-col group transition-all hover:-translate-y-1">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="modern industrial warehouse interior with high ceilings and metal racks organized neatly under bright artificial lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnc7m8F95S54L_XNNf_r3JwuSe2kcwa7PPv-3XXtttXiTRhp32yNs1rIfu_ybdlqStNjXX5uCmRuvso4R1TyxOsFpY2RXb66z2R8Wlm3EpG7y982ziygcFP2EzZc3WSRb1jL9Z0i8XTDQjZxlwXrmdeyPK8C5ktF2rAXaQ9akdblSMw9YJZPQl2zO0_HUR3A0IFkzOQ2RW5g8wvP3C9WkWAsNtWvbzrgEatoLblvdVS34_tBkeREkRDdOunPS1hOrbVy3VjwjqDpE"/>
+<div class="absolute top-4 left-4 bg-error text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">Hoạt động</div>
+<div class="absolute top-4 right-4 bg-error-container text-error p-1.5 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-sm leading-none" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+</div>
+<div class="p-8 flex-grow">
+<div class="mb-6">
+<h3 class="text-2xl font-semibold compression-tight mb-1">Kho Trung tâm A1</h3>
+<p class="text-xs text-secondary font-mono tracking-widest">WH-A1-2023</p>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">location_on</span>
+<p class="text-sm text-secondary">KCN Tân Bình, Phường 15, Quận Tân Bình, TP. HCM</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">square_foot</span>
+<p class="text-sm font-medium">12,500 m²</p>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<p class="text-xs font-bold text-error uppercase tracking-tighter">Tỷ lệ lấp đầy</p>
+<p class="text-lg font-bold text-error">94%</p>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full w-[94%]"></div>
+</div>
+<p class="text-[11px] text-error mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">priority_high</span>
+                                Sắp hết diện tích lưu trữ
+                            </p>
+</div>
+</div>
+<div class="px-8 pb-8">
+<button class="w-full border border-black/10 text-on-surface py-3 rounded text-sm font-semibold hover:bg-surface-container transition-colors">
+                            Xem chi tiết
+                        </button>
+</div>
+</div>
+<!-- Card 2: Normal State -->
+<div class="bg-surface-container-lowest rounded-xl shadow-stack overflow-hidden border border-black/5 flex flex-col group transition-all hover:-translate-y-1">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="exterior of a modern logistics distribution center at dawn with large docking bays and a clean paved area" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT4DKRveMcULulVooSMFAnuHe1EbOkIe63-ZbHsW7p-UnfPZGlZ7tmcbuAgEaF-BcEdHYk3hau_wTp_P6fviig6Y7OREl6um9BXxNlkD4nqtlgOFPXwxS1EXGTtOGsdDHpHEttmXGru_EzQ9chyKAiUxeYubML-RUhYcQ6BJEFN34pkXQHWwpLAeIHGw0g_wuruInr-672wyu71O1PWkjqVioyZCRUxiscRmMly8wOiQFLUqOHS4lgq9tgbRQ0BjwBcruGjIx2U74"/>
+<div class="absolute top-4 left-4 bg-primary text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">Hoạt động</div>
+</div>
+<div class="p-8 flex-grow">
+<div class="mb-6">
+<h3 class="text-2xl font-semibold compression-tight mb-1">Kho Lạnh Đông Nam</h3>
+<p class="text-xs text-secondary font-mono tracking-widest">WH-DN-5512</p>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">location_on</span>
+<p class="text-sm text-secondary">Khu Công Nghệ Cao, Quận 9, TP. Thủ Đức</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">square_foot</span>
+<p class="text-sm font-medium">8,200 m²</p>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<p class="text-xs font-bold text-secondary uppercase tracking-tighter">Tỷ lệ lấp đầy</p>
+<p class="text-lg font-bold text-on-surface">65%</p>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[65%]"></div>
+</div>
+</div>
+</div>
+<div class="px-8 pb-8">
+<button class="w-full border border-black/10 text-on-surface py-3 rounded text-sm font-semibold hover:bg-surface-container transition-colors">
+                            Xem chi tiết
+                        </button>
+</div>
+</div>
+<!-- Card 3: Maintenance State -->
+<div class="bg-surface-container-lowest rounded-xl shadow-stack overflow-hidden border border-black/5 flex flex-col group transition-all hover:-translate-y-1">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="inside of an empty warehouse under construction or maintenance, visible concrete floor and metal support beams" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCroLFaLMspdY-TD8zne5NIapz2cYPxT6YWzulZWVTBfn75jULFf4gkQBw8WKljrTi4btZJiNDB95OptOpxuh1j1lU3C69Jkzpo0XwWj70FiJHGPHnsEidwA4GT3vn1jA5ZSyqYRnH0v9XD0wlyrupu9xwux11r48pIXRwXqiFZ7YDjDL3IhDerYIdznqIdz40wDjz6jVzqHypkO6CdnGKmBJvgAbb-lRbhPw2rjtdAkzvyiUMTbuaF_uwqc1FcL1bCEu2dfqE-BKM"/>
+<div class="absolute top-4 left-4 bg-tertiary-container text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">Bảo trì</div>
+<div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center">
+<div class="bg-white px-4 py-2 rounded-full flex items-center gap-2 border border-black/5 shadow-lg">
+<span class="material-symbols-outlined text-secondary">build</span>
+<span class="text-xs font-bold text-secondary">Đang bảo trì định kỳ</span>
+</div>
+</div>
+</div>
+<div class="p-8 flex-grow">
+<div class="mb-6">
+<h3 class="text-2xl font-semibold compression-tight mb-1">Kho Phân Loại 04</h3>
+<p class="text-xs text-secondary font-mono tracking-widest">WH-PL-04</p>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">location_on</span>
+<p class="text-sm text-secondary">Số 12 Đường D2, KCN Cát Lái, Quận 2, TP. HCM</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">square_foot</span>
+<p class="text-sm font-medium">5,400 m²</p>
+</div>
+</div>
+<div class="space-y-2 opacity-50">
+<div class="flex justify-between items-end">
+<p class="text-xs font-bold text-secondary uppercase tracking-tighter">Tỷ lệ lấp đầy</p>
+<p class="text-lg font-bold text-on-surface">12%</p>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-[12%]"></div>
+</div>
+</div>
+</div>
+<div class="px-8 pb-8">
+<button class="w-full border border-black/10 text-on-surface py-3 rounded text-sm font-semibold hover:bg-surface-container transition-colors">
+                            Xem nhật ký
+                        </button>
+</div>
+</div>
+<!-- Card 4: High Occupancy but not Critical -->
+<div class="bg-surface-container-lowest rounded-xl shadow-stack overflow-hidden border border-black/5 flex flex-col group transition-all hover:-translate-y-1">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="rows of warehouse racking filled with diverse goods in boxes under bright white lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-LKcZqB87_Q5ROMN2jq-WWeAo5dZZny4Z-C8V6B-E8zRnCPhFBBDq87Qr8ZZbJxV03ACE6k5BVuVd7balYTt5Owg11GRuxcD0rXJOsTOAfYMMtyIaekmNIc0SnD51vO8TN17tJMHXjjd07cffRjyyP01n1TDtYJ6IgqyoHAJFvGy1G-a7lzbfTK6D4Pp_j-tZaYu106-0mTMrtge5vGlGKe8m9SKiEAw8rwWBqABG8GMevjd1FbTgcsRF0Gns-341gErR1yBQlv0"/>
+<div class="absolute top-4 left-4 bg-primary text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest">Hoạt động</div>
+</div>
+<div class="p-8 flex-grow">
+<div class="mb-6">
+<h3 class="text-2xl font-semibold compression-tight mb-1">Kho Sơ Chế Long An</h3>
+<p class="text-xs text-secondary font-mono tracking-widest">WH-LA-3390</p>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">location_on</span>
+<p class="text-sm text-secondary">Huyện Bến Lức, Tỉnh Long An</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">square_foot</span>
+<p class="text-sm font-medium">15,000 m²</p>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<p class="text-xs font-bold text-secondary uppercase tracking-tighter">Tỷ lệ lấp đầy</p>
+<p class="text-lg font-bold text-on-surface">88%</p>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[88%]"></div>
+</div>
+</div>
+</div>
+<div class="px-8 pb-8">
+<button class="w-full border border-black/10 text-on-surface py-3 rounded text-sm font-semibold hover:bg-surface-container transition-colors">
+                            Xem chi tiết
+                        </button>
+</div>
+</div>
+<!-- Empty State / Add New Placeholder -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-12 text-center group cursor-pointer hover:bg-surface-container-low transition-all">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-secondary">add_business</span>
+</div>
+<h3 class="text-xl font-semibold mb-2">Thêm điểm lưu trữ mới</h3>
+<p class="text-sm text-secondary max-w-[200px]">Mở rộng mạng lưới phân phối của bạn ngay hôm nay</p>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for quick action (Suppressed on most pages, but relevant for Dashboard/List) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</body></html>

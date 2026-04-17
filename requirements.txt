@@ -1,17 +1,21 @@
 # Danh sách thư viện cần thiết
+# Cập nhật: 17/04/2026
 
-# Database
-sqlite3
+# Core - GUI Framework (bắt buộc cho giao diện PyQt6)
+PyQt6>=6.4.0
 
-# Giao diện console
-colorama
+# Database & ORM
+SQLAlchemy>=2.0.0
 
 # Xuất báo cáo
-reportlab
+reportlab>=3.6.0
 
 # Testing
-pytest
-pytest-cov
+pytest>=7.0.0
+pytest-cov>=4.0.0
 
 # Utils
-python-dateutil
+python-dateutil>=2.8.0
+
+# Code formatting (development)
+black>=23.0.0

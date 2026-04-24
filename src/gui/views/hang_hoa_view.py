@@ -349,7 +349,7 @@ class HangHoaView(QWidget):
             from src.services import HangHoaService
             
             dialog = HangHoaForm(self)
-            dialog.accepted_with_data.connect(self._on_form_accepted)
+            dialog.hang_hoa_saved.connect(self._on_hang_hoa_saved)
             dialog.exec()
         except ImportError as e:
             MessageDialog.error(self, "Lỗi", f"Không thể mở form: {str(e)}")
@@ -378,22 +378,37 @@ class HangHoaView(QWidget):
             # Pass only the ID, not the object (to avoid session issues)
             ma_hh = self.current_hang_hoa.ma_hang_hoa
             dialog = HangHoaForm(self, hang_hoa=self.current_hang_hoa)
-            dialog.accepted_with_data.connect(lambda data: self._on_edit_accepted(data, ma_hh))
+            dialog.hang_hoa_saved.connect(lambda hang_hoa: self._on_edit_accepted(hang_hoa))
             dialog.exec()
         except ImportError as e:
             MessageDialog.error(self, "Lỗi", f"Không thể mở form: {str(e)}")
     
-    def _on_edit_accepted(self, form_data: dict, ma_hang_hoa: str):
+    def _on_hang_hoa_saved(self, hang_hoa: HangHoa):
+        """Handle goods saved from form"""
+        self.load_data()  # Refresh table
+        self.hang_hoa_added.emit(hang_hoa)
+        MessageDialog.success(self, "Thành công", f"Đã thêm hàng hóa {hang_hoa.ma_hang_hoa}")
+    
+    def _on_edit_accepted(self, hang_hoa: HangHoa):
         """Handle edit form accepted with data"""
         try:
             service = HangHoaService()
-            updated = service.update(ma_hang_hoa, form_data)
+            updated = service.update(hang_hoa.ma_hang_hoa, {
+                'ten_hang': hang_hoa.ten_hang,
+                'loai_hang': hang_hoa.loai_hang,
+                'so_luong': hang_hoa.so_luong,
+                'don_vi': hang_hoa.don_vi,
+                'trong_luong': hang_hoa.trong_luong,
+                'kich_thuoc': hang_hoa.kich_thuoc,
+                'gia_tri': hang_hoa.gia_tri,
+                'vi_tri_luu_tru': hang_hoa.vi_tri_luu_tru,
+                'ghi_chu': hang_hoa.ghi_chu,
+                'hinh_anh': hang_hoa.hinh_anh,
+                'trang_thai': hang_hoa.trang_thai.value if hasattr(hang_hoa.trang_thai, 'value') else hang_hoa.trang_thai
+            })
             self.load_data()  # Refresh table
-            if updated:
-                self.hang_hoa_updated.emit(updated)
-                MessageDialog.success(self, "Thành công", f"Đã cập nhật hàng hóa {updated.ma_hang_hoa}")
-            else:
-                MessageDialog.error(self, "Lỗi", "Không tìm thấy hàng hóa")
+            self.hang_hoa_updated.emit(updated)
+            MessageDialog.success(self, "Thành công", f"Đã cập nhật hàng hóa {updated.ma_hang_hoa}")
         except Exception as e:
             MessageDialog.error(self, "Lỗi", f"Không thể cập nhật hàng hóa: {str(e)}")
     

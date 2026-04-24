@@ -305,7 +305,7 @@ class KhoView(QWidget):
             
             # Get all data
             khos_data = []
-            for row in self.table_with_toolbar._data:
+            for row in self.table_with_toolbar.table._data:
                 if "_data" in row:
                     kho = row["_data"]
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)

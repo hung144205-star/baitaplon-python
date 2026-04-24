@@ -377,7 +377,7 @@ class ViTriView(QWidget):
             
             # Get all data
             vi_tris_data = []
-            for row in self.table_with_toolbar._data:
+            for row in self.table_with_toolbar.table._data:
                 if "_data" in row:
                     vt = row["_data"]
                     vi_tris_data.append({

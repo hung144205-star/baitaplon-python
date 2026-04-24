@@ -198,7 +198,7 @@ class KhoView(QWidget):
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
-                        "_data": kho
+                        "__data": kho
                     })
             
             self.table_with_toolbar.set_data(data)
@@ -363,7 +363,7 @@ class KhoView(QWidget):
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
-                        "_data": kho
+                        "__data": kho
                     })
                 
                 self.table_with_toolbar.set_data(data)
@@ -397,7 +397,7 @@ class KhoView(QWidget):
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
-                        "_data": kho
+                        "__data": kho
                     })
             
             self.table_with_toolbar.set_data(data)

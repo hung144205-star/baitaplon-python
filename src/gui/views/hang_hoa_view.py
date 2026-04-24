@@ -245,7 +245,7 @@ class HangHoaView(QWidget):
                     "Giá Trị": format_currency(hh.gia_tri or 0),
                     "Trạng Thái": self._get_trang_thai_label(hh.trang_thai),
                     "Hợp Đồng": hh.ma_hop_dong,
-                    "_data": hh,
+                    "__data": hh,
                     "_is_low_stock": hh.so_luong <= 10 and hh.trang_thai == 'trong_kho'
                 })
             
@@ -477,7 +477,7 @@ class HangHoaView(QWidget):
                         "Giá Trị": format_currency(hh.gia_tri or 0),
                         "Trạng Thái": self._get_trang_thai_label(hh.trang_thai),
                         "Hợp Đồng": hh.ma_hop_dong,
-                        "_data": hh,
+                        "__data": hh,
                         "_is_low_stock": hh.so_luong <= 10 and hh.trang_thai == 'trong_kho'
                     })
                 
@@ -520,7 +520,7 @@ class HangHoaView(QWidget):
                     "Giá Trị": format_currency(hh.gia_tri or 0),
                     "Trạng Thái": self._get_trang_thai_label(hh.trang_thai),
                     "Hợp Đồng": hh.ma_hop_dong,
-                    "_data": hh,
+                    "__data": hh,
                     "_is_low_stock": hh.so_luong <= 10 and hh.trang_thai == 'trong_kho'
                 })
             

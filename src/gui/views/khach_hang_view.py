@@ -154,7 +154,7 @@ class KhachHangView(QWidget):
                         "SĐT": format_phone(kh.so_dien_thoai),
                         "Email": kh.email or "-",
                         "Trạng thái": self._get_trang_thai_label(kh.trang_thai),
-                        "_data": kh  # Store object for reference
+                        "__data": kh  # Store object for reference
                     })
             
             self.table_with_toolbar.set_data(data)
@@ -334,7 +334,7 @@ class KhachHangView(QWidget):
                         "SĐT": format_phone(kh.so_dien_thoai),
                         "Email": kh.email or "-",
                         "Trạng thái": self._get_trang_thai_label(kh.trang_thai),
-                        "_data": kh
+                        "__data": kh
                     })
                 
                 self.table_with_toolbar.set_data(data)
@@ -367,7 +367,7 @@ class KhachHangView(QWidget):
                     "SĐT": format_phone(kh.so_dien_thoai),
                     "Email": kh.email or "-",
                     "Trạng thái": self._get_trang_thai_label(kh.trang_thai),
-                    "_data": kh
+                    "__data": kh
                 })
             
             self.table_with_toolbar.set_data(data)

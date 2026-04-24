@@ -249,7 +249,7 @@ class HopDongView(QWidget):
                     "Giá Thuê": format_currency(hd.gia_thue),
                     "Còn Lại": self._format_remaining_days(remaining_days),
                     "Trạng Thái": self._get_trang_thai_label(hd.trang_thai),
-                    "_data": hd,
+                    "__data": hd,
                     "_remaining_days": remaining_days,
                     "_expiring_soon": 0 < remaining_days <= 30
                 })
@@ -452,7 +452,7 @@ class HopDongView(QWidget):
                         "Giá Thuê": format_currency(hd.gia_thue),
                         "Còn Lại": self._format_remaining_days(remaining_days),
                         "Trạng Thái": self._get_trang_thai_label(hd.trang_thai),
-                        "_data": hd,
+                        "__data": hd,
                         "_remaining_days": remaining_days,
                         "_expiring_soon": 0 < remaining_days <= 30
                     })
@@ -507,7 +507,7 @@ class HopDongView(QWidget):
                     "Giá Thuê": format_currency(hd.gia_thue),
                     "Còn Lại": self._format_remaining_days(remaining_days),
                     "Trạng Thái": self._get_trang_thai_label(hd.trang_thai),
-                    "_data": hd,
+                    "__data": hd,
                     "_remaining_days": remaining_days,
                     "_expiring_soon": 0 < remaining_days <= 30
                 })

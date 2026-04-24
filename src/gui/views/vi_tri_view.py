@@ -258,7 +258,7 @@ class ViTriView(QWidget):
                     "Diện Tích": f"{vt.dien_tich:,.0f} m²",
                     "Giá Thuê": format_currency(vt.gia_thue),
                     "Trạng Thái": self._get_trang_thai_label(vt.trang_thai),
-                    "_data": vt
+                    "__data": vt
                 })
             
             self.table_with_toolbar.set_data(data)
@@ -447,7 +447,7 @@ class ViTriView(QWidget):
                         "Diện Tích": f"{vt.dien_tich:,.0f} m²",
                         "Giá Thuê": format_currency(vt.gia_thue),
                         "Trạng Thái": self._get_trang_thai_label(vt.trang_thai),
-                        "_data": vt
+                        "__data": vt
                     })
                 
                 self.table_with_toolbar.set_data(data)
@@ -483,7 +483,7 @@ class ViTriView(QWidget):
                     "Diện Tích": f"{vt.dien_tich:,.0f} m²",
                     "Giá Thuê": format_currency(vt.gia_thue),
                     "Trạng Thái": self._get_trang_thai_label(vt.trang_thai),
-                    "_data": vt
+                    "__data": vt
                 })
             
             self.table_with_toolbar.set_data(data)

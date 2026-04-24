@@ -315,7 +315,7 @@ class KhoForm(QDialog):
                 'dia_chi': self.dia_chi_input.text().strip(),
                 'dien_tich': self.dien_tich_input.value(),
                 'suc_chua': self.suc_chua_input.value(),
-                'trang_thai': self.trang_thai_input.currentData(),
+                'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex()),
                 'ghi_chu': self.ghi_chu_input.toPlainText().strip()
             }
             
@@ -343,7 +343,7 @@ class KhoForm(QDialog):
             'dia_chi': self.dia_chi_input.text().strip(),
             'dien_tich': self.dien_tich_input.value(),
             'suc_chua': self.suc_chua_input.value(),
-            'trang_thai': self.trang_thai_input.currentData(),
+            'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex()),
             'ghi_chu': self.ghi_chu_input.toPlainText().strip()
         }
 

@@ -209,7 +209,7 @@ class ViTriView(QWidget):
         self.table_with_toolbar.edit_clicked.connect(self._on_edit_clicked)
         self.table_with_toolbar.delete_clicked.connect(self._on_delete_clicked)
         self.table_with_toolbar.refresh_clicked.connect(self._on_refresh_clicked)
-        self.table_with_toolbar.toolbar.export_clicked.connect(self._on_export_clicked)
+        self.table_with_toolbar.export_clicked.connect(self._on_export_clicked)
         
         # Search & filter
         self.search_box.search_changed.connect(self._on_search_changed)

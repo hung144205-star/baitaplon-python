@@ -135,6 +135,9 @@ class DataTable(QTableWidget):
         else:
             # Extract headers from first row
             self._headers = list(data[0].keys())
+            
+            # Filter out hidden columns (starting with __)
+            self._headers = [h for h in self._headers if not h.startswith('__')]
         
         # Set column count
         self.setColumnCount(len(self._headers))

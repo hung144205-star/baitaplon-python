@@ -115,8 +115,6 @@ class KhachHangView(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(40, 30, 40, 30)
         layout.setSpacing(24)
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(16)
         
         # Title

@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Optional, Dict, Any, List
 
 from src.services import ViTriService, KhoService
-from src.models import ViTri, Kho, TrangThaiViTriEnum
+from src.models import ViTri, Kho, TrangThaiViTriEnum, TrangThaiKhoEnum
 from src.gui.widgets import DataTableWithToolbar, SearchBox
 from src.gui.dialogs import MessageDialog, ConfirmDialog
 from src.utils.formatters import format_currency, format_number

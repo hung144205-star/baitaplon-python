@@ -11,7 +11,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from typing import Optional
 
 from src.services import ViTriService, KhoService
-from src.models import ViTri, Kho, TrangThaiViTriEnum
+from src.models import ViTri, Kho, TrangThaiViTriEnum, TrangThaiKhoEnum
 from src.gui.dialogs import MessageDialog
 
 

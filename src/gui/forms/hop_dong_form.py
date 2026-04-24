@@ -357,7 +357,7 @@ class HopDongForm(QDialog):
             self.khach_hang_selector.addItem("-- Chọn khách hàng --", None)
             
             for kh in self.khach_hangs:
-                display_text = f"{kh.ten_khach_hang} ({kh.ma_khach_hang})"
+                display_text = f"{kh.ho_ten} ({kh.ma_khach_hang})"
                 self.khach_hang_selector.addItem(display_text, kh.ma_khach_hang)
             
             # Load available positions

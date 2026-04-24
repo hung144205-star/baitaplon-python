@@ -469,7 +469,7 @@ class HopDongDetailView(QDialog):
             self.lbl_trang_thai.setText(self._get_trang_thai_label(self.hop_dong.trang_thai))
             self.lbl_trang_thai.setTextFormat(Qt.TextFormat.RichText)
             
-            self.lbl_khach_hang.setText(f"{khach_hang.ten_khach_hang if khach_hang else 'N/A'}")
+            self.lbl_khach_hang.setText(f"{khach_hang.ho_ten if khach_hang else 'N/A'}")
             
             if vi_tri:
                 vi_tri_info = f"{vi_tri.ma_vi_tri} - KV:{vi_tri.khu_vuc} H:{vi_tri.hang} T:{vi_tri.tang} ({vi_tri.dien_tich} m²)"

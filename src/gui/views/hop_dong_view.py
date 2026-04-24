@@ -229,7 +229,7 @@ class HopDongView(QWidget):
                 # Get customer name
                 try:
                     khach_hang = self.khach_hang_service.get_by_id(hd.ma_khach_hang)
-                    ten_khach_hang = khach_hang.ten_khach_hang if khach_hang else hd.ma_khach_hang
+                    ten_khach_hang = khach_hang.ho_ten if khach_hang else hd.ma_khach_hang
                 except:
                     ten_khach_hang = hd.ma_khach_hang
                 
@@ -452,7 +452,7 @@ class HopDongView(QWidget):
                     
                     try:
                         khach_hang = self.khach_hang_service.get_by_id(hd.ma_khach_hang)
-                        ten_khach_hang = khach_hang.ten_khach_hang if khach_hang else hd.ma_khach_hang
+                        ten_khach_hang = khach_hang.ho_ten if khach_hang else hd.ma_khach_hang
                     except:
                         ten_khach_hang = hd.ma_khach_hang
                     
@@ -507,7 +507,7 @@ class HopDongView(QWidget):
                 
                 try:
                     khach_hang = self.khach_hang_service.get_by_id(hd.ma_khach_hang)
-                    ten_khach_hang = khach_hang.ten_khach_hang if khach_hang else hd.ma_khach_hang
+                    ten_khach_hang = khach_hang.ho_ten if khach_hang else hd.ma_khach_hang
                 except:
                     ten_khach_hang = hd.ma_khach_hang
                 

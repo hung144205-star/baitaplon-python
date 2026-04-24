@@ -45,7 +45,7 @@ BÊN CHO THUÊ (BÊN A):
 
 BÊN THUÊ (BÊN B):
   Mã khách hàng: {hop_dong.ma_khach_hang}
-  Tên: {khach_hang.ten_khach_hang if khach_hang else '[Name]'}
+  Tên: {khach_hang.ho_ten if khach_hang else '[Name]'}
   Địa chỉ: {khach_hang.dia_chi if khach_hang else '[Address]'}
   Điện thoại: {khach_hang.dien_thoai if khach_hang else '[Phone]'}
 
@@ -135,7 +135,7 @@ def generate_hop_dong_preview(hop_dong, khach_hang=None, vi_tri=None) -> str:
         <h2>👤 Khách hàng</h2>
         <div class="info">
             <p><b>Mã:</b> {hop_dong.ma_khach_hang}</p>
-            <p><b>Tên:</b> {khach_hang.ten_khach_hang if khach_hang else 'N/A'}</p>
+            <p><b>Tên:</b> {khach_hang.ho_ten if khach_hang else 'N/A'}</p>
         </div>
         
         <h2>📍 Vị trí</h2>

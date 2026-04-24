@@ -495,7 +495,7 @@ class KhachHangView(QWidget):
     def _on_add_clicked(self):
         """Handle add button"""
         dialog = KhachHangForm(self)
-        dialog.khach_hang_saved.connect(self._on_saved)
+        dialog.accepted_with_data.connect(self._on_saved)
         dialog.exec()
     
     def _on_edit_clicked(self):
@@ -505,7 +505,7 @@ class KhachHangView(QWidget):
             return
         
         dialog = KhachHangForm(self, khach_hang=self.current_khach_hang)
-        dialog.khach_hang_saved.connect(self._on_saved)
+        dialog.accepted_with_data.connect(self._on_saved)
         dialog.exec()
     
     def _on_saved(self, khach_hang: KhachHang):

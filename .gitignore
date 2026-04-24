@@ -21,10 +21,7 @@ wheels/
 .installed.cfg
 *.egg
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+
 
 # Logs
 *.log

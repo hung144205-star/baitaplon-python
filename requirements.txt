@@ -1,21 +1,27 @@
-# Danh sách thư viện cần thiết
-# Cập nhật: 17/04/2026
+# Tech Stack - Quản Lý Dịch Vụ Cho Thuê Kho Lưu Trữ Hàng Hóa
+# Cập nhật: 23/04/2026
+# Yêu cầu: Python 3.10+
 
-# Core - GUI Framework (bắt buộc cho giao diện PyQt6)
+# Core - GUI Framework
 PyQt6>=6.4.0
 
 # Database & ORM
 SQLAlchemy>=2.0.0
 
-# Xuất báo cáo
+# PDF Generation - Xuất báo cáo, hóa đơn
 reportlab>=3.6.0
 
-# Testing
-pytest>=7.0.0
-pytest-cov>=4.0.0
-
-# Utils
+# Utilities
 python-dateutil>=2.8.0
 
-# Code formatting (development)
-black>=23.0.0
+# Development & Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=23.0.0          # Code formatter
+# Excel Export
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0  # For coverage reports

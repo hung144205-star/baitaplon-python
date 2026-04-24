@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
 """
-Quản Lý Kho Lưu trữ - Main Entry Point
-Nhóm 12 - Lập trình Python
-
-Usage:
-    python main.py
-    hoặc
-    python src/main.py
+Điểm khởi đầu của ứng dụng Quản lý Kho Hàng
 """
-import sys
-import os
 
-# Add project root to path
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
-
-from src.app import main
+def main():
+    print("=" * 50)
+    print("QUẢN LÝ DỊCH VỤ CHO THUÊ KHO LƯU TRỮ HÀNG HÓA")
+    print("=" * 50)
+    print("\nNhóm 12 - Lập trình Python")
+    print("\n[Đang phát triển...]")
 
 if __name__ == "__main__":
     main()

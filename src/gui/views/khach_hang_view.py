@@ -167,12 +167,18 @@ class KhachHangView(QWidget):
     
     def _get_trang_thai_label(self, trang_thai) -> str:
         """Get status label with emoji"""
+        # Handle both enum object and string values
+        if hasattr(trang_thai, 'value'):
+            status_value = trang_thai.value
+        else:
+            status_value = str(trang_thai)
+            
         labels = {
             "hoat_dong": "✅ Hoạt động",
             "tam_khoa": "⏸️ Tạm khóa",
             "da_xoa": "❌ Đã xóa",
         }
-        return labels.get(str(trang_thai), trang_thai)
+        return labels.get(status_value, str(trang_thai))
     
     def _on_row_selected(self, row_index: int, row_data: dict):
         """Handle row selection"""

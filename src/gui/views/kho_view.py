@@ -253,8 +253,8 @@ class KhoView(QWidget):
     
     def _on_row_selected(self, row_index: int, row_data: dict):
         """Handle row selection"""
-        if "_data" in row_data:
-            self.current_kho = row_data["_data"]
+        if "__data" in row_data:
+            self.current_kho = row_data["__data"]
             self.kho_selected.emit(self.current_kho)
             self.info_label.setText(
                 f"Đang xem: {self.current_kho.ten_kho} ({self.current_kho.ma_kho})"
@@ -262,7 +262,7 @@ class KhoView(QWidget):
     
     def _on_row_double_clicked(self, row_index: int, row_data: dict):
         """Handle row double click"""
-        if "_data" in row_data:
+        if "__data" in row_data:
             self._on_edit_clicked()
     
     def _on_add_clicked(self):
@@ -326,8 +326,8 @@ class KhoView(QWidget):
             # Get all data
             khos_data = []
             for row in self.table_with_toolbar.table._data:
-                if "_data" in row:
-                    kho = row["_data"]
+                if "__data" in row:
+                    kho = row["__data"]
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)
                     khos_data.append({
                         'ma_kho': kho.ma_kho,

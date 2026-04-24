@@ -321,8 +321,8 @@ class HopDongView(QWidget):
     
     def _on_row_selected(self, row_index: int, row_data: dict):
         """Handle row selection"""
-        if "_data" in row_data:
-            self.current_hop_dong = row_data["_data"]
+        if "__data" in row_data:
+            self.current_hop_dong = row_data["__data"]
             self.hop_dong_selected.emit(self.current_hop_dong)
             self.info_label.setText(
                 f"Đang xem: {self.current_hop_dong.ma_hop_dong} - {self._get_trang_thai_label(self.current_hop_dong.trang_thai)}"
@@ -330,7 +330,7 @@ class HopDongView(QWidget):
     
     def _on_row_double_clicked(self, row_index: int, row_data: dict):
         """Handle row double click"""
-        if "_data" in row_data:
+        if "__data" in row_data:
             self._on_edit_clicked()
     
     def _on_add_clicked(self):

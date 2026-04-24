@@ -324,8 +324,8 @@ class HangHoaView(QWidget):
     
     def _on_row_selected(self, row_index: int, row_data: dict):
         """Handle row selection"""
-        if "_data" in row_data:
-            self.current_hang_hoa = row_data["_data"]
+        if "__data" in row_data:
+            self.current_hang_hoa = row_data["__data"]
             self.hang_hoa_selected.emit(self.current_hang_hoa)
             
             # Highlight low stock
@@ -360,7 +360,7 @@ class HangHoaView(QWidget):
     
     def _on_row_double_clicked(self, row_index: int, row_data: dict):
         """Handle row double click"""
-        if "_data" in row_data:
+        if "__data" in row_data:
             self._on_edit_clicked()
     
     def _on_add_clicked(self):

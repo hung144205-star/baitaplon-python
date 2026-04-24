@@ -186,6 +186,4 @@ Metrics: 32px, weight 700
 
 ---
 
-**Cập nhật:** 23/04/2026  
-**Nhóm 12 - Lập trình Python**  
-**Module:** Kho Hàng (Phase 4)
+

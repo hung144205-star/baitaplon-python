@@ -557,7 +557,3 @@ HopDongView.load_data() (refresh table)
 - Data tables with filtering
 
 ---
-
-**Created:** 2026-04-24  
-**Version:** 1.0  
-**Author:** Miao 🌸

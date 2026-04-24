@@ -268,6 +268,3 @@ src/
 - [ ] Viết tài liệu hướng dẫn
 
 ---
-
-**Ngày cập nhật:** 15/04/2026  
-**Phiên bản:** 1.0

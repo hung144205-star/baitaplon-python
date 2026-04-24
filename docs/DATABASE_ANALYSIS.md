@@ -1399,6 +1399,3 @@ Khi hệ thống cần scale:
 
 ---
 
-**Tài liệu này được cập nhật lần cuối: 23/04/2026**  
-**Nhóm 12 - Lập trình Python**  
-**Liên hệ:** vanhieu25@gmail.com

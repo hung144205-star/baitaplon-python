@@ -41,3 +41,23 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+
+DESIGN.md
+FIX_GUIDE.md
+PHASE_1_COMPLETE.md
+
+PHASE_1_COMPLETE.md
+SETUP.md 
+WINDOWS_SETUP.md
+TASKS.md
+RUN_DEMO.md
+
+REFERENCE_UI_KHO.md
+REFERENCE_UI_HOP_DONG.md
+PROJECT_PLAN.md
+PROJECT_ANALYSIS.md
+HUONG_DAN_CAI_DAT.md
+
+logs/
+stitch_ui_analysis_system/

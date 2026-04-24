@@ -579,5 +579,4 @@ mypy src/
 
 **Let's build something amazing! 🚀**
 
-**Cập nhật:** 23/04/2026  
-**Nhóm 12 - Lập trình Python**
+

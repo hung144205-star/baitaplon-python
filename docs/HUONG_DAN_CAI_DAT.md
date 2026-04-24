@@ -295,6 +295,3 @@ Nếu gặp vấn đề:
 4. Liên hệ team phát triển
 
 ---
-
-**Cập nhật:** 17/04/2026  
-**Phiên bản:** 1.0

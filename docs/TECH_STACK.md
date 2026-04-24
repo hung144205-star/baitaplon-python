@@ -291,6 +291,3 @@ class KhachHangView(QWidget):
 - [pytest Documentation](https://docs.pytest.org/)
 
 ---
-
-**Cập nhật:** 15/04/2026  
-**Phiên bản:** 1.0

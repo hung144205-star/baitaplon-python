@@ -398,7 +398,7 @@ class KhachHangView(QWidget):
         try:
             loai = self.filter_loai.currentData()
             trang_thai = self.filter_trang_thai.currentData()
-            search_text = self.search_input.current_text().lower().strip()
+            search_text = self.search_input.get_text().lower().strip()
             
             # Filter data
             filtered = []

@@ -375,7 +375,7 @@ class KhoView(QWidget):
     def _apply_filters(self):
         """Apply filters"""
         try:
-            trang_thai = self.filter_trang_thai.currentData()
+            trang_thai = self.filter_trang_thai.itemData(filter_trang_thai.currentIndex())
             
             khos = self.service.get_all(limit=1000)
             

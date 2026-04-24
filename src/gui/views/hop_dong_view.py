@@ -279,14 +279,33 @@ class HopDongView(QWidget):
             return f"{days} ngày"
     
     def _get_trang_thai_label(self, trang_thai) -> str:
-        """Get status label with emoji"""
-        labels = {
+        """Get status label with emoji - handles both enum objects and string values"""
+        # Handle both enum object and string values
+        if hasattr(trang_thai, 'value'):
+            status_value = trang_thai.value
+        else:
+            status_value = str(trang_thai)
+            
+        # Common status labels
+        common_labels = {
+            "hoat_dong": "✅ Hoạt động",
+            "tam_khoa": "⏸️ Tạm khóa", 
+            "da_xoa": "❌ Đã xóa",
+            "trong": "🟢 Trống",
+            "da_thue": "🔴 Đã thuê",
+            "bao_tri": "🔧 Bảo trì",
             "hieu_luc": "✅ Hiệu lực",
             "het_han": "⏰ Hết hạn",
             "cham_dut": "❌ Chấm dứt",
             "gia_han": "🔄 Gia hạn",
+            "trong_kho": "📦 Trong kho",
+            "da_xuat": "📤 Đã xuất",
+            "hu_hong": "⚠️ Hư hỏng",
+            "cho_thanh_toan": "⏳ Chờ thanh toán",
+            "da_thanh_toan": "💰 Đã thanh toán"
         }
-        return labels.get(str(trang_thai), str(trang_thai))
+        
+        return common_labels.get(status_value, str(trang_thai))
     
     def _update_statistics(self, hop_dongs: list, today):
         """Update statistics bar"""

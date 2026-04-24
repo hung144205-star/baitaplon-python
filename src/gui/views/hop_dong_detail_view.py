@@ -405,14 +405,20 @@ class HopDongDetailView(QDialog):
         return label
     
     def _get_trang_thai_label(self, trang_thai) -> str:
-        """Get status label with emoji and color"""
+        """Get status label with emoji and color - handles both enum objects and string values"""
+        # Handle both enum object and string values
+        if hasattr(trang_thai, 'value'):
+            status_value = trang_thai.value
+        else:
+            status_value = str(trang_thai)
+            
         labels = {
             "hieu_luc": ("✅ Hiệu lực", "#1aae39"),
             "het_han": ("⏰ Hết hạn", "#ff9800"),
             "cham_dut": ("❌ Chấm dứt", "#f44336"),
             "gia_han": ("🔄 Gia hạn", "#2196f3"),
         }
-        label, color = labels.get(str(trang_thai), (str(trang_thai), "#757575"))
+        label, color = labels.get(status_value, (str(trang_thai), "#757575"))
         return f"<span style='color: {color}; font-weight: 600;'>{label}</span>"
     
     def _get_payment_status_label(self, trang_thai) -> str:

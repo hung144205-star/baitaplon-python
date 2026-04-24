@@ -258,8 +258,8 @@ class KhachHangView(QWidget):
     
     def _on_row_selected(self, row_index: int, row_data: dict):
         """Handle row selection"""
-        if "_data" in row_data:
-            self.current_khach_hang = row_data["_data"]
+        if "__data" in row_data:
+            self.current_khach_hang = row_data["__data"]
             self.khach_hang_selected.emit(self.current_khach_hang)
             self.info_label.setText(
                 f"Đang xem: {self.current_khach_hang.ho_ten} ({self.current_khach_hang.ma_khach_hang})"
@@ -267,7 +267,7 @@ class KhachHangView(QWidget):
     
     def _on_row_double_clicked(self, row_index: int, row_data: dict):
         """Handle row double click"""
-        if "_data" in row_data:
+        if "__data" in row_data:
             self._on_edit_clicked()
     
     def _on_add_clicked(self):
@@ -365,8 +365,8 @@ class KhachHangView(QWidget):
             khach_hangs = []
             for row in range(self.table_with_toolbar.table.rowCount()):
                 item = self.table_with_toolbar.table.item(row, 0)
-                if item and "_data" in item.data(Qt.ItemDataRole.UserRole):
-                    khach_hangs.append(item.data(Qt.ItemDataRole.UserRole)["_data"])
+                if item and "__data" in item.data(Qt.ItemDataRole.UserRole):
+                    khach_hangs.append(item.data(Qt.ItemDataRole.UserRole)["__data"])
             
             if not khach_hangs:
                 MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu để xuất")

@@ -339,7 +339,7 @@ class ViTriForm(QDialog):
         try:
             khos = self.kho_service.get_all(limit=100)
             for kho in khos:
-                if kho.trang_thai == TrangThaiViTriEnum.HOAT_DONG:
+                if kho.trang_thai == TrangThaiKhoEnum.HOAT_DONG:
                     self.kho_selector.addItem(f"{kho.ten_kho} ({kho.ma_kho})", kho)
         except Exception as e:
             print(f"Error loading warehouses: {e}")

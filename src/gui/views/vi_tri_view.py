@@ -226,7 +226,7 @@ class ViTriView(QWidget):
             
             # Add warehouses
             for kho in khos:
-                if kho.trang_thai == TrangThaiViTriEnum.HOAT_DONG:
+                if kho.trang_thai == TrangThaiKhoEnum.HOAT_DONG:
                     self.kho_selector.addItem(f"{kho.ten_kho} ({kho.ma_kho})", kho)
             
         except Exception as e:

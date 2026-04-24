@@ -170,22 +170,6 @@ class KhoForm(QDialog):
         """)
         form_layout.addRow("Trạng thái:", self.trang_thai_input)
         
-        # Ghi chú
-        self.ghi_chu_input = QTextEdit()
-        self.ghi_chu_input.setPlaceholderText("Ghi chú thêm (nếu có)")
-        self.ghi_chu_input.setMaximumHeight(80)
-        self.ghi_chu_input.setStyleSheet("""
-            QTextEdit {
-                padding: 8px;
-                border-radius: 4px;
-                border: 1px solid #bdbdbd;
-            }
-            QTextEdit:focus {
-                border: 2px solid #1976d2;
-            }
-        """)
-        form_layout.addRow("Ghi chú:", self.ghi_chu_input)
-        
         layout.addWidget(form_container)
         
         # Buttons
@@ -248,9 +232,6 @@ class KhoForm(QDialog):
             if self.trang_thai_input.itemData(i) == self.kho.trang_thai:
                 self.trang_thai_input.setCurrentIndex(i)
                 break
-        
-        if self.kho.ghi_chu:
-            self.ghi_chu_input.setPlainText(self.kho.ghi_chu)
     
     def _validate_form(self) -> bool:
         """Validate form fields"""
@@ -315,8 +296,7 @@ class KhoForm(QDialog):
                 'dia_chi': self.dia_chi_input.text().strip(),
                 'dien_tich': self.dien_tich_input.value(),
                 'suc_chua': self.suc_chua_input.value(),
-                'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex()),
-                'ghi_chu': self.ghi_chu_input.toPlainText().strip()
+                'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex())
             }
             
             if self.is_edit_mode:
@@ -343,8 +323,7 @@ class KhoForm(QDialog):
             'dia_chi': self.dia_chi_input.text().strip(),
             'dien_tich': self.dien_tich_input.value(),
             'suc_chua': self.suc_chua_input.value(),
-            'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex()),
-            'ghi_chu': self.ghi_chu_input.toPlainText().strip()
+            'trang_thai': self.trang_thai_input.itemData(self.trang_thai_input.currentIndex())
         }
 
 

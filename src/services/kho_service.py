@@ -164,7 +164,8 @@ class KhoService:
         """
         session = self._get_session()
         try:
-            kho = self.get_by_id(ma_kho)
+            # Get kho from SAME session
+            kho = session.query(Kho).filter(Kho.ma_kho == ma_kho).first()
             if not kho:
                 return None
             

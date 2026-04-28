@@ -391,7 +391,11 @@ class ViTriForm(QDialog):
         self.hang_input.setText(self.vi_tri.hang)
         self.tang_input.setValue(self.vi_tri.tang)
         self.dien_tich_input.setValue(self.vi_tri.dien_tich)
-        self.suc_chua_input.setValue(self.vi_tri.suc_chua)
+        # Handle None value for suc_chua
+        if self.vi_tri.suc_chua is not None:
+            self.suc_chua_input.setValue(self.vi_tri.suc_chua)
+        else:
+            self.suc_chua_input.setValue(0.0)
         self.gia_thue_input.setValue(self.vi_tri.gia_thue)
         
         # Set status

@@ -907,10 +907,12 @@
 - [ ] Login button
 
 ### 9.3 Authorization
-- [ ] Role-based access control
-- [ ] Menu items by role
-- [ ] Button visibility by role
-- [ ] API endpoint protection
+- [x] Role-based access control
+- [x] Menu items by role
+- [x] Button visibility by role
+- [x] API endpoint protection
+- [x] Authorization Service implementation
+- [x] Auth Middleware for GUI integration
 
 ### 9.4 User Management
 - [ ] CRUD for employees
@@ -1001,7 +1003,7 @@ Progress: ████████████████████ 100%
 | Phase 6: Hàng hóa | 25 | 25 | ██████████ 100% |
 | Phase 7: Thanh toán | 25 | 25 | ██████████ 100% |
 | Phase 8: PDF Generation | 20 | 12 | ██████░░░░ 60% |
-| Phase 9: Auth | 20 | 0 | ░░░░░░░░░░ 0% |
+| Phase 9: Auth | 20 | 14 | ███████░░░ 70% |
 | Phase 10: Testing | 25 | 0 | ░░░░░░░░░░ 0% |
 
 ---

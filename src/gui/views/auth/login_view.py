@@ -4,7 +4,7 @@ Login View - Giao diện đăng nhập hệ thống
 """
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QFrame, QMessageBox, QCheckBox
+    QPushButton, QFrame, QMessageBox, QCheckBox, QGridLayout
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap, QFont
@@ -33,7 +33,6 @@ class LoginView(QWidget):
         super().__init__(parent)
         self.setup_ui()
         self.setup_connections()
-        # Load remember me data
         self.load_remember_me_data()
     
     def setup_ui(self):
@@ -41,62 +40,77 @@ class LoginView(QWidget):
         self.setWindowTitle("🔐 Đăng nhập hệ thống")
         self.setFixedSize(400, 500)
         
+        # Set background color
+        self.setStyleSheet("background-color: #f5f5f5;")
+        
         # Main layout
-        main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(40, 40, 40, 40)
-        main_layout.setSpacing(24)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(40, 60, 40, 60)
+        main_layout.setSpacing(20)
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Logo/Title
-        title_label = QLabel("QUẢN LÝ KHO LƯU TRỮ")
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 24px;
-                font-weight: bold;
-                color: #1976d2;
-                margin-bottom: 8px;
-            }
-        """)
+        title_label = QLabel("🔐")
+        title_label.setStyleSheet("font-size: 48px;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(title_label)
         
-        subtitle_label = QLabel("Đăng nhập để tiếp tục")
-        subtitle_label.setStyleSheet("""
+        app_title = QLabel("QUẢN LÝ KHO")
+        app_title.setStyleSheet("""
             QLabel {
-                font-size: 14px;
-                color: #666;
-                margin-bottom: 32px;
+                font-size: 28px;
+                font-weight: bold;
+                color: #1976d2;
             }
         """)
-        subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(subtitle_label)
+        app_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(app_title)
         
-        # Login form container
-        form_container = QFrame()
+        app_subtitle = QLabel("Lưu Trữ Hàng Hóa")
+        app_subtitle.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                color: #666;
+                margin-bottom: 20px;
+            }
+        """)
+        app_subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(app_subtitle)
+        
+        # Form container (simple QWidget instead of QFrame)
+        form_container = QWidget()
         form_container.setStyleSheet("""
-            QFrame {
+            QWidget {
                 background-color: white;
                 border-radius: 12px;
-                padding: 24px;
                 border: 1px solid #e0e0e0;
             }
         """)
-        
-        form_layout = QVBoxLayout()
-        form_layout.setSpacing(20)
+        form_layout = QVBoxLayout(form_container)
+        form_layout.setContentsMargins(24, 24, 24, 24)
+        form_layout.setSpacing(16)
         
         # Username field
-        username_label = QLabel("Tên đăng nhập:")
-        username_label.setStyleSheet("font-weight: bold; color: #333;")
+        username_label = QLabel("👤 Tên đăng nhập")
+        username_label.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                color: #333;
+                font-size: 14px;
+            }
+        """)
         form_layout.addWidget(username_label)
         
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Nhập mã nhân viên hoặc email")
+        self.username_input.setFixedHeight(40)
         self.username_input.setStyleSheet("""
             QLineEdit {
-                padding: 12px;
-                border: 1px solid #ddd;
-                border-radius: 6px;
+                padding: 8px 12px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
                 font-size: 14px;
+                background-color: white;
             }
             QLineEdit:focus {
                 border-color: #1976d2;
@@ -106,19 +120,27 @@ class LoginView(QWidget):
         form_layout.addWidget(self.username_input)
         
         # Password field
-        password_label = QLabel("Mật khẩu:")
-        password_label.setStyleSheet("font-weight: bold; color: #333;")
+        password_label = QLabel("🔒 Mật khẩu")
+        password_label.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                color: #333;
+                font-size: 14px;
+            }
+        """)
         form_layout.addWidget(password_label)
         
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Nhập mật khẩu")
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.setFixedHeight(40)
         self.password_input.setStyleSheet("""
             QLineEdit {
-                padding: 12px;
-                border: 1px solid #ddd;
-                border-radius: 6px;
+                padding: 8px 12px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
                 font-size: 14px;
+                background-color: white;
             }
             QLineEdit:focus {
                 border-color: #1976d2;
@@ -127,54 +149,34 @@ class LoginView(QWidget):
         """)
         form_layout.addWidget(self.password_input)
         
-        # Remember me and Forgot password
-        options_layout = QHBoxLayout()
-        options_layout.setSpacing(16)
-        
+        # Remember me
         self.remember_checkbox = QCheckBox("Ghi nhớ đăng nhập")
         self.remember_checkbox.setStyleSheet("""
             QCheckBox {
                 color: #666;
-                font-size: 12px;
+                font-size: 13px;
+                margin-top: 8px;
             }
         """)
-        options_layout.addWidget(self.remember_checkbox)
+        form_layout.addWidget(self.remember_checkbox)
         
-        options_layout.addStretch()
-        
-        self.forgot_password_link = QPushButton("Quên mật khẩu?")
-        self.forgot_password_link.setStyleSheet("""
-            QPushButton {
-                color: #1976d2;
-                text-decoration: underline;
-                border: none;
-                background: transparent;
-                font-size: 12px;
-            }
-            QPushButton:hover {
-                color: #0d47a1;
-            }
-        """)
-        self.forgot_password_link.setCursor(Qt.CursorShape.PointingHandCursor)
-        options_layout.addWidget(self.forgot_password_link)
-        
-        form_layout.addLayout(options_layout)
-        
-        form_container.setLayout(form_layout)
+        # Add form container to main layout
         main_layout.addWidget(form_container)
         
+        # Spacer
+        main_layout.addSpacing(20)
+        
         # Login button
-        self.login_button = QPushButton("🔐 Đăng nhập")
+        self.login_button = QPushButton("ĐĂNG NHẬP")
+        self.login_button.setFixedHeight(45)
         self.login_button.setStyleSheet("""
             QPushButton {
                 background-color: #1976d2;
                 color: white;
                 border: none;
-                padding: 12px;
-                border-radius: 6px;
+                border-radius: 8px;
                 font-size: 16px;
                 font-weight: bold;
-                margin-top: 16px;
             }
             QPushButton:hover {
                 background-color: #1565c0;
@@ -183,36 +185,33 @@ class LoginView(QWidget):
                 background-color: #0d47a1;
             }
         """)
+        self.login_button.setCursor(Qt.CursorShape.PointingHandCursor)
         main_layout.addWidget(self.login_button)
         
         # Cancel button
-        self.cancel_button = QPushButton("❌ Hủy")
+        self.cancel_button = QPushButton("Hủy")
+        self.cancel_button.setFixedHeight(40)
         self.cancel_button.setStyleSheet("""
             QPushButton {
-                background-color: #f5f5f5;
+                background-color: transparent;
                 color: #666;
                 border: 1px solid #ddd;
-                padding: 12px;
-                border-radius: 6px;
-                font-size: 16px;
-                margin-top: 8px;
+                border-radius: 8px;
+                font-size: 14px;
             }
             QPushButton:hover {
-                background-color: #eeeeee;
+                background-color: #f5f5f5;
             }
         """)
         main_layout.addWidget(self.cancel_button)
         
+        # Spacer at bottom
         main_layout.addStretch()
-        
-        # Set layout
-        self.setLayout(main_layout)
     
     def setup_connections(self):
         """Setup signal connections"""
         self.login_button.clicked.connect(self._on_login_clicked)
         self.cancel_button.clicked.connect(self._on_cancel_clicked)
-        self.forgot_password_link.clicked.connect(self._on_forgot_password_clicked)
         self.password_input.returnPressed.connect(self._on_login_clicked)
         self.username_input.returnPressed.connect(self._on_login_clicked)
     
@@ -291,15 +290,6 @@ class LoginView(QWidget):
     def _on_cancel_clicked(self):
         """Handle cancel button click"""
         self.login_cancelled.emit()
-    
-    def _on_forgot_password_clicked(self):
-        """Handle forgot password link click"""
-        MessageDialog(
-            self,
-            "Quên mật khẩu",
-            "Vui lòng liên hệ quản trị viên để đặt lại mật khẩu.",
-            "info"
-        ).exec()
     
     def clear_inputs(self):
         """Clear input fields"""

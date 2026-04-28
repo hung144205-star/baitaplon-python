@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Optional, Dict, Any, List
 
 from src.services import HopDongService, HangHoaService, ViTriService
-from src.models import HopDong, ViTri, HangHoa
+from src.models import HopDong, ViTri, HangHoa, TrangThaiViTriEnum
 from src.gui.dialogs import MessageDialog
 from src.utils.formatters import format_currency
 
@@ -450,7 +450,7 @@ class HangHoaForm(QDialog):
         try:
             vi_tris = self.vi_tri_service.get_all(limit=100)
             for vt in vi_tris:
-                if str(vt.trang_thai) == 'trong':
+                if vt.trang_thai == TrangThaiViTriEnum.TRONG:
                     display = f"{vt.ma_vi_tri} - KV:{vt.khu_vuc} H:{vt.hang} T:{vt.tang}"
                     self.vi_tri_input.addItem(display, vt.ma_vi_tri)
         except Exception as e:

@@ -47,13 +47,23 @@ class PDFGenerationService:
         """Setup Vietnamese font support"""
         try:
             # Try to register a Vietnamese-compatible font
-            # You may need to download and place DejaVuSans.ttf in your project
-            font_path = "src/fonts/DejaVuSans.ttf"
-            if os.path.exists(font_path):
-                pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
-                self.default_font = 'DejaVuSans'
-            else:
-                self.default_font = 'Helvetica'
+            # Prefer bundled font, then fall back to common Windows fonts
+            candidates = [
+                "src/fonts/DejaVuSans.ttf",
+                "C:/Windows/Fonts/arial.ttf",
+                "C:/Windows/Fonts/tahoma.ttf",
+                "C:/Windows/Fonts/segoeui.ttf",
+                "C:/Windows/Fonts/verdana.ttf",
+                "C:/Windows/Fonts/arialuni.ttf",
+            ]
+
+            for font_path in candidates:
+                if os.path.exists(font_path):
+                    pdfmetrics.registerFont(TTFont('VietFont', font_path))
+                    self.default_font = 'VietFont'
+                    return
+
+            self.default_font = 'Helvetica'
         except Exception as e:
             print(f"Warning: Could not setup Vietnamese font: {e}")
             self.default_font = 'Helvetica'
@@ -255,39 +265,63 @@ class PDFGenerationService:
         try:
             # Get contract data
             hop_dong = self.hop_dong_service.get_by_id(ma_hop_dong)
-            khach_hang = self.khach_hang_service.get_by_id(hop_dong.ma_khach_hang)
-            kho = self.kho_service.get_by_id(hop_dong.ma_kho)
+            if not hop_dong:
+                raise ValueError("Không tìm thấy hợp đồng")
+
+            khach_hang = (
+                self.khach_hang_service.get_by_id(hop_dong.ma_khach_hang)
+                if hop_dong.ma_khach_hang else None
+            )
+            vi_tri = (
+                self.vi_tri_service.get_by_id(hop_dong.ma_vi_tri)
+                if hop_dong.ma_vi_tri else None
+            )
+            kho = self.kho_service.get_by_id(vi_tri.ma_kho) if vi_tri and vi_tri.ma_kho else None
+
+            def _calculate_thoi_han_thang(start_date, end_date) -> int:
+                if not start_date or not end_date:
+                    return 0
+                months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+                if end_date.day < start_date.day:
+                    months -= 1
+                return max(1, months)
             
             # Calculate remaining days
             today = datetime.date.today()
             so_ngay_con_lai = (hop_dong.ngay_ket_thuc - today).days if hop_dong.ngay_ket_thuc else 0
+            thoi_han_thang = _calculate_thoi_han_thang(hop_dong.ngay_bat_dau, hop_dong.ngay_ket_thuc)
+            trang_thai = (
+                hop_dong.trang_thai.value
+                if hasattr(hop_dong.trang_thai, 'value') else str(hop_dong.trang_thai or "")
+            )
+            ngay_ky = hop_dong.ngay_tao if getattr(hop_dong, 'ngay_tao', None) else hop_dong.ngay_bat_dau
             
             # Prepare context
             context = {
                 'ma_hop_dong': hop_dong.ma_hop_dong,
-                'ngay_ky': format_date(hop_dong.ngay_ky) if hop_dong.ngay_ky else "",
+                'ngay_ky': format_date(ngay_ky) if ngay_ky else "",
                 'ngay_bat_dau': format_date(hop_dong.ngay_bat_dau),
                 'ngay_ket_thuc': format_date(hop_dong.ngay_ket_thuc),
-                'thoi_han': hop_dong.thoi_han,
-                'trang_thai': hop_dong.trang_thai,
+                'thoi_han': thoi_han_thang,
+                'trang_thai': trang_thai,
                 'so_ngay_con_lai': so_ngay_con_lai,
                 
                 # Customer info
-                'ma_khach_hang': khach_hang.ma_khach_hang,
-                'ten_khach_hang': khach_hang.ten_khach_hang,
-                'dia_chi_khach_hang': khach_hang.dia_chi,
-                'sdt_khach_hang': khach_hang.so_dien_thoai,
-                'email_khach_hang': khach_hang.email,
+                'ma_khach_hang': khach_hang.ma_khach_hang if khach_hang else (hop_dong.ma_khach_hang or ""),
+                'ten_khach_hang': khach_hang.ho_ten if khach_hang else "",
+                'dia_chi_khach_hang': khach_hang.dia_chi if khach_hang else "",
+                'sdt_khach_hang': khach_hang.so_dien_thoai if khach_hang else "",
+                'email_khach_hang': khach_hang.email if khach_hang else "",
                 
                 # Warehouse info
-                'ma_kho': kho.ma_kho,
-                'ten_kho': kho.ten_kho,
-                'dia_chi_kho': kho.dia_chi,
-                'dien_tich': kho.dien_tich,
-                'suc_chua': kho.suc_chua,
+                'ma_kho': kho.ma_kho if kho else (vi_tri.ma_kho if vi_tri else ""),
+                'ten_kho': kho.ten_kho if kho else "",
+                'dia_chi_kho': kho.dia_chi if kho else "",
+                'dien_tich': kho.dien_tich if kho else (vi_tri.dien_tich if vi_tri else ""),
+                'suc_chua': kho.suc_chua if kho else (vi_tri.suc_chua if vi_tri else ""),
                 
                 # Payment info
-                'tong_gia_tri': format_currency(hop_dong.gia_thue * hop_dong.thoi_han) if hop_dong.gia_thue else 0,
+                'tong_gia_tri': format_currency((hop_dong.gia_thue or 0) * thoi_han_thang, show_symbol=False),
                 'ngay_thanh_toan': format_date(hop_dong.ngay_bat_dau)
             }
             

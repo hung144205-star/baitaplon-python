@@ -72,6 +72,24 @@ class HopDongView(QWidget):
         self.table_with_toolbar = DataTableWithToolbar(
             headers=["Mã HĐ", "Khách Hàng", "Vị Trí", "Ngày BĐ", "Ngày KT", "Giá Thuê", "Còn Lại", "Trạng Thái"]
         )
+        # Add PDF export button
+        self.pdf_export_btn = QPushButton("📄 Xuất PDF")
+        self.pdf_export_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #43a047;
+            }
+        """)
+        # Insert before the last widget (which is probably the Excel export button)
+        toolbar_layout = self.table_with_toolbar.toolbar.layout()
+        toolbar_layout.insertWidget(toolbar_layout.count() - 1, self.pdf_export_btn)
         layout.addWidget(self.table_with_toolbar, 1)
         
         # Info label
@@ -196,6 +214,53 @@ class HopDongView(QWidget):
         self.table_with_toolbar.edit_clicked.connect(self._on_edit_clicked)
         self.table_with_toolbar.delete_clicked.connect(self._on_delete_clicked)
         self.table_with_toolbar.refresh_clicked.connect(self._on_refresh_clicked)
+        self.pdf_export_btn.clicked.connect(self._on_pdf_export_clicked)
+
+    def _on_pdf_export_clicked(self):
+        """Handle PDF export button click"""
+        try:
+            selected_row = self.table_with_toolbar.get_selected_row()
+            if not selected_row:
+                dialog = MessageDialog(
+                    self,
+                    "Cảnh báo",
+                    "Vui lòng chọn hợp đồng cần xuất PDF.",
+                    "warning"
+                )
+                dialog.exec()
+                return
+            
+            ma_hop_dong = selected_row.get('Mã HĐ')
+            if not ma_hop_dong:
+                dialog = MessageDialog(
+                    self,
+                    "Lỗi",
+                    "Không tìm thấy mã hợp đồng.",
+                    "error"
+                )
+                dialog.exec()
+                return
+            
+            # Generate PDF using PDFGenerationService
+            from src.services.pdf.pdf_generation_service import generate_contract_pdf
+            pdf_path = generate_contract_pdf(ma_hop_dong)
+            
+            dialog = MessageDialog(
+                self,
+                "Thành công",
+                f"Xuất PDF hợp đồng thành công!\nFile lưu tại: {pdf_path}",
+                "success"
+            )
+            dialog.exec()
+            
+        except Exception as e:
+            dialog = MessageDialog(
+                self,
+                "Lỗi",
+                f"Lỗi khi xuất PDF: {str(e)}",
+                "error"
+            )
+            dialog.exec()
         
         # Custom buttons
         self._connect_custom_buttons()

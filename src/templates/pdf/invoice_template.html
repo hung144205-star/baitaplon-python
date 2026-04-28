@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÓA ĐƠN THANH TOÁN</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #d32f2f;
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 0;
+        }
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #fff3e0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-style: italic;
+            text-align: center;
+        }
+        .company-info {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="company-info">
+            <h2>CÔNG TY TNHH QUẢN LÝ KHO LƯU TRỮ</h2>
+            <p>Địa chỉ: {{ dia_chi_cong_ty }}</p>
+            <p>Mã số thuế: {{ ma_so_thue_cong_ty }}</p>
+            <p>Số điện thoại: {{ sdt_cong_ty }} | Email: {{ email_cong_ty }}</p>
+        </div>
+
+        <div class="header">
+            <h1>HÓA ĐƠN THANH TOÁN</h1>
+            <p>Mã hóa đơn: {{ ma_hoa_don }}</p>
+        </div>
+        
+        <div class="invoice-info">
+            <div>
+                <div class="info-item">
+                    <span class="info-label">Ngày lập:</span> {{ ngay_lap }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Hạn thanh toán:</span> {{ han_thanh_toan }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Trạng thái:</span> {{ trang_thai_hoa_don }}
+                </div>
+            </div>
+            <div>
+                <div class="info-item">
+                    <span class="info-label">Hợp đồng:</span> {{ ma_hop_dong }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Kỳ thanh toán:</span> {{ ky_thanh_toan }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Số ngày sử dụng:</span> {{ so_ngay_su_dung }}
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">THÔNG TIN KHÁCH HÀNG</div>
+            <div class="info-item">
+                <span class="info-label">Mã khách hàng:</span> {{ ma_khach_hang }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tên khách hàng:</span> {{ ten_khach_hang }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Địa chỉ:</span> {{ dia_chi_khach_hang }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Số điện thoại:</span> {{ sdt_khach_hang }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email:</span> {{ email_khach_hang }}
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">CHI TIẾT DỊCH VỤ</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Dịch vụ</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in chi_tiet_dich_vu %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.ten_dich_vu }}</td>
+                        <td>{{ item.so_luong }}</td>
+                        <td>{{ item.don_gia | number_format }} ₫</td>
+                        <td>{{ item.thanh_tien | number_format }} ₫</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right;">TỔNG CỘNG:</td>
+                        <td>{{ tong_cong | number_format }} ₫</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right;">THUẾ VAT ({{ thue_vat }}%):</td>
+                        <td>{{ thue_vat_tien | number_format }} ₫</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right; font-size: 18px;">TỔNG THANH TOÁN:</td>
+                        <td style="font-size: 18px;">{{ tong_thanh_toan | number_format }} ₫</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">THÔNG TIN NGÂN HÀNG</div>
+            <div class="info-item">
+                <span class="info-label">Ngân hàng:</span> {{ ngan_hang }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Số tài khoản:</span> {{ so_tai_khoan }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Chủ tài khoản:</span> {{ chu_tai_khoan }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Nội dung chuyển khoản:</span> Thanh toán HD {{ ma_hop_dong }} - {{ ten_khach_hang }}
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Hóa đơn này có giá trị thanh toán trong vòng 30 ngày kể từ ngày lập.</p>
+            <p>Mọi thắc mắc vui lòng liên hệ: {{ sdt_cong_ty }} hoặc {{ email_cong_ty }}</p>
+        </div>
+    </div>
+</body>
+</html>

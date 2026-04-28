@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÁO CÁO TỔNG HỢP</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 2px solid #2e7d32;
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 0;
+        }
+        .report-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 180px;
+        }
+        .section {
+            margin: 25px 0;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 15px;
+            color: #1565c0;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #e8f5e8;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .recommendation {
+            background-color: #e3f2fd;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .footer {
+            margin-top: 30px;
+            font-style: italic;
+            text-align: center;
+            color: #666;
+        }
+        .company-info {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+        .metric-card {
+            display: inline-block;
+            width: 48%;
+            margin: 5px 1%;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="company-info">
+            <h2>CÔNG TY TNHH QUẢN LÝ KHO LƯU TRỮ</h2>
+            <p>BÁO CÁO TỔNG HỢP {{ loai_bao_cao | upper }}</p>
+        </div>
+
+        <div class="header">
+            <h1>BÁO CÁO TỔNG HỢP</h1>
+            <p>{{ ngay_bat_dau }} - {{ ngay_ket_thuc }}</p>
+        </div>
+        
+        <div class="report-info">
+            <div>
+                <div class="info-item">
+                    <span class="info-label">Loại báo cáo:</span> {{ loai_bao_cao }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ngày sinh:</span> {{ ngay_sinh }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Người tạo:</span> {{ nguoi_tao }}
+                </div>
+            </div>
+            <div>
+                <div class="info-item">
+                    <span class="info-label">Tổng khách hàng:</span> {{ tong_khach_hang }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tổng kho:</span> {{ tong_kho }}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tổng hợp đồng:</span> {{ tong_hop_dong }}
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">I. THỐNG KÊ KHÁCH HÀNG</div>
+            <div class="metric-card">
+                <div class="metric-value">{{ khach_hang.tong }}</div>
+                <div class="metric-label">Tổng số khách hàng</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ khach_hang.hoat_dong }}</div>
+                <div class="metric-label">Khách hàng hoạt động</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ khach_hang.khong_hoat_dong }}</div>
+                <div class="metric-label">Khách hàng không hoạt động</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">II. THỐNG KÊ KHO HÀNG</div>
+            <div class="metric-card">
+                <div class="metric-value">{{ kho.tong }}</div>
+                <div class="metric-label">Tổng số kho</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ kho.hoat_dong }}</div>
+                <div class="metric-label">Kho đang hoạt động</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ kho.tong_dien_tich | number_format }} m²</div>
+                <div class="metric-label">Tổng diện tích</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ kho.tong_suc_chua | number_format }} m³</div>
+                <div class="metric-label">Tổng sức chứa</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ kho.avg_fill_rate | round(1) }}%</div>
+                <div class="metric-label">Tỷ lệ lấp đầy trung bình</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">III. THỐNG KÊ HỢP ĐỒNG</div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hop_dong.tong }}</div>
+                <div class="metric-label">Tổng số hợp đồng</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hop_dong.dang_hieu_luc }}</div>
+                <div class="metric-label">Hợp đồng đang hiệu lực</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hop_dong.sap_het_han }}</div>
+                <div class="metric-label">Hợp đồng sắp hết hạn</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hop_dong.tong_doanh_thu | number_format }} ₫</div>
+                <div class="metric-label">Tổng doanh thu</div>
+            </div>
+            
+            {% if hop_dong.theo_trang_thai %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                        <th>Tỷ lệ (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trang_thai, so_luong in hop_dong.theo_trang_thai.items() %}
+                    <tr>
+                        <td>{{ trang_thai | capitalize }}</td>
+                        <td>{{ so_luong }}</td>
+                        <td>{{ (so_luong / hop_dong.tong * 100) | round(1) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <div class="section-title">IV. THỐNG KÊ HÀNG HÓA</div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hang_hoa.tong_mat_hang }}</div>
+                <div class="metric-label">Tổng số mặt hàng</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hang_hoa.trong_kho }}</div>
+                <div class="metric-label">Mặt hàng trong kho</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ hang_hoa.tong_gia_tri | number_format }} ₫</div>
+                <div class="metric-label">Tổng giá trị hàng hóa</div>
+            </div>
+            
+            {% if hang_hoa.theo_loai %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loại hàng hóa</th>
+                        <th>Số lượng</th>
+                        <th>Giá trị</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loai, thong_ke in hang_hoa.theo_loai.items() %}
+                    <tr>
+                        <td>{{ loai | capitalize }}</td>
+                        <td>{{ thong_ke.so_luong }}</td>
+                        <td>{{ thong_ke.gia_tri | number_format }} ₫</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <div class="section-title">V. DOANH THU & TÀI CHÍNH</div>
+            <div class="metric-card">
+                <div class="metric-value">{{ doanh_thu.thang_nay | number_format }} ₫</div>
+                <div class="metric-label">Doanh thu tháng này</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ doanh_thu.nam_nay | number_format }} ₫</div>
+                <div class="metric-label">Doanh thu năm nay (dự kiến)</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">VI. CẢNH BÁO & RỦI RO</div>
+            {% if canh_bao.hang_sap_het > 0 %}
+            <div class="highlight">
+                ⚠️ <strong>Hàng sắp hết:</strong> {{ canh_bao.hang_sap_het }} mặt hàng cần nhập thêm
+            </div>
+            {% endif %}
+            
+            {% if canh_bao.canh_bao_nghiem_trong > 0 %}
+            <div class="highlight">
+                ⚠️ <strong>Cảnh báo nghiêm trọng:</strong> {{ canh_bao.canh_bao_nghiem_trong }} vấn đề cần xử lý ngay
+            </div>
+            {% endif %}
+            
+            {% if canh_bao.hop_dong_sap_het_han > 0 %}
+            <div class="highlight">
+                ⚠️ <strong>Hợp đồng sắp hết hạn:</strong> {{ canh_bao.hop_dong_sap_het_han }} hợp đồng cần liên hệ gia hạn
+            </div>
+            {% endif %}
+            
+            {% if canh_bao.kho_gan_day %}
+            <div class="highlight">
+                ⚠️ <strong>Kho gần đầy:</strong> Tỷ lệ lấp đầy trung bình {{ kho.avg_fill_rate | round(1) }}% - Cần mở rộng hoặc marketing
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <div class="section-title">VII. KHUYẾN NGHỊ</div>
+            {% for khuyen_nghi in khuyen_nghi_list %}
+            <div class="recommendation">
+                💡 {{ khuyen_nghi }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="footer">
+            <p>Báo cáo này được tạo tự động từ hệ thống quản lý kho lưu trữ.</p>
+            <p>Liên hệ IT Support nếu có thắc mắc về dữ liệu.</p>
+        </div>
+    </div>
+</body>
+</html>

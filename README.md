@@ -30,5 +30,10 @@ pip install -r requirements.txt
 
 ## Chạy chương trình
 ```bash
-python src/main.py
+python main.py
+```
+
+Hoặc:
+```bash
+python src/main_app.py
 ```

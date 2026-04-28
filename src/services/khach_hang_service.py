@@ -234,8 +234,11 @@ class KhachHangService:
         """
         session = self._get_session()
         try:
-            # Find customer
-            khach_hang = self.get_by_id(ma_khach_hang)
+            # Find customer within the same session (not via get_by_id to avoid detached object)
+            khach_hang = session.query(KhachHang).filter(
+                KhachHang.ma_khach_hang == ma_khach_hang
+            ).first()
+            
             if not khach_hang:
                 return False
             

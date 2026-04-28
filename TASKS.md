@@ -16,7 +16,7 @@
 | 🟠 **P1** | Phase 4: Warehouse Management (Kho) | ✅ Complete | `v0.4-kho` |
 | 🟡 **P2** | Phase 5: Contract Management (Hợp đồng) | ✅ Complete | `v0.5-hop-dong` |
 | 🟡 **P2** | Phase 6: Goods Management (Hàng hóa) | ✅ Complete | `v0.6-hang-hoa` |
-| 🟢 **P3** | Phase 7: Payment Management (Thanh toán) | ⚪ Not Started | `v0.7-thanh-toan` |
+| 🟢 **P3** | Phase 7: Payment Management (Thanh toán) | ✅ Hoàn thành | `v0.7-thanh-toan` |
 | 🟢 **P3** | Phase 8: Reporting & PDF (Báo cáo) | ⚪ Not Started | `v0.8-bao-cao` |
 | 🔵 **P4** | Phase 9: Authentication & Authorization | ✅ Complete | `v0.9-auth` |
 | 🔵 **P4** | Phase 10: Testing & Polish | ⚪ Not Started | `v1.0-release` |

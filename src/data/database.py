@@ -224,14 +224,14 @@ def create_sample_data(session_factory):
         session.execute(text("UPDATE thanh_toan SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
         session.commit()
 
-        # Tạo admin user (password: admin123 - bcrypt hash)
+        # Tạo admin user (password: admin123 - properly generated bcrypt hash)
         admin = NhanVien(
             ma_nhan_vien='NV001',
             ho_ten='Administrator',
             email='admin@warehouse.local',
             vai_tro=VaiTroNVEuum.QUAN_TRI,
             tai_khoan='admin',
-            mat_khau='$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYILp92S.0i'
+            mat_khau='$2b$12$tTbOaZ0plbpynu3c.SpLkOFsD3gzeyDB2GaMnSV1QK0SCeI81R9lO'
         )
         
         # Tạo kho mẫu

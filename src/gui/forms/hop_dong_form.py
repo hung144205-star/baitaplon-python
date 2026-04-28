@@ -361,12 +361,9 @@ class HopDongForm(QDialog):
                 self.khach_hang_selector.addItem(display_text, kh.ma_khach_hang)
             
             # Load available positions
-            self.available_vi_tris = self.vi_tri_service.get_available()
-            # Filter only available positions
-            self.available_vi_tris = [
-                vt for vt in self.available_vi_tris 
-                if str(vt.trang_thai) == 'trong'
-            ]
+            # Get all vi tri and filter by status in Python to ensure compatibility
+            all_vi_tris = self.vi_tri_service.get_all(limit=1000)
+            self.available_vi_tris = [vt for vt in all_vi_tris if str(vt.trang_thai) == 'trong']
             
             self.vi_tri_selector.clear()
             self.vi_tri_selector.addItem("-- Chọn vị trí (trống) --", None)

@@ -117,6 +117,23 @@ class ThanhToanService:
             'ngay_thanh_toan': ngay_thanh_toan
         })
     
+    def delete(self, ma_thanh_toan: str) -> bool:
+        """Delete payment (permanent delete)"""
+        payment = self.db.query(ThanhToan).filter(
+            ThanhToan.ma_thanh_toan == ma_thanh_toan
+        ).first()
+        
+        if not payment:
+            raise ValueError("Không tìm thấy thanh toán")
+        
+        self.db.delete(payment)
+        self.db.commit()
+        return True
+    
+    def get_all(self) -> List[ThanhToan]:
+        """Get all payments"""
+        return self.db.query(ThanhToan).all()
+    
     def get_tong_da_thanh_toan(self, ma_hop_dong: str) -> float:
         """Get total paid amount"""
         payments = self.get_by_hop_dong(ma_hop_dong)

@@ -9,6 +9,7 @@ from .dashboard_view import DashboardView
 from .hop_dong_view import HopDongView
 from .hop_dong_detail_view import HopDongDetailView, HopDongDetailWidget
 from .hang_hoa_view import HangHoaView
+from .thanh_toan_view import ThanhToanView
 
 __all__ = [
     # Customer
@@ -28,4 +29,6 @@ __all__ = [
     'HopDongDetailWidget',
     # Goods
     'HangHoaView',
+    # Payment
+    'ThanhToanView',
 ]

@@ -9,6 +9,7 @@ from .phieu_nhap_form import PhieuNhapForm
 from .phieu_xuat_form import PhieuXuatForm
 from .hang_hoa_form import HangHoaForm
 from .khach_hang_form import KhachHangForm
+from .thanh_toan_form import ThanhToanForm
 
 __all__ = [
     'KhoForm',
@@ -18,4 +19,5 @@ __all__ = [
     'PhieuXuatForm',
     'HangHoaForm',
     'KhachHangForm',
+    'ThanhToanForm',
 ]

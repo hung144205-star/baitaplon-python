@@ -915,10 +915,13 @@
 - [x] Auth Middleware for GUI integration
 
 ### 9.4 User Management
-- [ ] CRUD for employees
-- [ ] Change password
-- [ ] Role assignment
-- [ ] Activity log
+- [x] CRUD for employees
+- [x] Change password
+- [x] Role assignment
+- [x] Activity log
+- [x] User Service implementation
+- [x] User Form GUI
+- [x] User View GUI
 
 ### ✅ Phase 9 Deliverables:
 - [ ] Login system
@@ -1003,7 +1006,7 @@ Progress: ████████████████████ 100%
 | Phase 6: Hàng hóa | 25 | 25 | ██████████ 100% |
 | Phase 7: Thanh toán | 25 | 25 | ██████████ 100% |
 | Phase 8: PDF Generation | 20 | 12 | ██████░░░░ 60% |
-| Phase 9: Auth | 20 | 14 | ███████░░░ 70% |
+| Phase 9: Auth | 20 | 18 | █████████░░ 90% |
 | Phase 10: Testing | 25 | 0 | ░░░░░░░░░░ 0% |
 
 ---

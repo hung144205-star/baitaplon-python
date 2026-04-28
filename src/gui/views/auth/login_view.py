@@ -41,14 +41,12 @@ class LoginView(QWidget):
         self.setWindowTitle("🔐 Đăng nhập hệ thống")
         self.setFixedSize(400, 500)
         
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(40, 40, 40, 40)
-        layout.setSpacing(24)
+        # Main layout
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(40, 40, 40, 40)
+        main_layout.setSpacing(24)
         
         # Logo/Title
-        title_container = QHBoxLayout()
-        title_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
         title_label = QLabel("QUẢN LÝ KHO LƯU TRỮ")
         title_label.setStyleSheet("""
             QLabel {
@@ -58,8 +56,8 @@ class LoginView(QWidget):
                 margin-bottom: 8px;
             }
         """)
-        title_container.addWidget(title_label)
-        layout.addLayout(title_container)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(title_label)
         
         subtitle_label = QLabel("Đăng nhập để tiếp tục")
         subtitle_label.setStyleSheet("""
@@ -69,7 +67,8 @@ class LoginView(QWidget):
                 margin-bottom: 32px;
             }
         """)
-        layout.addWidget(subtitle_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(subtitle_label)
         
         # Login form container
         form_container = QFrame()
@@ -81,7 +80,8 @@ class LoginView(QWidget):
                 border: 1px solid #e0e0e0;
             }
         """)
-        form_layout = QVBoxLayout(form_container)
+        
+        form_layout = QVBoxLayout()
         form_layout.setSpacing(20)
         
         # Username field
@@ -160,7 +160,8 @@ class LoginView(QWidget):
         
         form_layout.addLayout(options_layout)
         
-        layout.addWidget(form_container)
+        form_container.setLayout(form_layout)
+        main_layout.addWidget(form_container)
         
         # Login button
         self.login_button = QPushButton("🔐 Đăng nhập")
@@ -182,7 +183,7 @@ class LoginView(QWidget):
                 background-color: #0d47a1;
             }
         """)
-        layout.addWidget(self.login_button)
+        main_layout.addWidget(self.login_button)
         
         # Cancel button
         self.cancel_button = QPushButton("❌ Hủy")
@@ -200,9 +201,12 @@ class LoginView(QWidget):
                 background-color: #eeeeee;
             }
         """)
-        layout.addWidget(self.cancel_button)
+        main_layout.addWidget(self.cancel_button)
         
-        layout.addStretch()
+        main_layout.addStretch()
+        
+        # Set layout
+        self.setLayout(main_layout)
     
     def setup_connections(self):
         """Setup signal connections"""

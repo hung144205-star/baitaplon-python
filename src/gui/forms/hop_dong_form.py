@@ -361,7 +361,7 @@ class HopDongForm(QDialog):
                 self.khach_hang_selector.addItem(display_text, kh.ma_khach_hang)
             
             # Load available positions
-            self.available_vi_tris = self.vi_tri_service.get_all(limit=1000)
+            self.available_vi_tris = self.vi_tri_service.get_available()
             # Filter only available positions
             self.available_vi_tris = [
                 vt for vt in self.available_vi_tris 

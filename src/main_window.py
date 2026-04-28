@@ -200,8 +200,25 @@ class MainWindow(QMainWindow):
         print("✅ Navigation panel setup complete")
     
     def _setup_module_placeholders_in_nav_panel(self):
-        """Setup placeholder widgets in navigation panel's stacked widget"""
+        """Setup actual view widgets in navigation panel's stacked widget"""
+        from src.gui.views import (
+            DashboardView,
+            KhachHangView,
+            KhoView,
+            HopDongView,
+            HangHoaView
+        )
+        
         stacked_widget = self.nav_panel.stacked_widget
+        
+        # Mapping from module key to actual view class
+        module_views = {
+            "dashboard": DashboardView,
+            "ql_khach_hang": KhachHangView,
+            "ql_kho": KhoView,
+            "ql_hop_dong": HopDongView,
+            "ql_hang_hoa": HangHoaView,
+        }
         
         modules = [
             ("dashboard", "Dashboard"),
@@ -214,19 +231,27 @@ class MainWindow(QMainWindow):
         ]
         
         for key, title in modules:
-            placeholder = QTextEdit()
-            placeholder.setReadOnly(True)
-            placeholder.setHtml(f"""
-                <div style="text-align: center; padding: 100px; font-size: 24px; color: #757575;">
-                    <h1>{title}</h1>
-                    <p>Module đang được phát triển...</p>
-                    <p style="font-size: 16px; margin-top: 20px;">
-                        Phase 2 - Application Framework
-                    </p>
-                </div>
-            """)
-            stacked_widget.addWidget(placeholder)
-            setattr(self, f"widget_{key}", placeholder)
+            if key in module_views:
+                # Use actual view
+                view_class = module_views[key]
+                view_widget = view_class()
+                stacked_widget.addWidget(view_widget)
+                setattr(self, f"widget_{key}", view_widget)
+            else:
+                # Placeholder for modules without views yet
+                placeholder = QTextEdit()
+                placeholder.setReadOnly(True)
+                placeholder.setHtml(f"""
+                    <div style="text-align: center; padding: 100px; font-size: 24px; color: #757575;">
+                        <h1>{title}</h1>
+                        <p>Module đang được phát triển...</p>
+                        <p style="font-size: 16px; margin-top: 20px;">
+                            Sẽ sớm ra mắt
+                        </p>
+                    </div>
+                """)
+                stacked_widget.addWidget(placeholder)
+                setattr(self, f"widget_{key}", placeholder)
         
         # Connect navigation manager to update status bar
         self.nav_manager.view_changed.connect(self._on_navigation_changed)

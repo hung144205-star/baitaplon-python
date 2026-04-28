@@ -70,9 +70,16 @@ class MainApplication(QMainWindow):
         login_widget = LoginView()
         login_widget.login_successful.connect(self._on_login_successful)
         login_widget.login_cancelled.connect(self._on_login_cancelled)
-        
+
+        # Center login view within the main window
+        container = QWidget()
+        container_layout = QVBoxLayout(container)
+        container_layout.setContentsMargins(0, 0, 0, 0)
+        container_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        container_layout.addWidget(login_widget)
+
         # Set as central widget
-        self.setCentralWidget(login_widget)
+        self.setCentralWidget(container)
         
         # Update window title
         self.setWindowTitle("🔐 Đăng nhập - Quản Lý Kho Lưu Trữ")

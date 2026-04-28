@@ -30,10 +30,10 @@ class NhanVien(BaseModel):
     ho_ten = Column(String(200), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     so_dien_thoai = Column(String(20))
-    vai_tro = Column(Enum(VaiTroNVEuum), nullable=False)
+    vai_tro = Column(Enum(VaiTroNVEuum, values_callable=lambda x: [e.value for e in x], native_enum=False), nullable=False)
     tai_khoan = Column(String(50), unique=True, nullable=False)
     mat_khau = Column(String(255), nullable=False)  # bcrypt hash
-    trang_thai = Column(Enum(TrangThaiNhanVienEnum), nullable=False, default=TrangThaiNhanVienEnum.HOAT_DONG)
+    trang_thai = Column(Enum(TrangThaiNhanVienEnum, values_callable=lambda x: [e.value for e in x], native_enum=False), nullable=False, default=TrangThaiNhanVienEnum.HOAT_DONG)
     lan_dang_nhap_cuoi = Column(String(50))
     
     def __repr__(self):

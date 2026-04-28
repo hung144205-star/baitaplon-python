@@ -32,14 +32,21 @@ class ThanhToan(BaseModel):
     ma_hop_dong = Column(String(20), ForeignKey('hop_dong.ma_hop_dong'), nullable=False)
     
     # Fields
-    loai_phi = Column(Enum(LoaiPhiEnum), nullable=False)
+    loai_phi = Column(
+        Enum(LoaiPhiEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+    )
     so_tien = Column(Float, nullable=False)
     ky_thanh_toan = Column(String(20))
     ngay_den_han = Column(Date, nullable=False)
     ngay_thanh_toan = Column(Date)
     phuong_thuc = Column(String(20), nullable=False)
     so_giao_dich = Column(String(50))
-    trang_thai = Column(Enum(TrangThaiTTEnum), nullable=False, default=TrangThaiTTEnum.CHUA_THANH_TOAN)
+    trang_thai = Column(
+        Enum(TrangThaiTTEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+        default=TrangThaiTTEnum.CHUA_THANH_TOAN,
+    )
     phi_phat = Column(Float, nullable=False, default=0)
     ghi_chu = Column(Text)
     nguoi_thu = Column(String(100))

@@ -39,7 +39,7 @@ class LoginView(QWidget):
     def setup_ui(self):
         """Setup UI"""
         self.setWindowTitle("🔐 Đăng nhập hệ thống")
-        self.setFixedSize(400, 500)
+        self.setFixedSize(420, 700)
         
         # Container stylesheet
         self.setStyleSheet("""

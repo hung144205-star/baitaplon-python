@@ -26,7 +26,11 @@ class Kho(BaseModel):
     dien_tich = Column(Float, nullable=False)
     suc_chua = Column(Float, nullable=False)
     da_su_dung = Column(Float, nullable=False, default=0)
-    trang_thai = Column(Enum(TrangThaiKhoEnum), nullable=False, default=TrangThaiKhoEnum.HOAT_DONG)
+    trang_thai = Column(
+        Enum(TrangThaiKhoEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+        default=TrangThaiKhoEnum.HOAT_DONG,
+    )
     
     @property
     def ty_le_lap_day(self):

@@ -5,8 +5,9 @@ Khởi tạo database với SQLAlchemy models
 Hệ thống Quản lý Dịch vụ Cho thuê Kho Lưu trữ Hàng Hóa
 Nhóm 12 - Lập trình Python
 """
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, text, or_
+from sqlalchemy.orm import sessionmaker, Session as OrmSession
+from typing import Callable
 import os
 import sys
 
@@ -67,9 +68,9 @@ def init_db(db_path: str = None, echo: bool = False) -> tuple:
     
     return engine, Session
 
-def get_session(Session) -> Session:
+def get_session(session_factory: Callable[[], OrmSession]) -> OrmSession:
     """Tạo session mới để làm việc với database"""
-    return Session()
+    return session_factory()
 
 def create_indexes(engine):
     """Tạo indexes cho database"""
@@ -205,13 +206,24 @@ def create_views(engine):
     
     print("✅ Views đã được tạo!")
 
-def create_sample_data(Session):
+def create_sample_data(session_factory):
     """Tạo dữ liệu mẫu"""
     print("📊 Đang tạo dữ liệu mẫu...")
     
-    session = get_session(Session)
+    session = get_session(session_factory)
     
     try:
+        session.execute(text("UPDATE nhan_vien SET vai_tro = LOWER(vai_tro) WHERE vai_tro IS NOT NULL"))
+        session.execute(text("UPDATE nhan_vien SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.execute(text("UPDATE khach_hang SET loai_khach = LOWER(loai_khach) WHERE loai_khach IS NOT NULL"))
+        session.execute(text("UPDATE khach_hang SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.execute(text("UPDATE kho SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.execute(text("UPDATE vi_tri SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.execute(text("UPDATE hop_dong SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.execute(text("UPDATE thanh_toan SET loai_phi = LOWER(loai_phi) WHERE loai_phi IS NOT NULL"))
+        session.execute(text("UPDATE thanh_toan SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
+        session.commit()
+
         # Tạo admin user (password: admin123 - bcrypt hash)
         admin = NhanVien(
             ma_nhan_vien='NV001',
@@ -262,12 +274,37 @@ def create_sample_data(Session):
             dia_chi='456 Đường ABC, Quận 1, TP.HCM'
         )
         
-        # Thêm vào session
-        session.add(admin)
-        session.add(kho1)
-        session.add(vi_tri1)
-        session.add(vi_tri2)
-        session.add(khach_hang1)
+        # Thêm vào session nếu chưa tồn tại
+        admin_exists = session.query(NhanVien).filter(
+            or_(
+                NhanVien.ma_nhan_vien == admin.ma_nhan_vien,
+                NhanVien.email == admin.email,
+                NhanVien.tai_khoan == admin.tai_khoan
+            )
+        ).first()
+        if not admin_exists:
+            session.add(admin)
+
+        kho_exists = session.query(Kho).filter(Kho.ma_kho == kho1.ma_kho).first()
+        if not kho_exists:
+            session.add(kho1)
+
+        vi_tri1_exists = session.query(ViTri).filter(ViTri.ma_vi_tri == vi_tri1.ma_vi_tri).first()
+        if not vi_tri1_exists:
+            session.add(vi_tri1)
+
+        vi_tri2_exists = session.query(ViTri).filter(ViTri.ma_vi_tri == vi_tri2.ma_vi_tri).first()
+        if not vi_tri2_exists:
+            session.add(vi_tri2)
+
+        khach_hang_exists = session.query(KhachHang).filter(
+            or_(
+                KhachHang.ma_khach_hang == khach_hang1.ma_khach_hang,
+                KhachHang.email == khach_hang1.email
+            )
+        ).first()
+        if not khach_hang_exists:
+            session.add(khach_hang1)
         
         # Commit
         session.commit()

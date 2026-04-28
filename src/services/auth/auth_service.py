@@ -8,6 +8,11 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 from enum import Enum
 
+try:
+    import bcrypt
+except ImportError:
+    bcrypt = None
+
 from src.models import NhanVien, TrangThaiNhanVienEnum
 from src.database import get_session
 
@@ -56,10 +61,11 @@ class AuthService:
         """
         session = get_session()
         try:
-            # Tìm nhân viên theo mã nhân viên hoặc email
+            # Tìm nhân viên theo mã nhân viên, email hoặc tài khoản
             user = session.query(NhanVien).filter(
                 (NhanVien.ma_nhan_vien == username) | 
-                (NhanVien.email == username)
+                (NhanVien.email == username) |
+                (NhanVien.tai_khoan == username)
             ).first()
             
             if not user:
@@ -79,9 +85,11 @@ class AuthService:
                     'message': 'Tài khoản đã bị vô hiệu hóa'
                 }
             
-            # Kiểm tra số lần đăng nhập sai
-            if user.so_lan_sai >= self.max_failed_attempts:
-                if user.thoi_gian_khoa and datetime.now() < user.thoi_gian_khoa + self.lockout_duration:
+            # Kiểm tra số lần đăng nhập sai (nếu có các cột tương ứng)
+            failed_attempts = getattr(user, 'so_lan_sai', 0) or 0
+            lock_time = getattr(user, 'thoi_gian_khoa', None)
+            if failed_attempts >= self.max_failed_attempts:
+                if lock_time and datetime.now() < lock_time + self.lockout_duration:
                     return {
                         'status': AuthStatus.ACCOUNT_LOCKED,
                         'user': None,
@@ -90,15 +98,18 @@ class AuthService:
                     }
                 else:
                     # Reset lockout sau thời gian khóa
-                    user.so_lan_sai = 0
-                    user.thoi_gian_khoa = None
+                    if hasattr(user, 'so_lan_sai'):
+                        user.so_lan_sai = 0
+                    if hasattr(user, 'thoi_gian_khoa'):
+                        user.thoi_gian_khoa = None
             
             # Xác minh mật khẩu
             if not self._verify_password(password, user.mat_khau):
                 # Cập nhật số lần đăng nhập sai
-                user.so_lan_sai += 1
-                if user.so_lan_sai >= self.max_failed_attempts:
-                    user.thoi_gian_khoa = datetime.now()
+                if hasattr(user, 'so_lan_sai'):
+                    user.so_lan_sai = failed_attempts + 1
+                    if user.so_lan_sai >= self.max_failed_attempts and hasattr(user, 'thoi_gian_khoa'):
+                        user.thoi_gian_khoa = datetime.now()
                 
                 session.commit()
                 return {
@@ -109,9 +120,13 @@ class AuthService:
                 }
             
             # Reset số lần đăng nhập sai
-            user.so_lan_sai = 0
-            user.thoi_gian_khoa = None
-            user.thoi_gian_dang_nhap_cuoi = datetime.now()
+            if hasattr(user, 'so_lan_sai'):
+                user.so_lan_sai = 0
+            if hasattr(user, 'thoi_gian_khoa'):
+                user.thoi_gian_khoa = None
+            user.lan_dang_nhap_cuoi = datetime.now().isoformat()
+            if self._password_needs_rehash(user.mat_khau):
+                user.mat_khau = self.hash_password(password)
             session.commit()
             
             # Tạo session token
@@ -125,7 +140,7 @@ class AuthService:
                     'email': user.email,
                     'vai_tro': user.vai_tro,
                     'trang_thai': user.trang_thai,
-                    'thoi_gian_dang_nhap_cuoi': user.thoi_gian_dang_nhap_cuoi.isoformat()
+                    'lan_dang_nhap_cuoi': user.lan_dang_nhap_cuoi
                 },
                 'session_token': session_token,
                 'message': 'Đăng nhập thành công'
@@ -210,10 +225,21 @@ class AuthService:
         Returns:
             str: Mật khẩu đã mã hóa
         """
-        # Sử dụng SHA-256 với salt
+        if bcrypt is not None:
+            hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
+            return hashed.decode()
+        # Fallback SHA-256 với salt nếu bcrypt chưa cài
         salt = secrets.token_hex(32)
         pwdhash = hashlib.sha256(salt.encode() + password.encode()).hexdigest()
         return f"{salt}${pwdhash}"
+
+    def _is_bcrypt_hash(self, hashed_password: str) -> bool:
+        return hashed_password.startswith(('$2a$', '$2b$', '$2y$'))
+
+    def _password_needs_rehash(self, hashed_password: str) -> bool:
+        if bcrypt is None:
+            return False
+        return not self._is_bcrypt_hash(hashed_password)
     
     def _verify_password(self, password: str, hashed_password: str) -> bool:
         """
@@ -226,11 +252,22 @@ class AuthService:
         Returns:
             bool: True nếu khớp
         """
-        try:
-            salt, pwdhash = hashed_password.split('$')
-            return pwdhash == hashlib.sha256(salt.encode() + password.encode()).hexdigest()
-        except ValueError:
+        if not hashed_password:
             return False
+        if self._is_bcrypt_hash(hashed_password):
+            if bcrypt is None:
+                return False
+            try:
+                return bcrypt.checkpw(password.encode(), hashed_password.encode())
+            except ValueError:
+                return False
+        if '$' in hashed_password:
+            try:
+                salt, pwdhash = hashed_password.split('$', 1)
+                return pwdhash == hashlib.sha256(salt.encode() + password.encode()).hexdigest()
+            except ValueError:
+                return False
+        return secrets.compare_digest(password, hashed_password)
     
     def _generate_session_token(self) -> str:
         """

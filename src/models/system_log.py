@@ -27,7 +27,10 @@ class SystemLog(BaseModel):
     
     # Fields
     thoi_gian = Column(DateTime, nullable=False)
-    hanh_dong = Column(Enum(HanhDongLogEnum), nullable=False)
+    hanh_dong = Column(
+        Enum(HanhDongLogEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+    )
     ban_ghi = Column(String(100), nullable=False)
     gia_tri_cu = Column(Text)  # JSON
     gia_tri_moi = Column(Text)  # JSON

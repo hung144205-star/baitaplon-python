@@ -33,7 +33,11 @@ class HopDong(BaseModel):
     tien_coc = Column(Float, nullable=False, default=0)
     phuong_thuc_thanh_toan = Column(String(20), default='hang_thang')
     dieu_khoan = Column(Text)
-    trang_thai = Column(Enum(TrangThaiHDEnum), nullable=False, default=TrangThaiHDEnum.HIEU_LUC)
+    trang_thai = Column(
+        Enum(TrangThaiHDEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+        default=TrangThaiHDEnum.HIEU_LUC,
+    )
     ly_do_cham_dut = Column(Text)
     ngay_cham_dut = Column(Date)
     

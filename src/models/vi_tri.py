@@ -31,7 +31,11 @@ class ViTri(BaseModel):
     dien_tich = Column(Float, nullable=False)
     gia_thue = Column(Float, nullable=False)
     suc_chua = Column(Float)
-    trang_thai = Column(Enum(TrangThaiViTriEnum), nullable=False, default=TrangThaiViTriEnum.TRONG)
+    trang_thai = Column(
+        Enum(TrangThaiViTriEnum, values_callable=lambda x: [e.value for e in x], native_enum=False),
+        nullable=False,
+        default=TrangThaiViTriEnum.TRONG,
+    )
     
     # Relationships
     kho = relationship("Kho", back_populates="vi_tris")

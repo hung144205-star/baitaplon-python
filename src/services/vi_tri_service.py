@@ -194,7 +194,8 @@ class ViTriService:
         """
         session = self._get_session()
         try:
-            vi_tri = self.get_by_id(ma_vi_tri)
+            # Always get fresh object from current session
+            vi_tri = session.query(ViTri).filter(ViTri.ma_vi_tri == ma_vi_tri).first()
             if not vi_tri:
                 return None
             

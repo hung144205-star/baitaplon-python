@@ -18,7 +18,7 @@
 | 🟡 **P2** | Phase 6: Goods Management (Hàng hóa) | ✅ Complete | `v0.6-hang-hoa` |
 | 🟢 **P3** | Phase 7: Reporting & Analytics (Báo cáo) | ✅ Complete | `v0.7-report` |
 | 🟢 **P3** | Phase 8: PDF Generation | 🟡 In Progress | `v0.8-pdf` |
-| 🔵 **P4** | Phase 9: Authentication & Authorization | ⚪ Not Started | `v0.9-auth` |
+| 🔵 **P4** | Phase 9: Authentication & Authorization | ✅ Complete | `v0.9-auth` |
 | 🔵 **P4** | Phase 10: Testing & Polish | ⚪ Not Started | `v1.0-release` |
 
 ---
@@ -923,6 +923,12 @@
 - [x] User Form GUI
 - [x] User View GUI
 
+### 9.5 Tích hợp hệ thống
+- [x] Tích hợp Login View vào MainWindow: Thay thế giao diện chính bằng màn hình đăng nhập
+- [x] Session management: Quản lý phiên làm việc người dùng
+- [x] Auto-logout khi hết thời gian: Tự động đăng xuất sau 8 giờ không hoạt động
+- [x] Remember me functionality: Lưu thông tin đăng nhập
+
 ### ✅ Phase 9 Deliverables:
 - [ ] Login system
 - [ ] Role-based permissions
@@ -1006,7 +1012,7 @@ Progress: ████████████████████ 100%
 | Phase 6: Hàng hóa | 25 | 25 | ██████████ 100% |
 | Phase 7: Thanh toán | 25 | 25 | ██████████ 100% |
 | Phase 8: PDF Generation | 20 | 12 | ██████░░░░ 60% |
-| Phase 9: Auth | 20 | 18 | █████████░░ 90% |
+| Phase 9: Auth | 20 | 20 | ██████████ 100% |
 | Phase 10: Testing | 25 | 0 | ░░░░░░░░░░ 0% |
 
 ---

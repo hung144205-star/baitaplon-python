@@ -11,6 +11,13 @@ from PyQt6.QtGui import QPixmap, QFont
 
 from src.services.auth.auth_service import login, AuthStatus
 from src.gui.dialogs import MessageDialog
+import json
+import os
+
+# Configuration
+CONFIG_DIR = os.path.expanduser("~/.baitaplon")
+os.makedirs(CONFIG_DIR, exist_ok=True)
+REMEMBER_ME_FILE = os.path.join(CONFIG_DIR, "remember_me.json")
 
 
 class LoginView(QWidget):
@@ -26,6 +33,8 @@ class LoginView(QWidget):
         super().__init__(parent)
         self.setup_ui()
         self.setup_connections()
+        # Load remember me data
+        self.load_remember_me_data()
     
     def setup_ui(self):
         """Setup UI"""
@@ -221,6 +230,12 @@ class LoginView(QWidget):
         result = login(username, password)
         
         if result['status'] == AuthStatus.SUCCESS:
+            # Save remember me data if checkbox is checked
+            if self.remember_checkbox.isChecked():
+                self._save_remember_me_data(username)
+            else:
+                self._clear_remember_me_data()
+            
             self.login_successful.emit(result['user'])
         else:
             MessageDialog(
@@ -229,6 +244,45 @@ class LoginView(QWidget):
                 result['message'],
                 "error"
             ).exec()
+    
+    def _save_remember_me_data(self, username: str):
+        """Save remember me data to file"""
+        try:
+            data = {
+                'username': username,
+                'remember_me': True,
+                'timestamp': datetime.now().isoformat()
+            }
+            with open(REMEMBER_ME_FILE, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"Warning: Could not save remember me data: {e}")
+    
+    def _clear_remember_me_data(self):
+        """Clear remember me data"""
+        try:
+            if os.path.exists(REMEMBER_ME_FILE):
+                os.remove(REMEMBER_ME_FILE)
+        except Exception as e:
+            print(f"Warning: Could not clear remember me data: {e}")
+    
+    def load_remember_me_data(self):
+        """Load remember me data and populate username field"""
+        try:
+            if os.path.exists(REMEMBER_ME_FILE):
+                with open(REMEMBER_ME_FILE, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                # Check if data is still valid (not too old)
+                if data.get('remember_me', False):
+                    username = data.get('username', '')
+                    if username:
+                        self.username_input.setText(username)
+                        self.remember_checkbox.setChecked(True)
+                        return True
+        except Exception as e:
+            print(f"Warning: Could not load remember me data: {e}")
+        return False
     
     def _on_cancel_clicked(self):
         """Handle cancel button click"""

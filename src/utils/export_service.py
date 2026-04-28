@@ -78,7 +78,7 @@ class ExcelExporter:
                 'Hàng': vt.get('hang', ''),
                 'Tầng': vt.get('tang', 0),
                 'Diện Tích (m²)': vt.get('dien_tich', 0),
-                'Chiều Cao (m)': vt.get('chieu_cao', 0),
+                'Sức Chứa (m³)': vt.get('suc_chua', 0),
                 'Giá Thuê (₫/tháng)': vt.get('gia_thue', 0),
                 'Trạng Thái': vt.get('trang_thai_label', ''),
             }
@@ -142,7 +142,7 @@ class ExcelExporter:
                     'Hàng': vt.get('hang', ''),
                     'Tầng': vt.get('tang', 0),
                     'Diện Tích (m²)': vt.get('dien_tich', 0),
-                    'Chiều Cao (m)': vt.get('chieu_cao', 0),
+                    'Sức Chứa (m³)': vt.get('suc_chua', 0),
                     'Giá Thuê (₫/tháng)': vt.get('gia_thue', 0),
                     'Trạng Thái': vt.get('trang_thai_label', ''),
                 }

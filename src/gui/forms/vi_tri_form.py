@@ -211,13 +211,13 @@ class ViTriForm(QDialog):
         """)
         spec_layout.addRow("Diện tích:", self.dien_tich_input)
         
-        # Chiều cao
-        self.chieu_cao_input = QDoubleSpinBox()
-        self.chieu_cao_input.setRange(1, 50)
-        self.chieu_cao_input.setDecimals(2)
-        self.chieu_cao_input.setSuffix(" m")
-        self.chieu_cao_input.setValue(3.0)
-        self.chieu_cao_input.setStyleSheet("""
+        # Sức chứa
+        self.suc_chua_input = QDoubleSpinBox()
+        self.suc_chua_input.setRange(1, 1000)
+        self.suc_chua_input.setDecimals(2)
+        self.suc_chua_input.setSuffix(" m³")
+        self.suc_chua_input.setValue(30.0)
+        self.suc_chua_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;
                 border-radius: 4px;
@@ -227,7 +227,7 @@ class ViTriForm(QDialog):
                 border: 2px solid #1976d2;
             }
         """)
-        spec_layout.addRow("Chiều cao:", self.chieu_cao_input)
+        spec_layout.addRow("Sức chứa:", self.suc_chua_input)
         
         # Giá thuê
         self.gia_thue_input = QDoubleSpinBox()
@@ -391,7 +391,7 @@ class ViTriForm(QDialog):
         self.hang_input.setText(self.vi_tri.hang)
         self.tang_input.setValue(self.vi_tri.tang)
         self.dien_tich_input.setValue(self.vi_tri.dien_tich)
-        self.chieu_cao_input.setValue(self.vi_tri.chieu_cao)
+        self.suc_chua_input.setValue(self.vi_tri.suc_chua)
         self.gia_thue_input.setValue(self.vi_tri.gia_thue)
         
         # Set status
@@ -468,7 +468,7 @@ class ViTriForm(QDialog):
                 'hang': self.hang_input.text().strip().zfill(2),
                 'tang': self.tang_input.value(),
                 'dien_tich': self.dien_tich_input.value(),
-                'chieu_cao': self.chieu_cao_input.value(),
+                'suc_chua': self.suc_chua_input.value(),
                 'gia_thue': self.gia_thue_input.value(),
                 'trang_thai': self.trang_thai_input.currentData()
             }

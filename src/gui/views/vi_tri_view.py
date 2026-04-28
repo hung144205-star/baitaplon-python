@@ -407,7 +407,7 @@ class ViTriView(QWidget):
                         'hang': vt.hang,
                         'tang': vt.tang,
                         'dien_tich': vt.dien_tich,
-                        'chieu_cao': vt.chieu_cao,
+                        'suc_chua': vt.suc_chua,
                         'gia_thue': vt.gia_thue,
                         'trang_thai_label': self._get_trang_thai_label(vt.trang_thai),
                     })

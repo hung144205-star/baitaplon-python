@@ -54,7 +54,7 @@ II. THÔNG TIN VỊ TRÍ CHO THUÊ
   Mã vị trí: {hop_dong.ma_vi_tri}
   Địa chỉ: {vi_tri.khu_vuc if vi_tri else '[Area]'} - Hàng {vi_tri.hang if vi_tri else '[Row]'} - Tầng {vi_tri.tang if vi_tri else '[Floor]'}
   Diện tích: {vi_tri.dien_tich if vi_tri else 0:,.0f} m²
-  Sức chứa: {vi_tri.chieu_cao if vi_tri else 0:,.1f} m³
+  Sức chứa: {vi_tri.suc_chua if vi_tri else 0:,.1f} m³
 
 III. THỜI HẠN HỢP ĐỒNG
 

@@ -8,7 +8,7 @@ from .vi_tri import ViTri, TrangThaiViTriEnum
 from .hop_dong import HopDong, TrangThaiHDEnum
 from .hang_hoa import HangHoa
 from .thanh_toan import ThanhToan, LoaiPhiEnum, TrangThaiTTEnum
-from .nhan_vien import NhanVien, VaiTroNVEuum
+from .nhan_vien import NhanVien, VaiTroNVEuum, TrangThaiNhanVienEnum
 from .system_log import SystemLog, HanhDongLogEnum
 from .bao_cao import BaoCao
 
@@ -68,5 +68,6 @@ __all__ = [
     'LoaiPhiEnum',
     'TrangThaiTTEnum',
     'VaiTroNVEuum',
+    'TrangThaiNhanVienEnum',
     'HanhDongLogEnum',
 ]

@@ -12,6 +12,11 @@ class VaiTroNVEuum(enum.Enum):
     KHO = 'kho'
     KE_TOAN = 'ke_toan'
 
+class TrangThaiNhanVienEnum(enum.Enum):
+    """Trạng thái nhân viên"""
+    HOAT_DONG = 'hoat_dong'
+    NGUNG_HOAT_DONG = 'ngung_hoat_dong'
+
 class NhanVien(BaseModel):
     """
     Nhân viên hệ thống
@@ -28,7 +33,7 @@ class NhanVien(BaseModel):
     vai_tro = Column(Enum(VaiTroNVEuum), nullable=False)
     tai_khoan = Column(String(50), unique=True, nullable=False)
     mat_khau = Column(String(255), nullable=False)  # bcrypt hash
-    trang_thai = Column(String(20), nullable=False, default='hoat_dong')
+    trang_thai = Column(Enum(TrangThaiNhanVienEnum), nullable=False, default=TrangThaiNhanVienEnum.HOAT_DONG)
     lan_dang_nhap_cuoi = Column(String(50))
     
     def __repr__(self):

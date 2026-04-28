@@ -372,7 +372,7 @@ class ViTriView(QWidget):
         
         if confirmed:
             try:
-                success = self.vi_tri_service.delete_vi_tri(self.current_vi_tri.ma_vi_tri)
+                success = self.vi_tri_service.delete(self.current_vi_tri.ma_vi_tri)
                 if success:
                     MessageDialog.success(self, "Thành công", "Đã xóa vị trí thành công")
                     self.vi_tri_deleted.emit(self.current_vi_tri.ma_vi_tri)

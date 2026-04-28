@@ -16,10 +16,12 @@
 | 🟠 **P1** | Phase 4: Warehouse Management (Kho) | ✅ Complete | `v0.4-kho` |
 | 🟡 **P2** | Phase 5: Contract Management (Hợp đồng) | ✅ Complete | `v0.5-hop-dong` |
 | 🟡 **P2** | Phase 6: Goods Management (Hàng hóa) | ✅ Complete | `v0.6-hang-hoa` |
-| 🟢 **P3** | Phase 7: Reporting & Analytics (Báo cáo) | ✅ Complete | `v0.7-report` |
-| 🟢 **P3** | Phase 8: PDF Generation | 🟡 In Progress | `v0.8-pdf` |
+| 🟢 **P3** | Phase 7: Payment Management (Thanh toán) | ⚪ Not Started | `v0.7-thanh-toan` |
+| 🟢 **P3** | Phase 8: Reporting & PDF (Báo cáo) | ⚪ Not Started | `v0.8-bao-cao` |
 | 🔵 **P4** | Phase 9: Authentication & Authorization | ✅ Complete | `v0.9-auth` |
 | 🔵 **P4** | Phase 10: Testing & Polish | ⚪ Not Started | `v1.0-release` |
+| 🟣 **P4** | Phase 11: Settings (Cài đặt) | ⚪ Not Started | `v0.11-settings` |
+| 🟣 **P4** | Phase 12: Help (Trợ giúp) | ⚪ Not Started | `v0.12-help` |
 
 ---
 
@@ -730,52 +732,44 @@
 ## 🟢 PHASE 7: PAYMENT MANAGEMENT (THANH TOÁN)
 **Priority:** P3 (Medium)  
 **GitHub Tag:** `v0.7-thanh-toan`  
-**Status:** ✅ Complete
+**Status:** ⚪ Chưa bắt đầu (Service đã có, GUI chưa có)
 
 ### 7.1 Models & Services
-- [x] Tạo src/services/report_service.py (14.1 KB)
-  - [x] Dashboard statistics (get_dashboard_summary)
-  - [x] Customer stats (khach_hang)
-  - [x] Warehouse stats (kho)
-  - [x] Contract stats (hop_dong)
-  - [x] Goods stats (hang_hoa)
-  - [x] Revenue stats
-  - [x] Alert stats
-  - [x] Summary reports (generate_summary_report)
-  - [x] Export functions (export_summary_to_text)
-  - [x] Highlights & recommendations Refactor src/models/thanh_toan.py
-- [ ] Tạo src/services/thanh_toan_service.py
-  - [ ] create(data) → ThanhToan
-  - [ ] get_by_id(ma_thanh_toan) → ThanhToan
-  - [ ] get_by_contract(ma_hop_dong) → List[ThanhToan]
-  - [ ] get_overdue() → List[ThanhToan]
-  - [ ] record_payment(ma_thanh_toan, data) → bool
-  - [ ] calculate_late_fee(ma_thanh_toan) → float
-  - [ ] create_invoice(ma_hop_dong, loai_phi) → ThanhToan
-  - [ ] update(ma_thanh_toan, data) → ThanhToan
-  - [ ] delete(ma_thanh_toan) → bool
+- [x] Model: src/models/thanh_toan.py (đã có)
+- [x] Service: src/services/thanh_toan_service.py (đã có)
+  - [x] create(data) → ThanhToan
+  - [x] get_by_id(ma_thanh_toan) → ThanhToan
+  - [x] get_by_contract(ma_hop_dong) → List[ThanhToan]
+  - [x] get_overdue() → List[ThanhToan]
+  - [x] record_payment(ma_thanh_toan, data) → bool
+  - [x] calculate_late_fee(ma_thanh_toan) → float
+  - [x] create_invoice(ma_hop_dong, loai_phi) → ThanhToan
+  - [x] update(ma_thanh_toan, data) → ThanhToan
+  - [x] delete(ma_thanh_toan) → bool
 
 ### 7.2 GUI - View
 - [ ] Tạo src/gui/views/thanh_toan_view.py
-- [ ] Danh sách hóa đơn
-- [ ] Tab: Chưa thanh toán
-- [ ] Tab: Đã thanh toán
-- [ ] Tab: Quá hạn
-- [ ] Dashboard widget: Tổng công nợ
+  - [ ] Danh sách hóa đơn (QTableWidget)
+  - [ ] Columns: Mã, Hợp đồng, Khách hàng, Số tiền, Loại phí, Ngày thanh toán, Trạng thái
+  - [ ] Toolbar: Thêm, Sửa, Xóa, Refresh
+  - [ ] Search box
+  - [ ] Filter theo trạng thái (Chưa TT / Đã TT / Quá hạn)
+  - [ ] Filter theo khoảng ngày
+- [ ] Tạo Dashboard widget: Tổng công nợ
 
 ### 7.3 GUI - Form
 - [ ] Tạo src/gui/forms/thanh_toan_form.py
-- [ ] Payment form
-- [ ] Select payment method
-- [ ] Transaction number
-- [ ] Receipt printing
+  - [ ] Fields: Mã thanh toán, Hợp đồng, Loại phí, Số tiền, Ngày thanh toán, Phương thức, Ghi chú
+  - [ ] Form validation
+  - [ ] Auto-generate mã thanh toán
 
 ### 7.4 Features
 - [ ] Auto-generate invoice numbers
 - [ ] Late fee calculation (auto)
-- [ ] Payment reminders
+- [ ] Payment reminders (notification)
 - [ ] Recurring invoices
 - [ ] Payment history
+- [ ] Export to Excel
 
 ### 7.5 Reference UI
 - [ ] Review `stitch_ui_analysis_system/danh_muc_hoa_don/`
@@ -793,53 +787,48 @@
 ## 🟢 PHASE 8: REPORTING & PDF (BÁO CÁO)
 **Priority:** P3 (Medium)  
 **GitHub Tag:** `v0.8-bao-cao`  
-**Status:** 🟡 In Progress
+**Status:** ⚪ Chưa bắt đầu (Service đã có, GUI chưa có)
 
-### 8.1 PDF Generator
-- [x] Tạo src/services/pdf/ directory structure
-- [x] Create HTML templates for contracts
-- [x] Create HTML templates for invoices
-- [x] Create HTML templates for reports
-- [x] Implement PDFGenerationService framework
+### 8.1 Report Service
+- [x] src/services/report_service.py (đã có)
+  - [x] Dashboard statistics
+  - [x] Revenue stats
+  - [x] Summary reports
+  - [x] Export functions
+
+### 8.2 GUI - View
+- [ ] Tạo src/gui/views/bao_cao_view.py
+  - [ ] Select report type (ComboBox)
+  - [ ] Select date range (From/To date pickers)
+  - [ ] Preview report (QTextEdit)
+  - [ ] Toolbar: Xuất PDF, Xuất Excel, In, Refresh
+  - [ ] Report types:
+    - [ ] Báo cáo tổng hợp (summary)
+    - [ ] Báo cáo doanh thu (ngày/tháng/năm)
+    - [ ] Báo cáo tỷ lệ lấp đầy kho
+    - [ ] Báo cáo công nợ
+    - [ ] Báo cáo hợp đồng sắp hết hạn
+    - [ ] Báo cáo tồn kho
+    - [ ] Báo cáo khách hàng
+
+### 8.3 PDF Generator
+- [x] src/services/pdf/ directory structure (đã có)
+- [x] HTML templates for contracts (đã có)
+- [x] HTML templates for invoices (đã có)
+- [x] HTML templates for reports (đã có)
 - [ ] Setup ReportLab/WeasyPrint dependencies
 - [ ] Implement actual PDF conversion
 - [ ] Add Vietnamese font support
 - [ ] Add company logo
 
-### 8.2 Report Services
-- [x] Sử dụng ReportService hiện có
-- [x] Tích hợp PDF generation với ReportService
-- [ ] Tạo báo cáo doanh thu chi tiết
-- [ ] Tạo báo cáo tỷ lệ lấp đầy
-- [ ] Tạo báo cáo công nợ
-- [ ] Tạo báo cáo hợp đồng sắp hết hạn
-- [ ] Tạo báo cáo tồn kho
-
-### 8.3 GUI - Report Viewer
-- [ ] Tạo src/gui/views/bao_cao_view.py
-- [ ] Select report type
-- [ ] Select date range
-- [ ] Preview report
-- [ ] Export PDF
-- [ ] Export Excel
-
-### 8.4 Report Types
-- [x] Báo cáo tổng hợp (summary report)
-- [ ] Báo cáo doanh thu (ngày/tháng/năm)
-- [ ] Báo cáo tỷ lệ lấp đầy
-- [ ] Báo cáo công nợ
-- [ ] Báo cáo hợp đồng sắp hết hạn
-- [ ] Báo cáo tồn kho
-- [ ] Báo cáo khách hàng
-
-### 8.5 Reference UI
+### 8.4 Reference UI
 - [ ] Review `stitch_ui_analysis_system/bao_cao_trang_thai/`
 
 ### ✅ Phase 8 Deliverables:
-- [x] PDF generation framework
-- [x] HTML templates for all document types
-- [ ] Actual PDF conversion functionality
-- [ ] GUI integration
+- [ ] GUI xem báo cáo hoàn chỉnh
+- [ ] Multiple report types
+- [ ] PDF export
+- [ ] Excel export
 - [ ] **GitHub Release v0.8-bao-cao**
 
 
@@ -990,30 +979,112 @@
 
 ---
 
+## 🟣 PHASE 11: SETTINGS (CÀI ĐẶT)
+**Priority:** P4 (Low)  
+**GitHub Tag:** `v0.11-settings`  
+**Status:** ⚪ Chưa bắt đầu
+
+### 11.1 Settings View
+- [ ] Tạo src/gui/views/settings_view.py
+  - [ ] Tab: Thông tin công ty
+    - [ ] Tên công ty
+    - [ ] Địa chỉ
+    - [ ] Số điện thoại
+    - [ ] Email
+    - [ ] Mã số thuế
+  - [ ] Tab: Cấu hình hệ thống
+    - [ ] Thời gian session timeout
+    - [ ] Số ngày cảnh báo hợp đồng hết hạn
+    - [ ] Ngưỡng cảnh báo tồn kho thấp
+    - [ ] Phí trễ hạn mặc định (%)
+  - [ ] Tab: Quản lý người dùng
+    - [ ] Danh sách nhân viên
+    - [ ] Thêm/Sửa/Xóa nhân viên
+    - [ ] Phân quyền
+  - [ ] Tab: Sao lưu & Phục hồi
+    - [ ] Backup database
+    - [ ] Restore database
+
+### 11.2 Settings Service
+- [ ] Tạo src/services/settings_service.py
+  - [ ] get_settings() → dict
+  - [ ] update_settings(data) → bool
+  - [ ] backup_database() → str (file path)
+  - [ ] restore_database(file_path) → bool
+
+### 11.3 Features
+- [ ] Load settings on startup
+- [ ] Save settings to config file
+- [ ] Validate settings before save
+- [ ] Export/Import settings
+
+### ✅ Phase 11 Deliverables:
+- [ ] Settings GUI hoàn chỉnh
+- [ ] User management
+- [ ] Backup/Restore functionality
+- [ ] **GitHub Release v0.11-settings**
+
+---
+
+## 🟣 PHASE 12: HELP (TRỢ GIÚP)
+**Priority:** P4 (Low)  
+**GitHub Tag:** `v0.12-help`  
+**Status:** ⚪ Chưa bắt đầu
+
+### 12.1 Help View
+- [ ] Tạo src/gui/views/help_view.py
+  - [ ] Tab: Hướng dẫn sử dụng
+    - [ ] Hướng dẫn đăng nhập
+    - [ ] Hướng dẫn quản lý khách hàng
+    - [ ] Hướng dẫn quản lý kho
+    - [ ] Hướng dẫn quản lý hợp đồng
+    - [ ] Hướng dẫn nhập/xuất hàng hóa
+    - [ ] Hướng dẫn thanh toán
+  - [ ] Tab: Phím tắt
+    - [ ] Danh sách phím tắt
+  - [ ] Tab: Về chúng tôi
+    - [ ] Thông tin ứng dụng
+    - [ ] Thông tin nhóm phát triển
+### 12.2 Features
+- [ ] User manual (CHM/HTML help)
+- [ ] Keyboard shortcuts reference
+- [ ] About dialog
+- [ ] Version information
+
+### ✅ Phase 12 Deliverables:
+- [ ] Help GUI hoàn chỉnh
+- [ ] User manual
+- [ ] Keyboard shortcuts
+- [ ] **GitHub Release v0.12-help**
+
+---
+
 ## 📊 PROGRESS TRACKING
 
 ### Overall Progress
 ```
-Total Tasks: ~300
-Completed: ~~60~~
-In Progress: ~~0~~
-Not Started: ~~240~~
-Progress: ████████████████████ 100%
+Total Tasks: ~350
+Completed: ~180
+In Progress: 0
+Not Started: ~170
+Progress: ████████████████░░░░░░░░ 51%
 ```
 
 ### By Phase
-| Phase | Tasks | Done | Progress |
-|-------|-------|------|----------|
-| Phase 1: Database | 25 | 25 | ██████████ 100% |
-| Phase 2: Framework | 35 | 35 | ██████████ 100% |
-| Phase 3: Khách hàng | 30 | 30 | ██████████ 100% |
-| Phase 4: Kho | 25 | 25 | ██████████ 100% |
-| Phase 5: Hợp đồng | 30 | 30 | ██████████ 100% |
-| Phase 6: Hàng hóa | 25 | 25 | ██████████ 100% |
-| Phase 7: Thanh toán | 25 | 25 | ██████████ 100% |
-| Phase 8: PDF Generation | 20 | 12 | ██████░░░░ 60% |
-| Phase 9: Auth | 20 | 20 | ██████████ 100% |
-| Phase 10: Testing | 25 | 0 | ░░░░░░░░░░ 0% |
+| Phase | Description | Status | Progress |
+|-------|-------------|--------|----------|
+| Phase 1 | Database | ✅ Complete | 100% |
+| Phase 2 | Framework | ✅ Complete | 100% |
+| Phase 3 | Khách hàng | ✅ Complete | 100% |
+| Phase 4 | Kho | ✅ Complete | 100% |
+| Phase 5 | Hợp đồng | ✅ Complete | 100% |
+| Phase 6 | Hàng hóa | ✅ Complete | 100% |
+| Phase 7 | Thanh toán | ⚪ Not Started | 0% (GUI) |
+| Phase 8 | Báo cáo & PDF | ⚪ Not Started | 0% (GUI) |
+| Phase 9 | Auth | ✅ Complete | 100% |
+| Phase 10 | Testing | ⚪ Not Started | 0% |
+| Phase 11 | Cài đặt | ⚪ Not Started | 0% |
+| Phase 12 | Trợ giúp | ⚪ Not Started | 0% |
 
 ---
 

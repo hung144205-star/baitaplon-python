@@ -12,6 +12,7 @@ from typing import Dict, Any, List
 from src.services import KhoService, ViTriService
 from src.models import Kho, TrangThaiKhoEnum
 from src.gui.dialogs import MessageDialog
+from src.gui.widgets.charts import PieChartCanvas, FillRateBarChart
 from src.utils.formatters import format_currency, format_number
 
 
@@ -67,6 +68,10 @@ class DashboardView(QWidget):
         # Fill rate chart
         fill_rate_section = self._create_fill_rate_section()
         layout.addWidget(fill_rate_section)
+        
+        # Charts section
+        charts_section = self._create_charts_section()
+        layout.addWidget(charts_section)
         
         # Overcrowded alerts
         alerts_section = self._create_alerts_section()
@@ -266,6 +271,95 @@ class DashboardView(QWidget):
         
         return frame
     
+    def _create_charts_section(self) -> QFrame:
+        """Create charts section with pie and bar charts"""
+        frame = QFrame()
+        frame.setFrameShape(QFrame.Shape.StyledPanel)
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+                padding: 20px;
+            }
+        """)
+        
+        layout = QHBoxLayout(frame)
+        layout.setSpacing(20)
+        
+        # Pie chart - Warehouse Status
+        pie_frame = QFrame()
+        pie_frame.setStyleSheet("""
+            QFrame {
+                background-color: #fafafa;
+                border-radius: 8px;
+                padding: 10px;
+            }
+        """)
+        pie_layout = QVBoxLayout(pie_frame)
+        pie_layout.setContentsMargins(5, 5, 5, 5)
+        
+        pie_title = QLabel("📈 Trạng Thái Kho")
+        pie_title.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: 700;
+                color: #31302e;
+                padding-bottom: 8px;
+            }
+        """)
+        pie_layout.addWidget(pie_title)
+        
+        self.pie_chart = PieChartCanvas(
+            parent=pie_frame,
+            data={},
+            title="",
+            colors=['#1aae39', '#ff9800', '#757575'],
+            width=4,
+            height=3.5,
+            dpi=80
+        )
+        pie_layout.addWidget(self.pie_chart)
+        
+        layout.addWidget(pie_frame, 1)
+        
+        # Bar chart - Fill Rate by Warehouse
+        bar_frame = QFrame()
+        bar_frame.setStyleSheet("""
+            QFrame {
+                background-color: #fafafa;
+                border-radius: 8px;
+                padding: 10px;
+            }
+        """)
+        bar_layout = QVBoxLayout(bar_frame)
+        bar_layout.setContentsMargins(5, 5, 5, 5)
+        
+        bar_title = QLabel("📊 Tỷ Lệ Lấp Đầy Theo Kho")
+        bar_title.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: 700;
+                color: #31302e;
+                padding-bottom: 8px;
+            }
+        """)
+        bar_layout.addWidget(bar_title)
+        
+        self.bar_chart = FillRateBarChart(
+            parent=bar_frame,
+            data={},
+            title="",
+            width=5,
+            height=3.5,
+            dpi=80
+        )
+        bar_layout.addWidget(self.bar_chart)
+        
+        layout.addWidget(bar_frame, 1)
+        
+        return frame
+    
     def _create_legend_item(self, label: str, color: str) -> QLabel:
         """Create legend item"""
         label_widget = QLabel(f"⬤ {label}")
@@ -394,6 +488,9 @@ class DashboardView(QWidget):
             
             # Update fill rate
             self._update_fill_rate(khos)
+            
+            # Update charts
+            self._update_charts(khos)
             
             # Update alerts
             self._update_alerts(khos)
@@ -537,6 +634,38 @@ class DashboardView(QWidget):
         
         self.avg_fill_rate.setText(f"{avg_fill_rate:.1f}%")
         self.fill_rate_progress.setValue(int(avg_fill_rate))
+    
+    def _update_charts(self, khos: List[Kho]):
+        """Update pie and bar charts with warehouse data"""
+        # Pie chart data - Warehouse status distribution
+        status_counts = {
+            'Hoạt Động': 0,
+            'Bảo Trì': 0,
+            'Ngừng': 0
+        }
+        
+        fill_rate_data = {}
+        
+        for kho in khos:
+            # Count by status
+            if kho.trang_thai == TrangThaiKhoEnum.HOAT_DONG:
+                status_counts['Hoạt Động'] += 1
+            elif kho.trang_thai == TrangThaiKhoEnum.BAO_TRI:
+                status_counts['Bảo Trì'] += 1
+            elif kho.trang_thai == TrangThaiKhoEnum.NGUNG:
+                status_counts['Ngừng'] += 1
+            
+            # Fill rate for bar chart
+            if kho.trang_thai != TrangThaiKhoEnum.NGUNG:
+                fill_rate = self.kho_service.calculate_fill_rate(kho.ma_kho)
+                fill_rate_data[kho.ten_kho] = fill_rate
+        
+        # Remove zero values from pie chart
+        pie_data = {k: v for k, v in status_counts.items() if v > 0}
+        
+        # Update charts
+        self.pie_chart.update_data(pie_data)
+        self.bar_chart.update_data(fill_rate_data)
     
     def _update_alerts(self, khos: List[Kho]):
         """Update alerts for overcrowded warehouses"""

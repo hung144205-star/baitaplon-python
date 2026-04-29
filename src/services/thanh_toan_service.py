@@ -31,7 +31,7 @@ class ThanhToanService:
     def create(self, data: Dict[str, Any]) -> ThanhToan:
         """Create new payment"""
         # Validate required fields
-        required = ['ma_hop_dong', 'ky_thanh_toan', 'den_han', 'so_tien']
+        required = ['ma_hop_dong', 'ky_thanh_toan', 'ngay_den_han', 'so_tien']
         for field in required:
             if field not in data or not data[field]:
                 raise ValueError(f"Thiếu trường bắt buộc: {field}")
@@ -50,7 +50,7 @@ class ThanhToanService:
             ma_thanh_toan=ma_thanh_toan,
             ma_hop_dong=data['ma_hop_dong'],
             ky_thanh_toan=data['ky_thanh_toan'],
-            den_han=data['den_han'],
+            ngay_den_han=data['ngay_den_han'],
             so_tien=data['so_tien'],
             trang_thai=data.get('trang_thai', TrangThaiTTEnum.CHUA_THANH_TOAN),
             ngay_thanh_toan=data.get('ngay_thanh_toan'),
@@ -91,8 +91,8 @@ class ThanhToanService:
         
         if 'ky_thanh_toan' in data:
             payment.ky_thanh_toan = data['ky_thanh_toan']
-        if 'den_han' in data:
-            payment.den_han = data['den_han']
+        if 'ngay_den_han' in data:
+            payment.ngay_den_han = data['ngay_den_han']
         if 'so_tien' in data:
             payment.so_tien = data['so_tien']
         if 'trang_thai' in data:
@@ -205,7 +205,7 @@ class ThanhToanService:
                 ma_thanh_toan=self._auto_generate_ma_thanh_toan(ma_hop_dong),
                 ma_hop_dong=ma_hop_dong,
                 ky_thanh_toan=f"Kỳ {period}",
-                den_han=due_date,
+                ngay_den_han=due_date,
                 so_tien=hop_dong.gia_thue,
                 trang_thai=TrangThaiTTEnum.CHUA_THANH_TOAN
             )

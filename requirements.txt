@@ -1,5 +1,5 @@
 # Tech Stack - Quản Lý Dịch Vụ Cho Thuê Kho Lưu Trữ Hàng Hóa
-# Cập nhật: 28/04/2026
+# Cập nhật: 29/04/2026
 # Yêu cầu: Python 3.10+
 
 # Core - GUI Framework
@@ -15,14 +15,18 @@ reportlab>=4.0.0
 pandas>=2.0.0
 openpyxl>=3.1.0
 
+# Image Processing - Xử lý hình ảnh (logo, hình hàng hóa)
+Pillow>=10.0.0
+
+# Charting - Vẽ biểu đồ trên dashboard
+matplotlib>=3.7.0
+numpy>=1.24.0
+
 # Utilities
 python-dateutil>=2.8.0
 bcrypt>=4.0.0
 
-# Charting
-matplotlib>=3.7.0
-
 # Development & Testing
 pytest>=7.4.0
 pytest-cov>=4.1.0  # For coverage reports
-black>=23.0.0          # Code formatter
+black>=23.0.0      # Code formatter

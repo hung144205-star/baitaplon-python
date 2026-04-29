@@ -24,6 +24,7 @@ class BaoCaoView(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_report = None
+        self.stats_labels = {}
         self.setup_ui()
         self.load_dashboard_summary()
     
@@ -427,14 +428,8 @@ class BaoCaoView(QWidget):
         
         return page
     
-    def _init_stats_labels(self):
-        """Initialize stats labels dictionary"""
-        self.stats_labels = {}
-    
     def load_dashboard_summary(self):
         """Load dashboard summary data"""
-        self._init_stats_labels()
-        
         try:
             from src.services.report_service import ReportService
             

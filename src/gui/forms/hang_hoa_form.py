@@ -175,6 +175,7 @@ class HangHoaForm(QDialog):
         self.so_luong_input = QSpinBox()
         self.so_luong_input.setRange(0, 1000000)
         self.so_luong_input.setValue(1)
+        self.so_luong_input.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.so_luong_input.setStyleSheet("""
             QSpinBox {
                 padding: 8px;
@@ -235,6 +236,7 @@ class HangHoaForm(QDialog):
         self.trong_luong_input.setDecimals(2)
         self.trong_luong_input.setSuffix(" kg")
         self.trong_luong_input.setValue(0.0)
+        self.trong_luong_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.trong_luong_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;
@@ -268,6 +270,7 @@ class HangHoaForm(QDialog):
         self.gia_tri_input.setDecimals(0)
         self.gia_tri_input.setSuffix(" ₫")
         self.gia_tri_input.setValue(0.0)
+        self.gia_tri_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.gia_tri_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;

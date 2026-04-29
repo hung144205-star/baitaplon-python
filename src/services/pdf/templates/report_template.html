@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Báo cáo tổng hợp</title>
+    <style>
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 11pt; line-height: 1.5; }
+        h1 { text-align: center; color: #2e7d32; }
+        h2 { color: #005db2; border-bottom: 2px solid #005db2; padding-bottom: 5px; margin-top: 20px; }
+        .header { text-align: center; background-color: #e8f5e9; padding: 15px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .stat-card { background-color: #f5f5f5; padding: 15px; border-radius: 5px; text-align: center; }
+        .stat-value { font-size: 24pt; font-weight: bold; color: #005db2; }
+        .stat-label { font-size: 10pt; color: #757575; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        td { padding: 8px; border: 1px solid #ddd; }
+        th { background-color: #005db2; color: white; padding: 10px; border: 1px solid #005db2; text-align: left; }
+        .alert { background-color: #ffebee; padding: 10px; border-left: 4px solid #d32f2f; margin: 10px 0; }
+        .recommendation { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #2e7d32; margin: 10px 0; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #757575; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CÔNG TY TNHH QUẢN LÝ KHO LƯU TRỮ</h1>
+        <h2>BÁO CÁO TỔNG HỢP - {{ loai_bao_cao }}</h2>
+        <p>Ngày sinh: {{ ngay_sinh }} | Người tạo: {{ nguoi_tao }}</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ tong_khach_hang }}</div>
+            <div class="stat-label">Khách hàng</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ tong_kho }}</div>
+            <div class="stat-label">Kho hàng</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ tong_hop_dong }}</div>
+            <div class="stat-label">Hợp đồng</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ tong_hang_hoa }}</div>
+            <div class="stat-label">Mặt hàng</div>
+        </div>
+    </div>
+    
+    <h2>I. Thống kê khách hàng</h2>
+    <table>
+        <tr><td>Tổng số khách hàng:</td><td><strong>{{ khach_hang.tong }}</strong></td></tr>
+        <tr><td>Khách hàng hoạt động:</td><td>{{ khach_hang.hoat_dong }}</td></tr>
+        <tr><td>Khách hàng không hoạt động:</td><td>{{ khach_hang.khong_hoat_dong }}</td></tr>
+    </table>
+    
+    <h2>II. Thống kê kho hàng</h2>
+    <table>
+        <tr><td>Tổng số kho:</td><td><strong>{{ kho.tong }}</strong></td></tr>
+        <tr><td>Kho đang hoạt động:</td><td>{{ kho.hoat_dong }}</td></tr>
+        <tr><td>Tổng diện tích:</td><td>{{ kho.tong_dien_tich }} m²</td></tr>
+        <tr><td>Tổng sức chứa:</td><td>{{ kho.tong_suc_chua }} m³</td></tr>
+        <tr><td>Tỷ lệ lấp đầy TB:</td><td><strong>{{ kho.avg_fill_rate }}%</strong></td></tr>
+    </table>
+    
+    <h2>III. Thống kê hợp đồng</h2>
+    <table>
+        <tr><td>Tổng số hợp đồng:</td><td><strong>{{ hop_dong.tong }}</strong></td></tr>
+        <tr><td>Hợp đồng đang hiệu lực:</td><td>{{ hop_dong.dang_hieu_luc }}</td></tr>
+        <tr><td>Hợp đồng sắp hết hạn (30 ngày):</td><td style="color: #d32f2f;">{{ hop_dong.sap_het_han }}</td></tr>
+        <tr><td>Tổng doanh thu:</td><td><strong>{{ hop_dong.tong_doanh_thu }} VND</strong></td></tr>
+    </table>
+    
+    <h2>IV. Doanh thu & Tài chính</h2>
+    <table>
+        <tr><td>Doanh thu tháng này:</td><td><strong style="color: #2e7d32;">{{ doanh_thu.thang_nay }} VND</strong></td></tr>
+        <tr><td>Doanh thu năm nay (dự kiến):</td><td><strong style="color: #2e7d32;">{{ doanh_thu.nam_nay }} VND</strong></td></tr>
+    </table>
+    
+    <h2>V. Cảnh báo & Rủi ro</h2>
+    {{ canh_bao_alerts }}
+    
+    <h2>VI. Khuyến nghị</h2>
+    {{ khuyen_nghi_list }}
+    
+    <div class="footer">
+        <p>Báo cáo này được tạo tự động từ hệ thống Quản lý Kho lưu trữ hàng hóa.</p>
+        <p>Liên hệ IT Support nếu có thắc mắc về dữ liệu.</p>
+    </div>
+</body>
+</html>

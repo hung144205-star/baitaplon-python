@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hóa đơn thanh toán</title>
+    <style>
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 12pt; line-height: 1.6; }
+        h1 { text-align: center; color: #d32f2f; }
+        .company-info { text-align: center; background-color: #f5f5f5; padding: 10px; margin-bottom: 20px; }
+        .invoice-info { background-color: #fff3e0; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        td { padding: 8px; border: 1px solid #ddd; }
+        th { background-color: #005db2; color: white; padding: 10px; border: 1px solid #005db2; }
+        .totals { background-color: #f5f5f5; font-weight: bold; }
+        .bank-info { background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="company-info">
+        <h1>CÔNG TY TNHH QUẢN LÝ KHO LƯU TRỮ</h1>
+        <p>Địa chỉ: {{ dia_chi_cong_ty }}</p>
+        <p>Mã số thuế: {{ ma_so_thue_cong_ty }} | SĐT: {{ sdt_cong_ty }} | Email: {{ email_cong_ty }}</p>
+    </div>
+    
+    <h1 style="font-size: 20pt;">HÓA ĐƠN THANH TOÁN</h1>
+    <p style="text-align: center;">Mã hóa đơn: <strong>{{ ma_hoa_don }}</strong></p>
+    
+    <div class="invoice-info">
+        <table>
+            <tr><td>Ngày lập:</td><td>{{ ngay_lap }}</td></tr>
+            <tr><td>Hạn thanh toán:</td><td>{{ han_thanh_toan }}</td></tr>
+            <tr><td>Trạng thái:</td><td>{{ trang_thai_hoa_don }}</td></tr>
+            <tr><td>Hợp đồng:</td><td>{{ ma_hop_dong }}</td></tr>
+            <tr><td>Khách hàng:</td><td>{{ ten_khach_hang }}</td></tr>
+        </table>
+    </div>
+    
+    <h2>Chi tiết dịch vụ</h2>
+    <table>
+        <tr>
+            <th>STT</th>
+            <th>Dịch vụ</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+        {{ chi_tiet_dich_vu_rows }}
+        <tr class="totals">
+            <td colspan="4" style="text-align: right;">TỔNG CỘNG:</td>
+            <td>{{ tong_cong }} VND</td>
+        </tr>
+        <tr class="totals">
+            <td colspan="4" style="text-align: right;">THUẾ VAT (10%):</td>
+            <td>{{ thue_vat_tien }} VND</td>
+        </tr>
+        <tr class="totals" style="background-color: #ffecb3;">
+            <td colspan="4" style="text-align: right; color: #d32f2f;">TỔNG THANH TOÁN:</td>
+            <td style="color: #d32f2f;">{{ tong_thanh_toan }} VND</td>
+        </tr>
+    </table>
+    
+    <div class="bank-info">
+        <h2>Thông tin thanh toán</h2>
+        <p><strong>Ngân hàng:</strong> {{ ngan_hang }}</p>
+        <p><strong>Số tài khoản:</strong> {{ so_tai_khoan }}</p>
+        <p><strong>Chủ tài khoản:</strong> {{ chu_tai_khoan }}</p>
+        <p><strong>Nội dung:</strong> Thanh toán HD {{ ma_hop_dong }} - {{ ten_khach_hang }}</p>
+    </div>
+    
+    <p style="text-align: center; margin-top: 30px; color: #757575;">
+        Hóa đơn này có giá trị thanh toán trong vòng 30 ngày kể từ ngày lập.<br>
+        Mọi thắc mắc vui lòng liên hệ: {{ sdt_cong_ty }} hoặc {{ email_cong_ty }}
+    </p>
+</body>
+</html>

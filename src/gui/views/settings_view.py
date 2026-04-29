@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
-from src.gui.dialogs import MessageDialog
+from src.gui.dialogs import MessageDialog, ConfirmDialog
 
 
 class SettingsView(QWidget):
@@ -291,10 +291,10 @@ class SettingsView(QWidget):
     
     def _on_reset(self):
         """Reset settings to default"""
-        reply = MessageDialog.confirm(
+        reply = ConfirmDialog.ask(
             self,
-            "Xác nhận",
-            "Bạn có chắc muốn khôi phục cài đặt mặc định?"
+            "Bạn có chắc muốn khôi phục cài đặt mặc định?",
+            "Xác nhận"
         )
         
         if reply:

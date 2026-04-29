@@ -227,6 +227,7 @@ def create_sample_data(session_factory):
         # Import AuthService để tạo hash mật khẩu động
         from src.services.auth.auth_service import AuthService
         auth_service = AuthService()
+        admin_password_hash = auth_service.hash_password('admin123')
         
         # Tạo admin user với password hash từ runtime
         admin = NhanVien(

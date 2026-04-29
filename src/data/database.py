@@ -224,14 +224,18 @@ def create_sample_data(session_factory):
         session.execute(text("UPDATE thanh_toan SET trang_thai = LOWER(trang_thai) WHERE trang_thai IS NOT NULL"))
         session.commit()
 
-        # Tạo admin user (password: admin123 - properly generated bcrypt hash)
+        # Import AuthService để tạo hash mật khẩu động
+        from src.services.auth.auth_service import AuthService
+        auth_service = AuthService()
+        
+        # Tạo admin user với password hash từ runtime
         admin = NhanVien(
             ma_nhan_vien='NV001',
             ho_ten='Administrator',
             email='admin@warehouse.local',
             vai_tro=VaiTroNVEuum.QUAN_TRI,
             tai_khoan='admin',
-            mat_khau='$2b$12$tTbOaZ0plbpynu3c.SpLkOFsD3gzeyDB2GaMnSV1QK0SCeI81R9lO'
+            mat_khau=admin_password_hash
         )
         
         # Tạo kho mẫu

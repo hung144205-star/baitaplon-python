@@ -206,10 +206,7 @@ class BaoCaoView(QWidget):
         export_pdf_btn.clicked.connect(self._on_export_pdf)
         layout.addWidget(export_pdf_btn)
         
-        print_btn = QPushButton("🖨️ In báo cáo")
-        print_btn.setObjectName("primaryButton")
-        print_btn.clicked.connect(self._on_print)
-        layout.addWidget(print_btn)
+
         
         return selector_bar
     
@@ -856,10 +853,6 @@ class BaoCaoView(QWidget):
             
         except Exception as e:
             MessageDialog.error(self, "Lỗi", f"Không thể xuất PDF:\n{str(e)}")
-    
-    def _on_print(self):
-        """Print report"""
-        MessageDialog.info(self, "Thông tin", "Chức năng in báo cáo đang được phát triển.")
     
     def refresh_data(self):
         """Refresh data"""

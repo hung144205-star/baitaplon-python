@@ -201,10 +201,10 @@ class BaoCaoView(QWidget):
         export_txt_btn.clicked.connect(self._on_export_txt)
         layout.addWidget(export_txt_btn)
         
-        export_excel_btn = QPushButton("📊 Xuất Excel")
-        export_excel_btn.setObjectName("primaryButton")
-        export_excel_btn.clicked.connect(self._on_export_excel)
-        layout.addWidget(export_excel_btn)
+        export_pdf_btn = QPushButton("📄 Xuất PDF")
+        export_pdf_btn.setObjectName("primaryButton")
+        export_pdf_btn.clicked.connect(self._on_export_pdf)
+        layout.addWidget(export_pdf_btn)
         
         print_btn = QPushButton("🖨️ In báo cáo")
         print_btn.setObjectName("primaryButton")
@@ -824,40 +824,38 @@ class BaoCaoView(QWidget):
         except Exception as e:
             MessageDialog.error(self, "Lỗi", f"Không thể xuất báo cáo:\n{str(e)}")
     
-    def _on_export_excel(self):
-        """Export report to Excel"""
+    def _on_export_pdf(self):
+        """Export report to PDF using PDFGenerationService"""
         try:
-            from datetime import datetime
-            import os
+            from src.services.pdf.pdf_generation_service import PDFGenerationService
             
-            # Get current report content
-            content = self.report_content.toPlainText()
-            if not content:
-                MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn và xem báo cáo trước khi xuất")
-                return
+            # Get current report type
+            report_type = self.report_type_combo.currentData() or 'summary'
             
-            # Save as text (Excel export would require openpyxl for formatted export)
-            export_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'data', 'exports')
-            os.makedirs(export_dir, exist_ok=True)
+            # Map combo value to report type for PDF
+            pdf_report_type = 'monthly'
+            if report_type == 'revenue':
+                pdf_report_type = 'monthly'
+            elif report_type == 'contract':
+                pdf_report_type = 'monthly'
+            elif report_type == 'warehouse':
+                pdf_report_type = 'monthly'
+            elif report_type == 'alerts':
+                pdf_report_type = 'monthly'
+            else:
+                pdf_report_type = 'monthly'
             
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            report_type = self.report_type_combo.currentData()
-            file_path = os.path.join(export_dir, f"bao_cao_{report_type}_{timestamp}.xlsx")
+            # Generate PDF
+            pdf_service = PDFGenerationService()
+            output_path = pdf_service.generate_summary_report_pdf(
+                report_type=pdf_report_type,
+                output_filename=f"bao_cao_{report_type}"
+            )
             
-            # Use export_to_excel from helpers if available
-            try:
-                from src.utils.helpers import export_to_excel
-                
-                # Create simple data structure
-                data = [{'Báo cáo': line} for line in content.split('\n')]
-                export_to_excel(data, file_path)
-                
-                MessageDialog.success(self, "Thành công", f"Đã xuất báo cáo:\n{file_path}")
-            except ImportError:
-                MessageDialog.warning(self, "Cảnh báo", "Chức năng xuất Excel chưa được cài đặt.\nVui lòng xuất dạng TXT.")
-                
+            MessageDialog.success(self, "Thành công", f"Đã xuất báo cáo PDF:\n{output_path}")
+            
         except Exception as e:
-            MessageDialog.error(self, "Lỗi", f"Không thể xuất báo cáo:\n{str(e)}")
+            MessageDialog.error(self, "Lỗi", f"Không thể xuất PDF:\n{str(e)}")
     
     def _on_print(self):
         """Print report"""

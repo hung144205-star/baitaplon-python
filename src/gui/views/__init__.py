@@ -10,6 +10,7 @@ from .hop_dong_view import HopDongView
 from .hop_dong_detail_view import HopDongDetailView, HopDongDetailWidget
 from .hang_hoa_view import HangHoaView
 from .thanh_toan_view import ThanhToanView
+from .bao_cao_view import BaoCaoView
 
 __all__ = [
     # Customer
@@ -31,4 +32,6 @@ __all__ = [
     'HangHoaView',
     # Payment
     'ThanhToanView',
+    # Report
+    'BaoCaoView',
 ]

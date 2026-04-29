@@ -207,7 +207,8 @@ class MainWindow(QMainWindow):
             KhoView,
             HopDongView,
             HangHoaView,
-            ThanhToanView
+            ThanhToanView,
+            BaoCaoView
         )
         
         stacked_widget = self.nav_panel.stacked_widget
@@ -220,6 +221,7 @@ class MainWindow(QMainWindow):
             "ql_hop_dong": HopDongView,
             "ql_hang_hoa": HangHoaView,
             "ql_thanh_toan": ThanhToanView,
+            "ql_bao_cao": BaoCaoView,
         }
         
         modules = [

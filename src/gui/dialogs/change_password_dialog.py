@@ -4,7 +4,7 @@ Change Password Dialog - Hộp thoại đổi mật khẩu
 """
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QLineEdit
+    QLineEdit, QWidget
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont

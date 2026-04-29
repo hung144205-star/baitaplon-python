@@ -5,7 +5,7 @@
 2. [Cài Đặt Trên Windows](#2-cài-đặt-trên-windows)
 3. [Cài Đặt Trên macOS](#3-cài-đặt-trên-macos)
 4. [Cài Đặt Trên Linux (Ubuntu)](#4-cài-đặt-trên-linux-ubuntu)
-5. [Khởi Tạo Database](#5-khởi-tạo-database)
+5. [Khởi Tạo & Reset Database](#5-khởi-tạo--reset-database)
 6. [Chạy Ứng Dụng](#6-chạy-ứng-dụng)
 7. [Xử Lý Sự Cố](#7-xử-lý-sự-cố)
 8. [Cấu Trúc Project](#8-cấu-trúc-project)
@@ -50,9 +50,9 @@ sudo apt install python3.11 python3.11-venv python3-pip git
 
 ### Bước 2.1: Clone Project
 ```bash
-# Mở Command Prompt (CMD) hoặc PowerShell
-# Di chuyển đến thư mục muốn lưu project
-cd Documents
+# Mở Terminal (CMD hoặc PowerShell)
+# Di chuyển đến thư mục muốn lưu
+cd %USERPROFILE%\Documents
 
 # Clone repository
 git clone https://github.com/hung144205-star/baitaplon-python.git
@@ -81,15 +81,11 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Bước 2.4: Kiểm Tra Cài Đặt
+### Bước 2.4: Cài Đặt PyQt6
 ```bash
-# Kiểm tra Python
-python --version
-# Output: Python 3.11.x
-
-# Kiểm tra các package đã cài
-pip list
-# Output sẽ hiển thị: PyQt6, SQLAlchemy, pandas, v.v...
+# PyQt6 đã có trong requirements.txt
+# Nếu cần cài thủ công:
+pip install PyQt6
 ```
 
 ---
@@ -181,14 +177,17 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Khởi Tạo Database
+## 5. Khởi Tạo & Reset Database
 
-### 5.1: Chạy Script Khởi Tạo
+### 5.1: Khởi Tạo Database (Lần đầu tiên)
+
+**Yêu cầu:** Đã cài đặt dependencies và kích hoạt virtual environment.
+
 ```bash
-# Di chuyển vào thư mục project (đã làm ở trên)
+# Di chuyển vào thư mục project
 cd baitaplon-python
 
-# Kích hoạt môi trường ảo (nếu chưa)
+# Kích hoạt môi trường ảo
 # Windows: venv\Scripts\activate
 # macOS/Linux: source venv/bin/activate
 
@@ -196,32 +195,74 @@ cd baitaplon-python
 python -m src.data.init_db
 ```
 
-### 5.2: Kết Quả Mong Đợi
+### 5.2: Reset Database (Xóa và tạo lại)
+
+Thực hiện khi:
+- Database bị lỗi
+- Muốn xóa dữ liệu và tạo lại từ đầu
+- Quên mật khẩu admin và cần tạo lại
+
+```bash
+# Di chuyển vào thư mục project
+cd baitaplon-python
+
+# Kích hoạt môi trường ảo
+# Windows: venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
+
+# BƯỚC 1: Xóa database cũ
+rm data/warehouse.db
+
+# BƯỚC 2: Tạo database mới
+python -m src.data.init_db
 ```
-==================================================
-QUẢN LÝ DỊCH VỤ CHO THUÊ KHO LƯU TRỮ HÀNG HÓA
-==================================================
 
-Đang khởi tạo database...
+### 5.3: Kết Quả Mong Đợi
 
-✓ Database engine created
-✓ Models imported
-✓ Tables created
-✓ Indexes created
-✓ Sample data loaded
+```
+============================================================
+KHỞI TẠO DATABASE - QUẢN LÝ KHO LƯU TRỮ
+============================================================
+📦 Kết nối database: sqlite:////path/to/project/data/warehouse.db
+📝 Đang tạo các bảng...
+✅ Database đã được tạo thành công!
+📇 Đang tạo indexes...
+✅ Indexes đã được tạo!
+👁️ Đang tạo views...
+✅ Views đã được tạo!
+📊 Đang tạo dữ liệu mẫu...
+✅ Dữ liệu mẫu đã được tạo!
 
-Database initialized successfully!
-Database location: /path/to/project/data/warehouse.db
-
-Default login credentials:
+📋 Thông tin đăng nhập mặc định:
    Username: admin
    Password: admin123
+   ⚠️  Vui lòng đổi mật khẩu sau khi đăng nhập!
+
+============================================================
+✅ HOÀN THÀNH KHỞI TẠO DATABASE!
+============================================================
 ```
 
-### 5.3: Tài Khoản Mặc Định
+### 5.4: Tài Khoản Mặc Định
+
 | Tài khoản | Mật khẩu | Vai trò |
-|-----------|----------|---------|
+|-----------|----------|----------|
 | admin | admin123 | Quản trị viên |
+
+### 5.5: Xử Lý Lỗi Đăng Nhập
+
+**Triệu chứng:** Đăng nhập đúng password `admin123` nhưng bị báo sai
+
+**Nguyên nhân:** Database cũ được tạo với mã hóa không tương thích
+
+**Cách khắc phục:**
+```bash
+# Xóa database cũ
+rm data/warehouse.db
+
+# Tạo database mới với mã hóa đúng cho máy hiện tại
+python -m src.data.init_db
+```
 
 ---
 
@@ -240,79 +281,50 @@ cd baitaplon-python
 python main.py
 ```
 
-### 6.2: Chạy Với PyQt6 Development Mode
+### 6.2: Kiểm Tra Database Có Dữ Liệu
 ```bash
-# Linux/macOS - Hiển thị lỗi chi tiết
-QT_DEBUG=1 python main.py
+# Chạy script kiểm tra
+python -c "
+from src.data.database import init_db
+from sqlalchemy import text
 
-# Windows - Chạy từ PowerShell
-$env:QT_DEBUG="1"
-python main.py
-```
-
-### 6.3: Các Lệnh Hữu Ích
-```bash
-# Deactivate môi trường ảo (khi không sử dụng)
-deactivate
-
-# Xóa database và tạo lại (nếu cần)
-rm data/warehouse.db
-python -m src.data.init_db
-
-# Cập nhật code từ GitHub
-git pull origin main
-pip install -r requirements.txt  # Cập nhật dependencies nếu có thay đổi
+engine, Session = init_db()
+session = Session()
+result = session.execute(text('SELECT COUNT(*) FROM nhan_vien'))
+count = result.scalar()
+print(f'Số nhân viên trong DB: {count}')
+session.close()
+"
 ```
 
 ---
 
 ## 7. Xử Lý Sự Cố
 
-### Lỗi: "No module named 'PyQt6'"
+### Lỗi "Module not found"
 ```bash
-# Cài đặt lại PyQt6
-pip uninstall PyQt6
-pip install PyQt6==6.6.1
-```
-
-### Lỗi: "Database is locked"
-```bash
-# Windows: Tắt các chương trình khác đang truy cập database
-# Đóng tất cả cửa sổ ứng dụng và chạy lại
-```
-
-### Lỗi: "Permission denied" (Linux/macOS)
-```bash
-# Cấp quyền cho script
-chmod +x main.py
-
-# Nếu database không ghi được
-chmod 777 data/
-chmod 666 data/warehouse.db
-```
-
-### Lỗi: bcrypt hash error khi đăng nhập
-```bash
-# Database có thể chưa được tạo đúng
-# Xóa database cũ và tạo lại
-rm -f data/warehouse.db
-python -m src.data.init_db
-```
-
-### Lỗi: ModuleNotFoundError khi import
-```bash
-# Đảm bảo đang trong virtual environment
-# Windows: venv\Scripts\activate
-# macOS/Linux: source venv/bin/activate
-
-# Cài đặt lại dependencies
+# Cài lại dependencies
 pip install -r requirements.txt
 ```
 
-### Lỗi màn hình trắng khi chạy GUI (Linux)
+### Lỗi "Permission denied" khi chạy init_db (Linux)
 ```bash
-# Cài đặt thêm các thư viện GUI
-sudo apt install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-cursor0
+# Phân quyền cho thư mục data
+chmod 755 data/
+chmod 644 data/warehouse.db 2>/dev/null || true
+```
+
+### Lỗi PyQt6 không tìm thấy
+```bash
+# Cài lại PyQt6
+pip install PyQt6
+```
+
+### Lỗi kết nối database
+```bash
+# Xóa và tạo lại database
+rm data/warehouse.db
+python -m src.data.init_db
 ```
 
 ---
@@ -321,72 +333,41 @@ sudo apt install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysym
 
 ```
 baitaplon-python/
-├── main.py                 # Entry point - Chạy ứng dụng
-├── requirements.txt        # Danh sách dependencies
-├── README.md               # Tài liệu tổng quan
-├── SETUP.md                # Hướng dẫn cài đặt (file này)
+├── main.py              # File chạy chính
+├── main.py              # Entry point
+├── requirements.txt     # Danh sách thư viện Python
+├── SETUP.md             # Hướng dẫn cài đặt (file này)
+├── README.md            # Tài liệu tổng quan
+├── TASKS.md             # Danh sách công việc
 │
 ├── src/
-│   ├── main_app.py         # Main application (GUI)
-│   ├── main_window.py      # Main window
-│   ├── app.py              # QApplication setup
-│   │
-│   ├── models/             # SQLAlchemy models
-│   │   ├── khach_hang.py
-│   │   ├── kho.py
-│   │   ├── hop_dong.py
-│   │   ├── hang_hoa.py
-│   │   ├── thanh_toan.py
-│   │   └── nhan_vien.py
-│   │
-│   ├── services/           # Business logic
-│   │   ├── khach_hang_service.py
-│   │   ├── kho_service.py
-│   │   ├── hop_dong_service.py
-│   │   └── auth/
-│   │
-│   ├── gui/                # Giao diện PyQt6
-│   │   ├── views/          # Main views
-│   │   ├── forms/          # Form dialogs
-│   │   ├── widgets/        # Reusable widgets
-│   │   └── dialogs/       # Dialog boxes
-│   │
-│   ├── database/           # Database utilities
-│   ├── utils/              # Helpers, validators
-│   └── templates/          # HTML templates cho PDF
+│   ├── main_app.py      # Ứng dụng chính (PyQt6)
+│   ├── main_window.py   # Main window & navigation
+│   ├── data/
+│   │   ├── database.py  # Database initialization
+│   │   └── warehouse.db # SQLite database file
+│   ├── models/          # SQLAlchemy models
+│   ├── services/        # Business logic layer
+│   ├── gui/             # PyQt6 UI components
+│   │   ├── views/       # Main view screens
+│   │   ├── forms/       # Dialog forms
+│   │   ├── widgets/     # Reusable widgets
+│   │   └── dialogs/     # Dialog windows
+│   └── utils/           # Utility functions
 │
-├── data/                   # Database và dữ liệu
-│   ├── warehouse.db        # SQLite database
-│   └── exports/            # Các file export
+├── data/                # Data files
+│   ├── warehouse.db     # SQLite database
+│   └── exports/         # Exported files (PDF, Excel)
 │
-├── docs/                   # Tài liệu thiết kế
-│
-├── tests/                  # Unit tests
-│
-└── venv/                   # Virtual environment (không commit lên Git)
+├── tests/               # Unit tests
+├── docs/                # Documentation
+└── scripts/             # Utility scripts
 ```
 
 ---
 
-## Thông Tin Liên Hệ
+## Liên Hệ & Hỗ Trợ
 
-### Nhóm 12 - Lập trình Python
-- **Trưởng nhóm:** Đoàn Mạnh Hùng
-- **Thành viên:** Lương Hán Hải, Nguyễn Đồng Thanh
-
-### GitHub Repository
-```
-https://github.com/hung144205-star/baitaplon-python
-```
-
-### Báo Lỗi
-Nếu gặp lỗi trong quá trình cài đặt, vui lòng tạo issue trên GitHub với:
-- Hệ điều hành và phiên bản
-- Phiên bản Python (`python --version`)
-- Nội dung lỗi đầy đủ (copy toàn bộ terminal output)
-- Các bước đã thực hiện trước khi gặp lỗi
-
----
-
-**Cập nhật lần cuối:** 28/04/2026
-**Phiên bản:** 1.0.0
+- **Nhóm:** Nhóm 12 - Lập trình Python
+- **Thành viên:** Đoàn Mạnh Hùng, Lương Hán Hải, Nguyễn Đồng Thanh
+- **GitHub:** https://github.com/hung144205-star/baitaplon-python

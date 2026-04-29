@@ -214,6 +214,7 @@ class HopDongForm(QDialog):
         self.gia_thue_input.setSuffix(" ₫/tháng")
         self.gia_thue_input.setValue(1500000.0)
         self.gia_thue_input.setFixedWidth(200)
+        self.gia_thue_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.gia_thue_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;
@@ -233,6 +234,7 @@ class HopDongForm(QDialog):
         self.tien_coc_input.setSuffix(" ₫")
         self.tien_coc_input.setValue(3000000.0)
         self.tien_coc_input.setFixedWidth(200)
+        self.tien_coc_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.tien_coc_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;

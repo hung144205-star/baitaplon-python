@@ -123,6 +123,7 @@ class KhoForm(QDialog):
         self.dien_tich_input.setDecimals(2)
         self.dien_tich_input.setSuffix(" m²")
         self.dien_tich_input.setValue(100.0)
+        self.dien_tich_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.dien_tich_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;
@@ -141,6 +142,7 @@ class KhoForm(QDialog):
         self.suc_chua_input.setDecimals(2)
         self.suc_chua_input.setSuffix(" m³")
         self.suc_chua_input.setValue(500.0)
+        self.suc_chua_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
         self.suc_chua_input.setStyleSheet("""
             QDoubleSpinBox {
                 padding: 8px;

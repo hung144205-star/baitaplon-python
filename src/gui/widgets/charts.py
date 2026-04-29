@@ -7,8 +7,23 @@ matplotlib.use('Agg')  # Use non-interactive backend for PyQt6
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from PyQt6.QtWidgets import QSizePolicy
+from PyQt6.QtWidgets import QSizePolicy, QVBoxLayout, QWidget
 from PyQt6.QtCore import Qt
+
+
+class ChartWidget(QWidget):
+    """
+    Wrapper widget to properly contain matplotlib chart
+    Ensures chart is visible and properly sized
+    """
+    
+    def __init__(self, canvas, parent=None):
+        super().__init__(parent)
+        self.canvas = canvas
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(canvas)
+        self.setMinimumSize(300, 200)
 
 
 class PieChartCanvas(FigureCanvasQTAgg):
@@ -35,8 +50,12 @@ class PieChartCanvas(FigureCanvasQTAgg):
         self.title = title
         self.colors = colors or ['#1976d2', '#1aae39', '#ff9800', '#f44336', '#9c27b0', '#00bcd4']
         
-        FigureCanvasQTAgg.setSizePolicy(self, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        FigureCanvasQTAgg.updateGeometry(self)
+        # Set size policy
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.updateGeometry()
+        
+        # Set minimum size to ensure visibility
+        self.setMinimumSize(250, 200)
         
         self.plot()
     
@@ -46,8 +65,9 @@ class PieChartCanvas(FigureCanvasQTAgg):
         
         if not self.data:
             self.ax.text(0.5, 0.5, 'Không có dữ liệu', 
-                        ha='center', va='center', fontsize=12, color='#757575')
+                        ha='center', va='center', fontsize=14, color='#757575')
             self.ax.axis('off')
+            self.fig.tight_layout()
             self.draw()
             return
         
@@ -62,22 +82,21 @@ class PieChartCanvas(FigureCanvasQTAgg):
             colors=self.colors[:len(values)],
             startangle=90,
             wedgeprops={'edgecolor': 'white', 'linewidth': 2},
-            textprops={'fontsize': 10}
         )
         
         # Style autopct text
         for autotext in autotexts:
             autotext.set_color('white')
             autotext.set_fontweight('bold')
-            autotext.set_fontsize(9)
+            autotext.set_fontsize(10)
         
         # Add title
         if self.title:
-            self.ax.set_title(self.title, fontsize=12, fontweight='bold', pad=10, color='#31302e')
+            self.ax.set_title(self.title, fontsize=14, fontweight='bold', pad=15, color='#31302e')
         
         # Add legend
-        self.ax.legend(wedges, labels, loc='lower center', bbox_to_anchor=(0.5, -0.12),
-                      ncol=2, fontsize=9, frameon=False)
+        self.ax.legend(wedges, labels, loc='lower center', bbox_to_anchor=(0.5, -0.15),
+                      ncol=min(2, len(labels)), fontsize=10, frameon=False)
         
         self.fig.tight_layout()
         self.draw()
@@ -121,8 +140,12 @@ class BarChartCanvas(FigureCanvasQTAgg):
         self.colors = colors or '#1976d2'
         self.horizontal = horizontal
         
-        FigureCanvasQTAgg.setSizePolicy(self, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        FigureCanvasQTAgg.updateGeometry(self)
+        # Set size policy
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.updateGeometry()
+        
+        # Set minimum size to ensure visibility
+        self.setMinimumSize(300, 200)
         
         self.plot()
     
@@ -132,8 +155,9 @@ class BarChartCanvas(FigureCanvasQTAgg):
         
         if not self.data:
             self.ax.text(0.5, 0.5, 'Không có dữ liệu', 
-                        ha='center', va='center', fontsize=12, color='#757575')
+                        ha='center', va='center', fontsize=14, color='#757575')
             self.ax.axis('off')
+            self.fig.tight_layout()
             self.draw()
             return
         
@@ -145,15 +169,15 @@ class BarChartCanvas(FigureCanvasQTAgg):
             # Add value labels
             for bar, val in zip(bars, values):
                 self.ax.text(bar.get_width() + 0.5, bar.get_y() + bar.get_height()/2,
-                           f'{val:.1f}', va='center', fontsize=9, fontweight='bold')
-            self.ax.set_xlim(0, max(values) * 1.15)
+                           f'{val:.1f}', va='center', fontsize=10, fontweight='bold')
+            self.ax.set_xlim(0, max(values) * 1.2 if max(values) > 0 else 100)
         else:
             bars = self.ax.bar(labels, values, color=self.colors, edgecolor='white', linewidth=1)
             # Add value labels on top
             for bar, val in zip(bars, values):
                 self.ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
-                           f'{val:.1f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
-            self.ax.set_ylim(0, max(values) * 1.15)
+                           f'{val:.1f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+            self.ax.set_ylim(0, max(values) * 1.2 if max(values) > 0 else 100)
             self.ax.tick_params(axis='x', rotation=15)
         
         # Style
@@ -165,11 +189,11 @@ class BarChartCanvas(FigureCanvasQTAgg):
         
         # Labels
         if self.title:
-            self.ax.set_title(self.title, fontsize=12, fontweight='bold', pad=10, color='#31302e')
+            self.ax.set_title(self.title, fontsize=14, fontweight='bold', pad=10, color='#31302e')
         if self.x_label:
-            self.ax.set_xlabel(self.x_label, fontsize=10, color='#615d59')
+            self.ax.set_xlabel(self.x_label, fontsize=11, color='#615d59')
         if self.y_label:
-            self.ax.set_ylabel(self.y_label, fontsize=10, color='#615d59')
+            self.ax.set_ylabel(self.y_label, fontsize=11, color='#615d59')
         
         self.fig.tight_layout()
         self.draw()
@@ -205,8 +229,12 @@ class FillRateBarChart(FigureCanvasQTAgg):
         self.data = data or {}
         self.title = title
         
-        FigureCanvasQTAgg.setSizePolicy(self, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        FigureCanvasQTAgg.updateGeometry(self)
+        # Set size policy
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.updateGeometry()
+        
+        # Set minimum size to ensure visibility
+        self.setMinimumSize(300, 200)
         
         self.plot()
     
@@ -227,8 +255,9 @@ class FillRateBarChart(FigureCanvasQTAgg):
         
         if not self.data:
             self.ax.text(0.5, 0.5, 'Không có dữ liệu', 
-                        ha='center', va='center', fontsize=12, color='#757575')
+                        ha='center', va='center', fontsize=14, color='#757575')
             self.ax.axis('off')
+            self.fig.tight_layout()
             self.draw()
             return
         
@@ -245,15 +274,15 @@ class FillRateBarChart(FigureCanvasQTAgg):
         # Add percentage labels
         for bar, val in zip(bars, values):
             self.ax.text(bar.get_width() + 1, bar.get_y() + bar.get_height()/2,
-                        f'{val:.1f}%', va='center', fontsize=9, fontweight='bold', color='#31302e')
+                        f'{val:.1f}%', va='center', fontsize=10, fontweight='bold', color='#31302e')
         
         # Add y-axis labels
         self.ax.set_yticks(y_pos)
-        self.ax.set_yticklabels(labels, fontsize=9)
+        self.ax.set_yticklabels(labels, fontsize=10)
         
         # Set limits
-        self.ax.set_xlim(0, 105)
-        self.ax.set_xlabel('Tỷ Lệ Lấp Đầy (%)', fontsize=10, color='#615d59')
+        self.ax.set_xlim(0, 110)
+        self.ax.set_xlabel('Tỷ Lệ Lấp Đầy (%)', fontsize=11, color='#615d59')
         
         # Style
         self.ax.spines['top'].set_visible(False)
@@ -264,7 +293,7 @@ class FillRateBarChart(FigureCanvasQTAgg):
         self.ax.invert_yaxis()  # Highest at top
         
         if self.title:
-            self.ax.set_title(self.title, fontsize=12, fontweight='bold', pad=10, color='#31302e')
+            self.ax.set_title(self.title, fontsize=14, fontweight='bold', pad=10, color='#31302e')
         
         # Add legend
         legend_items = [
@@ -273,7 +302,7 @@ class FillRateBarChart(FigureCanvasQTAgg):
             mpatches.Patch(color='#ff5722', label='Cao (75-90%)'),
             mpatches.Patch(color='#f44336', label='Nguy hiểm (>90%)'),
         ]
-        self.ax.legend(handles=legend_items, loc='lower right', fontsize=8, frameon=False)
+        self.ax.legend(handles=legend_items, loc='lower right', fontsize=9, frameon=False)
         
         self.fig.tight_layout()
         self.draw()
@@ -286,4 +315,4 @@ class FillRateBarChart(FigureCanvasQTAgg):
         self.plot()
 
 
-__all__ = ['PieChartCanvas', 'BarChartCanvas', 'FillRateBarChart']
+__all__ = ['PieChartCanvas', 'BarChartCanvas', 'FillRateBarChart', 'ChartWidget']

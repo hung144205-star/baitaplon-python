@@ -8,6 +8,7 @@ from .dialogs import (
     ProgressDialog,
     FormDialog,
 )
+from .change_password_dialog import ChangePasswordDialog
 
 __all__ = [
     'MessageDialog',
@@ -15,4 +16,5 @@ __all__ = [
     'InputDialog',
     'ProgressDialog',
     'FormDialog',
+    'ChangePasswordDialog',
 ]

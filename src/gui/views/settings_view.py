@@ -246,6 +246,28 @@ class SettingsView(QWidget):
         button_layout.addWidget(save_btn)
         
         layout.addLayout(button_layout)
+        
+        # User account section
+        account_group = QGroupBox("🔐 Tài khoản của bạn")
+        account_layout = QVBoxLayout(account_group)
+        account_layout.setSpacing(12)
+        
+        change_pwd_btn = QPushButton("🔑 Đổi mật khẩu")
+        change_pwd_btn.setObjectName("secondaryButton")
+        change_pwd_btn.setStyleSheet("""
+            QPushButton#secondaryButton {
+                background-color: #ffffff;
+                color: #005db2;
+                border: 1px solid #005db2;
+            }
+            QPushButton#secondaryButton:hover {
+                background-color: #e3f2fd;
+            }
+        """)
+        change_pwd_btn.clicked.connect(self._on_change_password)
+        account_layout.addWidget(change_pwd_btn)
+        
+        layout.addWidget(account_group)
         layout.addStretch()
         
         scroll.setWidget(container)
@@ -288,6 +310,26 @@ class SettingsView(QWidget):
             self.alert_days.setValue(30)
             self.auto_backup_check.setChecked(True)
             self.backup_path.setText("./data/backups")
+    
+    def _on_change_password(self):
+        """Handle change password button click"""
+        from src.gui.dialogs import ChangePasswordDialog
+        from src.services.auth.auth_middleware import get_auth_middleware
+        
+        # Get current logged-in user
+        middleware = get_auth_middleware()
+        current_user = middleware.current_user
+        
+        if not current_user or not current_user.get('ma_nhan_vien'):
+            MessageDialog.warning(
+                self,
+                "Cảnh báo",
+                "Không thể xác định người dùng hiện tại. Vui lòng đăng nhập lại."
+            )
+            return
+        
+        ma_nhan_vien = current_user.get('ma_nhan_vien')
+        ChangePasswordDialog.show_dialog(self, ma_nhan_vien)
 
 
 __all__ = ['SettingsView']

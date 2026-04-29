@@ -207,7 +207,7 @@ class SettingsView(QWidget):
             "Số lượng items hiển thị trong bảng",
             self._create_spinbox(10, 100, 25, " mục")
         )
-        layout.addLayout(row1)
+        layout.addLayout(row1[0])
         
         # Show confirm dialog
         row2 = self._create_setting_row_with_checkbox(

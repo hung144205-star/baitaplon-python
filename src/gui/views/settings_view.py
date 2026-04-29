@@ -147,21 +147,6 @@ class SettingsView(QWidget):
         general_layout = QFormLayout(general_group)
         general_layout.setSpacing(16)
         
-        # Language
-        self.language_combo = QComboBox()
-        self.language_combo.addItems(["Tiếng Việt", "English"])
-        general_layout.addRow("Ngôn ngữ:", self.language_combo)
-        
-        # Theme
-        self.theme_combo = QComboBox()
-        self.theme_combo.addItems(["Sáng (Mặc định)", "Tối", "Tự động"])
-        general_layout.addRow("Giao diện:", self.theme_combo)
-        
-        # Startup module
-        self.startup_combo = QComboBox()
-        self.startup_combo.addItems(["Dashboard", "Khách hàng", "Kho hàng", "Hợp đồng", "Hàng hóa", "Thanh toán", "Báo cáo"])
-        general_layout.addRow("Mở đầu khi khởi động:", self.startup_combo)
-        
         layout.addWidget(general_group)
         
         # 2. Display Settings
@@ -298,9 +283,6 @@ class SettingsView(QWidget):
         )
         
         if reply:
-            self.language_combo.setCurrentIndex(0)
-            self.theme_combo.setCurrentIndex(0)
-            self.startup_combo.setCurrentIndex(0)
             self.items_per_page.setValue(25)
             self.show_confirm_check.setChecked(True)
             self.show_tooltips_check.setChecked(True)

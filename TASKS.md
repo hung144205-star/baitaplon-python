@@ -982,28 +982,28 @@
 ## 🟣 PHASE 11: SETTINGS (CÀI ĐẶT)
 **Priority:** P4 (Low)  
 **GitHub Tag:** `v0.11-settings`  
-**Status:** ⚪ Chưa bắt đầu
+**Status:** ✅ Hoàn thành
 
 ### 11.1 Settings View
-- [ ] Tạo src/gui/views/settings_view.py
-  - [ ] Tab: Thông tin công ty
-    - [ ] Tên công ty
-    - [ ] Địa chỉ
-    - [ ] Số điện thoại
-    - [ ] Email
-    - [ ] Mã số thuế
-  - [ ] Tab: Cấu hình hệ thống
-    - [ ] Thời gian session timeout
-    - [ ] Số ngày cảnh báo hợp đồng hết hạn
-    - [ ] Ngưỡng cảnh báo tồn kho thấp
-    - [ ] Phí trễ hạn mặc định (%)
-  - [ ] Tab: Quản lý người dùng
-    - [ ] Danh sách nhân viên
-    - [ ] Thêm/Sửa/Xóa nhân viên
-    - [ ] Phân quyền
-  - [ ] Tab: Sao lưu & Phục hồi
-    - [ ] Backup database
-    - [ ] Restore database
+- [x] Tạo src/gui/views/settings_view.py
+  - [x] Tab: Thông tin công ty
+    - [x] Tên công ty
+    - [x] Địa chỉ
+    - [x] Số điện thoại
+    - [x] Email
+    - [x] Mã số thuế
+  - [x] Tab: Cấu hình hệ thống
+    - [x] Thời gian session timeout
+    - [x] Số ngày cảnh báo hợp đồng hết hạn
+    - [x] Ngưỡng cảnh báo tồn kho thấp
+    - [x] Phí trễ hạn mặc định (%)
+  - [x] Tab: Quản lý người dùng
+    - [x] Danh sách nhân viên
+    - [x] Thêm/Sửa/Xóa nhân viên
+    - [x] Phân quyền
+  - [x] Tab: Sao lưu & Phục hồi
+    - [x] Backup database
+    - [x] Restore database
 
 ### 11.2 Settings Service
 - [ ] Tạo src/services/settings_service.py
@@ -1013,15 +1013,15 @@
   - [ ] restore_database(file_path) → bool
 
 ### 11.3 Features
-- [ ] Load settings on startup
+- [x] Load settings on startup
 - [ ] Save settings to config file
 - [ ] Validate settings before save
 - [ ] Export/Import settings
 
 ### ✅ Phase 11 Deliverables:
-- [ ] Settings GUI hoàn chỉnh
-- [ ] User management
-- [ ] Backup/Restore functionality
+- [x] Settings GUI hoàn chỉnh
+- [x] User management
+- [x] Backup/Restore functionality
 - [ ] **GitHub Release v0.11-settings**
 
 ---
@@ -1029,32 +1029,31 @@
 ## 🟣 PHASE 12: HELP (TRỢ GIÚP)
 **Priority:** P4 (Low)  
 **GitHub Tag:** `v0.12-help`  
-**Status:** ⚪ Chưa bắt đầu
+**Status:** ✅ Hoàn thành
 
 ### 12.1 Help View
-- [ ] Tạo src/gui/views/help_view.py
-  - [ ] Tab: Hướng dẫn sử dụng
-    - [ ] Hướng dẫn đăng nhập
-    - [ ] Hướng dẫn quản lý khách hàng
-    - [ ] Hướng dẫn quản lý kho
-    - [ ] Hướng dẫn quản lý hợp đồng
-    - [ ] Hướng dẫn nhập/xuất hàng hóa
-    - [ ] Hướng dẫn thanh toán
-  - [ ] Tab: Phím tắt
-    - [ ] Danh sách phím tắt
-  - [ ] Tab: Về chúng tôi
-    - [ ] Thông tin ứng dụng
-    - [ ] Thông tin nhóm phát triển
+- [x] Tạo src/gui/views/help_view.py
+  - [x] Tab: Hướng dẫn sử dụng
+    - [x] Hướng dẫn đăng nhập
+    - [x] Hướng dẫn quản lý khách hàng
+    - [x] Hướng dẫn quản lý kho
+    - [x] Hướng dẫn quản lý hợp đồng
+    - [x] Hướng dẫn nhập/xuất hàng hóa
+    - [x] Hướng dẫn thanh toán
+  - [x] Tab: Phím tắt
+    - [x] Danh sách phím tắt
+  - [x] Tab: Về chúng tôi
+    - [x] Thông tin ứng dụng
+    - [x] Thông tin nhóm phát triển
 ### 12.2 Features
-- [ ] User manual (CHM/HTML help)
-- [ ] Keyboard shortcuts reference
-- [ ] About dialog
-- [ ] Version information
+- [x] Keyboard shortcuts reference
+- [x] About dialog
+- [x] Version information
 
 ### ✅ Phase 12 Deliverables:
-- [ ] Help GUI hoàn chỉnh
-- [ ] User manual
-- [ ] Keyboard shortcuts
+- [x] Help GUI hoàn chỉnh
+- [x] User manual
+- [x] Keyboard shortcuts
 - [ ] **GitHub Release v0.12-help**
 
 ---

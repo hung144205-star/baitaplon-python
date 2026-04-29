@@ -123,6 +123,22 @@ class MainWindow(QMainWindow):
         # Help Menu
         help_menu = menubar.addMenu("Trợ giúp")
         
+        # Help
+        help_action = QAction("Hướng dẫn sử dụng", self)
+        help_action.setStatusTip("Xem hướng dẫn sử dụng ứng dụng")
+        help_action.triggered.connect(self._show_help)
+        help_menu.addAction(help_action)
+        
+        help_menu.addSeparator()
+        
+        # Shortcuts
+        shortcuts_action = QAction("Phím tắt", self)
+        shortcuts_action.setStatusTip("Danh sách phím tắt")
+        shortcuts_action.triggered.connect(self._show_shortcuts)
+        help_menu.addAction(shortcuts_action)
+        
+        help_menu.addSeparator()
+        
         # About
         about_action = QAction("Giới thiệu", self)
         about_action.setStatusTip("Giới thiệu về ứng dụng")
@@ -163,6 +179,7 @@ class MainWindow(QMainWindow):
             "ql_hang_hoa": "📦",
             "ql_thanh_toan": "💰",
             "ql_bao_cao": "📈",
+            "tro_giup": "❓",
         }
         
         module_names = {
@@ -172,6 +189,7 @@ class MainWindow(QMainWindow):
             "ql_hang_hoa": "Hàng hóa",
             "ql_thanh_toan": "Thanh toán",
             "ql_bao_cao": "Báo cáo",
+            "tro_giup": "Trợ giúp",
         }
         
         for key, icon in module_icons.items():
@@ -208,7 +226,8 @@ class MainWindow(QMainWindow):
             HopDongView,
             HangHoaView,
             ThanhToanView,
-            BaoCaoView
+            BaoCaoView,
+            HelpView,
         )
         
         stacked_widget = self.nav_panel.stacked_widget
@@ -222,6 +241,7 @@ class MainWindow(QMainWindow):
             "ql_hang_hoa": HangHoaView,
             "ql_thanh_toan": ThanhToanView,
             "ql_bao_cao": BaoCaoView,
+            "tro_giup": HelpView,
         }
         
         modules = [
@@ -232,6 +252,7 @@ class MainWindow(QMainWindow):
             ("ql_hang_hoa", "Quản lý Hàng hóa"),
             ("ql_thanh_toan", "Quản lý Thanh toán"),
             ("ql_bao_cao", "Báo cáo"),
+            ("tro_giup", "Trợ giúp"),
         ]
         
         for key, title in modules:
@@ -298,6 +319,7 @@ class MainWindow(QMainWindow):
             "ql_hang_hoa": "Hàng hóa",
             "ql_thanh_toan": "Thanh toán",
             "ql_bao_cao": "Báo cáo",
+            "tro_giup": "Trợ giúp",
         }
         
         self.status_label.setText(f"Đang xem: {module_names.get(view_key, '')}")
@@ -322,12 +344,36 @@ class MainWindow(QMainWindow):
                 "ql_hang_hoa": "Hàng hóa",
                 "ql_thanh_toan": "Thanh toán",
                 "ql_bao_cao": "Báo cáo",
+                "tro_giup": "Trợ giúp",
             }
             self.status_label.setText(f"Đang xem: {module_names.get(module_key, '')}")
     
     def _show_dashboard(self):
         """Show dashboard"""
         self._switch_module("dashboard")
+    
+    def _show_help(self):
+        """Show help view"""
+        self._switch_module("tro_giup")
+    
+    def _show_shortcuts(self):
+        """Show keyboard shortcuts reference"""
+        from src.gui.dialogs import MessageDialog
+        shortcuts_text = """
+        <b>Phím tắt trong ứng dụng:</b><br><br>
+        <b>Ctrl + D</b> - Mở Dashboard<br>
+        <b>Ctrl + K</b> - Quản lý Khách hàng<br>
+        <b>Ctrl + O</b> - Quản lý Kho hàng<br>
+        <b>Ctrl + H</b> - Quản lý Hợp đồng<br>
+        <b>Ctrl + G</b> - Quản lý Hàng hóa<br>
+        <b>Ctrl + T</b> - Quản lý Thanh toán<br>
+        <b>Ctrl + B</b> - Mở Báo cáo<br>
+        <b>Ctrl + Q</b> - Thoát ứng dụng<br>
+        <b>Ctrl + N</b> - Tạo mới<br>
+        <b>Ctrl + S</b> - Lưu<br>
+        <b>Ctrl + F</b> - Tìm kiếm<br>
+        """
+        MessageDialog.info(self, "Phím tắt", shortcuts_text)
     
     def _show_about(self):
         """Show about dialog"""

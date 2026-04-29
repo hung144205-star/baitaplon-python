@@ -11,6 +11,8 @@ from .hop_dong_detail_view import HopDongDetailView, HopDongDetailWidget
 from .hang_hoa_view import HangHoaView
 from .thanh_toan_view import ThanhToanView
 from .bao_cao_view import BaoCaoView
+from .help_view import HelpView
+from .settings_view import SettingsView
 
 __all__ = [
     # Customer
@@ -34,4 +36,7 @@ __all__ = [
     'ThanhToanView',
     # Report
     'BaoCaoView',
+    # Help & Settings
+    'HelpView',
+    'SettingsView',
 ]

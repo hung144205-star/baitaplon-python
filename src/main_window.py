@@ -228,6 +228,7 @@ class MainWindow(QMainWindow):
             ThanhToanView,
             BaoCaoView,
             HelpView,
+            SettingsView,
         )
         
         stacked_widget = self.nav_panel.stacked_widget
@@ -242,6 +243,7 @@ class MainWindow(QMainWindow):
             "ql_thanh_toan": ThanhToanView,
             "ql_bao_cao": BaoCaoView,
             "tro_giup": HelpView,
+            "settings": SettingsView,
         }
         
         modules = [
@@ -253,6 +255,7 @@ class MainWindow(QMainWindow):
             ("ql_thanh_toan", "Quản lý Thanh toán"),
             ("ql_bao_cao", "Báo cáo"),
             ("tro_giup", "Trợ giúp"),
+            ("settings", "Cài đặt"),
         ]
         
         for key, title in modules:
@@ -320,6 +323,7 @@ class MainWindow(QMainWindow):
             "ql_thanh_toan": "Thanh toán",
             "ql_bao_cao": "Báo cáo",
             "tro_giup": "Trợ giúp",
+            "settings": "Cài đặt",
         }
         
         self.status_label.setText(f"Đang xem: {module_names.get(view_key, '')}")
@@ -345,6 +349,7 @@ class MainWindow(QMainWindow):
                 "ql_thanh_toan": "Thanh toán",
                 "ql_bao_cao": "Báo cáo",
                 "tro_giup": "Trợ giúp",
+                "settings": "Cài đặt",
             }
             self.status_label.setText(f"Đang xem: {module_names.get(module_key, '')}")
     

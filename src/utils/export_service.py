@@ -39,7 +39,6 @@ class ExcelExporter:
                 'Diện Tích (m²)': kho.get('dien_tich', 0),
                 'Sức Chứa (m³)': kho.get('suc_chua', 0),
                 'Trạng Thái': kho.get('trang_thai_label', ''),
-                'Ghi Chú': kho.get('ghi_chu', ''),
             }
             data.append(row)
         
@@ -198,9 +197,35 @@ def export_dashboard_to_excel(
     if output_path is None:
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         output_path = f"data/exports/dashboard_export_{timestamp}.xlsx"
-    
+
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     return ExcelExporter.export_dashboard_to_excel(khos, vi_tris, output_path)
+
+
+def export_to_excel(data: List[Dict[str, Any]], output_path: str) -> str:
+    """
+    Export generic data list to Excel
+
+    Args:
+        data: List of dictionaries with data to export
+        output_path: Path to save Excel file
+
+    Returns:
+        Path to saved file
+    """
+    try:
+        import pandas as pd
+    except ImportError:
+        raise ImportError("pandas is required for Excel export. Install with: pip install pandas openpyxl")
+
+    # Create DataFrame
+    df = pd.DataFrame(data)
+
+    # Save to Excel
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    df.to_excel(output_path, index=False, engine='openpyxl')
+
+    return output_path
 
 
 __all__ = [
@@ -208,4 +233,5 @@ __all__ = [
     'export_kho_to_excel',
     'export_vi_tri_to_excel',
     'export_dashboard_to_excel',
+    'export_to_excel',
 ]

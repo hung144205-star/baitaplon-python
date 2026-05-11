@@ -2,14 +2,31 @@
 Models package - Export tất cả models
 """
 from .base import Base, BaseModel
-from .khach_hang import KhachHang, LoaiKhachEnum, TrangThaiKHEnum
-from .kho import Kho, TrangThaiKhoEnum
-from .vi_tri import ViTri, TrangThaiViTriEnum
-from .hop_dong import HopDong, TrangThaiHDEnum
+
+# Import enums from centralized location
+from .enums import (
+    TrangThaiHDEnum,
+    TrangThaiTTEnum,
+    TrangThaiViTriEnum,
+    TrangThaiKhoEnum,
+    LoaiKhachEnum,
+    TrangThaiKHEnum,
+    LoaiPhiEnum,
+    TrangThaiHHEnum,
+    VaiTroNhanVienEnum,
+    TrangThaiNhanVienEnum,
+    HanhDongLogEnum,
+)
+
+# Import models
+from .khach_hang import KhachHang
+from .kho import Kho
+from .vi_tri import ViTri
+from .hop_dong import HopDong
 from .hang_hoa import HangHoa
-from .thanh_toan import ThanhToan, LoaiPhiEnum, TrangThaiTTEnum
-from .nhan_vien import NhanVien, VaiTroNVEuum, TrangThaiNhanVienEnum
-from .system_log import SystemLog, HanhDongLogEnum
+from .thanh_toan import ThanhToan
+from .nhan_vien import NhanVien
+from .system_log import SystemLog
 from .bao_cao import BaoCao
 
 # Import relationships
@@ -65,9 +82,10 @@ __all__ = [
     'TrangThaiKhoEnum',
     'TrangThaiViTriEnum',
     'TrangThaiHDEnum',
-    'LoaiPhiEnum',
     'TrangThaiTTEnum',
-    'VaiTroNVEuum',
+    'TrangThaiHHEnum',
+    'LoaiPhiEnum',
+    'VaiTroNhanVienEnum',
     'TrangThaiNhanVienEnum',
     'HanhDongLogEnum',
 ]

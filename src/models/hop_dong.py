@@ -1,17 +1,10 @@
 """
 Hợp đồng thuê model
 """
-import enum
 from sqlalchemy import Column, String, Date, Float, Enum, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from .base import BaseModel
-
-class TrangThaiHDEnum(enum.Enum):
-    """Trạng thái hợp đồng"""
-    HIEU_LUC = 'hieu_luc'
-    HET_HAN = 'het_han'
-    CHAM_DUT = 'cham_dut'
-    GIA_HAN = 'gia_han'
+from .enums import TrangThaiHDEnum
 
 class HopDong(BaseModel):
     """

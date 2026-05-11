@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xxd src/services/thanh_toan_service.py)",
+      "Bash(python -c \"from src.models.enums import *; print\\('enums.py OK'\\)\")",
+      "Bash(python -c \"from src.services.base_service import *; print\\('base_service.py OK'\\)\")",
+      "Bash(python -c \"from src.services.transaction_context import *; print\\('transaction_context.py OK'\\)\")",
+      "Bash(./venv/Scripts/python -c \"from src.models.enums import *; print\\('enums.py OK'\\)\")",
+      "Bash(./venv/Scripts/python -c \"from src.services.base_service import *; print\\('base_service.py OK'\\)\")",
+      "Bash(./venv/Scripts/python -c \"from src.services.transaction_context import *; print\\('transaction_context.py OK'\\)\")",
+      "Bash(./venv/Scripts/python *)",
+      "Bash(python *)",
+      "Bash(pip list *)",
+      "Bash(pip install *)",
+      "Bash(pip show *)",
+      "WebFetch(domain:minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com)"
+    ]
+  }
+}

@@ -4,7 +4,7 @@ Hàng hóa View - Giao diện Quản lý Hàng hóa
 """
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QFrame, QComboBox, QMessageBox, QDoubleSpinBox
+    QFrame, QComboBox, QMessageBox, QDoubleSpinBox, QDialog, QTextEdit
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from datetime import datetime
@@ -182,7 +182,29 @@ class HangHoaView(QWidget):
         self.filter_trang_thai.addItem("📤 Đã xuất", "da_xuat")
         self.filter_trang_thai.setFixedWidth(150)
         layout.addWidget(self.filter_trang_thai)
-        
+
+        # Update status button
+        self.update_status_btn = QPushButton("🔄 Cập nhật trạng thái")
+        self.update_status_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #ff9800;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #f57c00;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+            }
+        """)
+        self.update_status_btn.setEnabled(False)
+        self.update_status_btn.clicked.connect(self._on_update_status_clicked)
+        layout.addWidget(self.update_status_btn)
+
         return filter_bar
     
     def _load_hop_dongs(self):
@@ -200,21 +222,78 @@ class HangHoaView(QWidget):
         # Table events
         self.table_with_toolbar.row_selected.connect(self._on_row_selected)
         self.table_with_toolbar.row_double_clicked.connect(self._on_row_double_clicked)
-        
+
         # Toolbar buttons
         self.table_with_toolbar.add_clicked.connect(self._on_add_clicked)
         self.table_with_toolbar.edit_clicked.connect(self._on_edit_clicked)
         self.table_with_toolbar.delete_clicked.connect(self._on_delete_clicked)
         self.table_with_toolbar.refresh_clicked.connect(self._on_refresh_clicked)
-        
+        self.table_with_toolbar.export_clicked.connect(self._on_export_excel_clicked)
+
         # Custom buttons
         self._connect_custom_buttons()
-        
+
         # Search & filter
         self.search_box.search_changed.connect(self._on_search_changed)
         self.filter_hop_dong.currentIndexChanged.connect(self._apply_filters)
         self.filter_loai_hang.currentIndexChanged.connect(self._apply_filters)
         self.filter_trang_thai.currentIndexChanged.connect(self._apply_filters)
+
+    def _on_export_excel_clicked(self):
+        """Handle Excel export button click"""
+        try:
+            from src.utils.export_service import export_to_excel
+            from PyQt6.QtWidgets import QFileDialog
+            from datetime import datetime
+
+            # Get all data from table
+            all_data = self.table_with_toolbar.table._data
+            if not all_data:
+                MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu để xuất")
+                return
+
+            # Prepare data for export
+            export_data = []
+            for row in all_data:
+                if "__data" in row:
+                    hh = row["__data"]
+                    export_data.append({
+                        "Mã HH": hh.ma_hang_hoa,
+                        "Tên Hàng": hh.ten_hang,
+                        "Loại": hh.loai_hang,
+                        "Số Lượng": hh.so_luong,
+                        "Đơn Vị": hh.don_vi,
+                        "Trọng Lượng": hh.trong_luong or "",
+                        "Kích Thước": hh.kich_thuoc or "",
+                        "Giá Trị": hh.gia_tri or 0,
+                        "Vị Trí Lưu Trữ": hh.vi_tri_luu_tru or "",
+                        "Trạng Thái": self._get_trang_thai_label(hh.trang_thai),
+                        "Hợp Đồng": hh.ma_hop_dong,
+                        "Ngày Nhập": hh.ngay_nhap.strftime("%d/%m/%Y") if hh.ngay_nhap else "",
+                        "Ghi Chú": hh.ghi_chu or "",
+                    })
+
+            if not export_data:
+                MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu hàng hóa để xuất")
+                return
+
+            # Ask for save location
+            default_name = f"hang_hoa_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Xuất Excel",
+                default_name,
+                "Excel Files (*.xlsx)"
+            )
+
+            if file_path:
+                export_to_excel(export_data, file_path)
+                MessageDialog.success(self, "Thành công", f"Đã xuất file Excel:\n{file_path}")
+
+        except ImportError as e:
+            MessageDialog.error(self, "Thiếu thư viện", "Cần cài đặt pandas và openpyxl:\npip install pandas openpyxl")
+        except Exception as e:
+            MessageDialog.error(self, "Lỗi", f"Không thể xuất Excel:\n{str(e)}")
     
     def _connect_custom_buttons(self):
         """Connect custom buttons (Import, Export)"""
@@ -327,7 +406,8 @@ class HangHoaView(QWidget):
         if "__data" in row_data:
             self.current_hang_hoa = row_data["__data"]
             self.hang_hoa_selected.emit(self.current_hang_hoa)
-            
+            self.update_status_btn.setEnabled(True)
+
             # Highlight low stock
             if row_data.get('_is_low_stock'):
                 self.info_label.setText(
@@ -461,6 +541,134 @@ class HangHoaView(QWidget):
     def _on_refresh_clicked(self):
         """Handle refresh button click"""
         self.load_data()
+
+    def _on_update_status_clicked(self):
+        """Handle update status button click"""
+        if not self.current_hang_hoa:
+            MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn một mặt hàng để cập nhật trạng thái")
+            return
+
+        # Get current status
+        current_status = self.current_hang_hoa.trang_thai
+        current_status_value = current_status.value if hasattr(current_status, 'value') else str(current_status)
+
+        # Create status selection dialog
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Cập nhật trạng thái hàng hóa")
+        dialog.setMinimumWidth(400)
+        dialog.setModal(True)
+        dialog.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+            }
+        """)
+
+        layout = QVBoxLayout(dialog)
+        layout.setSpacing(16)
+        layout.setContentsMargins(30, 30, 30, 30)
+
+        # Info
+        info_label = QLabel(f"Mặt hàng: <b>{self.current_hang_hoa.ten_hang}</b>")
+        info_label.setStyleSheet("font-size: 14px; color: #31302e;")
+        layout.addWidget(info_label)
+
+        ma_label = QLabel(f"Mã: <b>{self.current_hang_hoa.ma_hang_hoa}</b>")
+        ma_label.setStyleSheet("font-size: 13px; color: #615d59;")
+        layout.addWidget(ma_label)
+
+        current_label = QLabel(f"Trạng thái hiện tại: <b>{self._get_trang_thai_label(current_status)}</b>")
+        current_label.setStyleSheet("font-size: 14px; color: #615d59; padding-top: 8px;")
+        layout.addWidget(current_label)
+
+        # Status selection
+        layout.addWidget(QLabel("Chọn trạng thái mới:"))
+        status_combo = QComboBox()
+        status_options = [
+            ("📦 Trong kho", "trong_kho"),
+            ("📤 Đã xuất", "da_xuat"),
+        ]
+        for label, status_val in status_options:
+            status_combo.addItem(label, status_val)
+            if status_val == current_status_value:
+                status_combo.setCurrentIndex(status_combo.count() - 1)
+
+        layout.addWidget(status_combo)
+
+        # Notes field
+        layout.addWidget(QLabel("Ghi chú:"))
+        notes_input = QTextEdit()
+        notes_input.setMaximumHeight(80)
+        notes_input.setPlaceholderText("Nhập ghi chú (tùy chọn)")
+        layout.addWidget(notes_input)
+
+        # Buttons
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+
+        cancel_btn = QPushButton("Hủy")
+        cancel_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #f6f5f4;
+                color: #31302e;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: 500;
+            }
+        """)
+        cancel_btn.setFixedWidth(100)
+        cancel_btn.clicked.connect(dialog.reject)
+        button_layout.addWidget(cancel_btn)
+
+        save_btn = QPushButton("Lưu")
+        save_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #0075de;
+                color: #ffffff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #005bab;
+            }
+        """)
+        save_btn.setFixedWidth(100)
+        save_btn.clicked.connect(dialog.accept)
+        button_layout.addWidget(save_btn)
+
+        layout.addLayout(button_layout)
+
+        # Execute dialog
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            new_status = status_combo.currentData()
+            notes = notes_input.toPlainText().strip()
+
+            try:
+                if new_status == "da_xuat":
+                    # Export goods - set ngay_xuat
+                    success = self.service.export_goods(
+                        self.current_hang_hoa.ma_hang_hoa,
+                        self.current_hang_hoa.so_luong,
+                        {'ghi_chu': notes} if notes else None
+                    )
+                    if success:
+                        MessageDialog.success(self, "Thành công", "Đã xuất kho hàng hóa thành công")
+                else:
+                    # Update status directly
+                    self.service.update_status(self.current_hang_hoa.ma_hang_hoa, new_status)
+                    if notes:
+                        self.service.update(self.current_hang_hoa.ma_hang_hoa, {'ghi_chu': notes})
+                    MessageDialog.success(self, "Thành công", "Đã cập nhật trạng thái hàng hóa")
+
+                self.load_data()
+                self.current_hang_hoa = None
+                self.update_status_btn.setEnabled(False)
+            except Exception as e:
+                MessageDialog.error(self, "Lỗi", f"Không thể cập nhật trạng thái:\n{str(e)}")
     
     def _on_import_clicked(self):
         """Handle import button click"""

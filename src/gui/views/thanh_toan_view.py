@@ -417,7 +417,7 @@ class ThanhToanView(QWidget):
         """Handle export button click"""
         try:
             from src.services.thanh_toan_service import ThanhToanService
-            from src.utils.helpers import export_to_excel
+            from src.utils.export_service import export_to_excel
             from datetime import datetime
             import os
             

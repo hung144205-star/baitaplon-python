@@ -1,15 +1,9 @@
 """
 Kho hàng model
 """
-import enum
 from sqlalchemy import Column, String, Float, Enum
 from .base import BaseModel
-
-class TrangThaiKhoEnum(enum.Enum):
-    """Trạng thái kho"""
-    HOAT_DONG = 'hoat_dong'
-    BAO_TRI = 'bao_tri'
-    NGUNG = 'ngung'
+from .enums import TrangThaiKhoEnum
 
 class Kho(BaseModel):
     """

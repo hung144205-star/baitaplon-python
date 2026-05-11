@@ -336,7 +336,6 @@ class KhoView(QWidget):
                         'dien_tich': kho.dien_tich,
                         'suc_chua': kho.suc_chua,
                         'trang_thai_label': self._get_trang_thai_label(kho.trang_thai),
-                        'ghi_chu': kho.ghi_chu or '',
                         'fill_rate': fill_rate
                     })
             

@@ -5,15 +5,8 @@ Thanh toán Service - Business logic for payment management
 from datetime import datetime, date
 from typing import List, Optional, Dict, Any
 
-from src.models import ThanhToan, HopDong, TrangThaiHDEnum
+from src.models import ThanhToan, HopDong, TrangThaiHDEnum, TrangThaiTTEnum
 from src.database import SessionLocal
-
-
-class TrangThaiTTEnum:
-    """Payment status"""
-    CHUA_THANH_TOAN = 'chua_thanh_toan'
-    DA_THANH_TOAN = 'da_thanh_toan'
-    QUA_HAN = 'qua_han'
 
 
 class ThanhToanService:
@@ -63,23 +56,32 @@ class ThanhToanService:
         
         return thanh_toan
     
-    def get_by_hop_dong(self, ma_hop_dong: str) -> List[ThanhToan]:
-        """Get all payments by contract"""
+    def get_by_hop_dong(self, ma_hop_dong: str, update_overdue: bool = False) -> List[ThanhToan]:
+        """Get all payments by contract.
+
+        Args:
+            ma_hop_dong: Contract ID
+            update_overdue: If True, auto-update QUA_HAN status for overdue payments (default False)
+        """
         payments = self.db.query(ThanhToan).filter(
             ThanhToan.ma_hop_dong == ma_hop_dong
         ).order_by(ThanhToan.ky_thanh_toan).all()
-        
+
         for p in payments:
             self.db.refresh(p)
-        
-        # Auto-update overdue status
-        today = date.today()
-        for p in payments:
-            if p.trang_thai == TrangThaiTTEnum.CHUA_THANH_TOAN and p.den_han < today:
-                p.trang_thai = TrangThaiTTEnum.QUA_HAN
-        self.db.commit()
-        
+
+        if update_overdue:
+            today = date.today()
+            for p in payments:
+                if p.trang_thai == TrangThaiTTEnum.CHUA_THANH_TOAN and p.ngay_den_han < today:
+                    p.trang_thai = TrangThaiTTEnum.QUA_HAN
+            self.db.commit()
+
         return payments
+
+    def mark_overdue_payments(self, ma_hop_dong: str) -> List[ThanhToan]:
+        """Get payments and mark overdue ones as QUA_HAN."""
+        return self.get_by_hop_dong(ma_hop_dong, update_overdue=True)
     
     def update(self, ma_thanh_toan: str, data: Dict[str, Any]) -> ThanhToan:
         """Update payment"""
@@ -129,7 +131,34 @@ class ThanhToanService:
         self.db.delete(payment)
         self.db.commit()
         return True
-    
+
+    def update_status(self, ma_thanh_toan: str, trang_thai: TrangThaiTTEnum) -> ThanhToan:
+        """
+        Cập nhật trạng thái thanh toán
+
+        Args:
+            ma_thanh_toan: Mã thanh toán
+            trang_thai: Trạng thái mới (CHUA_THANH_TOAN, DA_THANH_TOAN, QUA_HAN)
+
+        Returns:
+            ThanhToan: Thanh toán đã update
+
+        Raises:
+            ValueError: Nếu thanh toán không tồn tại
+        """
+        payment = self.db.query(ThanhToan).filter(
+            ThanhToan.ma_thanh_toan == ma_thanh_toan
+        ).first()
+
+        if not payment:
+            raise ValueError("Không tìm thấy thanh toán")
+
+        payment.trang_thai = trang_thai
+        self.db.commit()
+        self.db.refresh(payment)
+
+        return payment
+
     def get_all(self) -> List[ThanhToan]:
         """Get all payments"""
         return self.db.query(ThanhToan).all()

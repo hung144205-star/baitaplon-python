@@ -232,7 +232,39 @@ class KhoService:
             raise e
         finally:
             self._close_session(session)
-    
+
+    def update_status(self, ma_kho: str, trang_thai: TrangThaiKhoEnum) -> bool:
+        """
+        Cập nhật trạng thái kho
+
+        Args:
+            ma_kho: Mã kho
+            trang_thai: Trạng thái mới (HOAT_DONG, BAO_TRI, NGUNG)
+
+        Returns:
+            bool: True nếu thành công
+
+        Raises:
+            ValueError: Nếu kho không tồn tại
+        """
+        session = self._get_session()
+        try:
+            kho = session.query(Kho).filter(Kho.ma_kho == ma_kho).first()
+            if not kho:
+                raise ValueError("Không tìm thấy kho")
+
+            kho.trang_thai = trang_thai
+            kho.ngay_cap_nhat = datetime.now()
+            session.commit()
+
+            return True
+
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            self._close_session(session)
+
     def calculate_fill_rate(self, ma_kho: str) -> float:
         """
         Tính tỷ lệ lấp đầy của kho

@@ -6,7 +6,7 @@ from datetime import datetime, date, timedelta
 from typing import List, Optional, Dict, Any
 from dateutil.relativedelta import relativedelta
 
-from src.models import HopDong, TrangThaiHDEnum, KhachHang, ViTri, TrangThaiViTriEnum
+from src.models import HopDong, TrangThaiHDEnum, KhachHang, ViTri, TrangThaiViTriEnum, TrangThaiTTEnum
 from src.database import SessionLocal
 
 
@@ -200,7 +200,7 @@ class HopDongService:
         from src.models import ThanhToan
         payments = self.db.query(ThanhToan).filter(
             ThanhToan.ma_hop_dong == ma_hop_dong,
-            ThanhToan.trang_thai == 'da_thanh_toan'
+            ThanhToan.trang_thai == TrangThaiTTEnum.DA_THANH_TOAN
         ).count()
         
         if payments > 0:
@@ -346,18 +346,19 @@ class HopDongService:
         
         if hop_dong.trang_thai not in [TrangThaiHDEnum.HIEU_LUC, TrangThaiHDEnum.HET_HAN]:
             raise ValueError("Hợp đồng không thể gia hạn")
-        
-        # Update contract
-        if 'ngay_ket_thuc_moi' in data:
-            hop_dong.ngay_ket_thuc = data['ngay_ket_thuc_moi']
-        if 'gia_thue_moi' in data:
-            hop_dong.gia_thue = data['gia_thue_moi']
-        
-        hop_dong.trang_thai = TrangThaiHDEnum.GIA_HAN
-        
+
+        # Only set GIA_HAN if actual renewal data was provided
+        has_renewal_data = 'ngay_ket_thuc_moi' in data or 'gia_thue_moi' in data
+        if has_renewal_data:
+            if 'ngay_ket_thuc_moi' in data:
+                hop_dong.ngay_ket_thuc = data['ngay_ket_thuc_moi']
+            if 'gia_thue_moi' in data:
+                hop_dong.gia_thue = data['gia_thue_moi']
+            hop_dong.trang_thai = TrangThaiHDEnum.GIA_HAN
+
         self.db.commit()
         self.db.refresh(hop_dong)
-        
+
         return hop_dong
     
     def terminate(self, ma_hop_dong: str, ly_do: str) -> bool:
@@ -390,9 +391,33 @@ class HopDongService:
             vi_tri.trang_thai = TrangThaiViTriEnum.TRONG
         
         self.db.commit()
-        
+
         return True
-    
+
+    def update_status(self, ma_hop_dong: str, trang_thai: TrangThaiHDEnum) -> HopDong:
+        """
+        Cập nhật trạng thái hợp đồng
+
+        Args:
+            ma_hop_dong: Mã hợp đồng
+            trang_thai: Trạng thái mới (HIEU_LUC, HET_HAN, GIA_HAN, CHAM_DUT)
+
+        Returns:
+            HopDong: Hợp đồng đã update
+
+        Raises:
+            ValueError: Nếu hợp đồng không tồn tại
+        """
+        hop_dong = self.get_by_id(ma_hop_dong)
+        if not hop_dong:
+            raise ValueError("Không tìm thấy hợp đồng")
+
+        hop_dong.trang_thai = trang_thai
+        self.db.commit()
+        self.db.refresh(hop_dong)
+
+        return hop_dong
+
     def get_remaining_days(self, ma_hop_dong: str) -> Optional[int]:
         """
         Get remaining days of contract

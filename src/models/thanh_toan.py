@@ -1,23 +1,10 @@
 """
 Thanh toán model
 """
-import enum
 from sqlalchemy import Column, String, Float, Date, Enum, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from .base import BaseModel
-
-class LoaiPhiEnum(enum.Enum):
-    """Loại phí thanh toán"""
-    TIEN_COC = 'tien_coc'
-    THUE_THANG = 'thue_thang'
-    PHU_PHI = 'phu_phi'
-    PHI_PHAT = 'phi_phat'
-
-class TrangThaiTTEnum(enum.Enum):
-    """Trạng thái thanh toán"""
-    DA_THANH_TOAN = 'da_thanh_toan'
-    CHUA_THANH_TOAN = 'chua_thanh_toan'
-    QUA_HAN = 'qua_han'
+from .enums import LoaiPhiEnum, TrangThaiTTEnum
 
 class ThanhToan(BaseModel):
     """

@@ -1,21 +1,12 @@
 """
 Nhân viên model
 """
-import enum
 from sqlalchemy import Column, String, Enum, Text
 from .base import BaseModel
+from .enums import VaiTroNhanVienEnum, TrangThaiNhanVienEnum
 
-class VaiTroNVEuum(enum.Enum):
-    """Vai trò nhân viên"""
-    QUAN_TRI = 'quan_tri'
-    KINH_DOANH = 'kinh_doanh'
-    KHO = 'kho'
-    KE_TOAN = 'ke_toan'
-
-class TrangThaiNhanVienEnum(enum.Enum):
-    """Trạng thái nhân viên"""
-    HOAT_DONG = 'hoat_dong'
-    NGUNG_HOAT_DONG = 'ngung_hoat_dong'
+# Re-export with original name for backward compatibility
+VaiTroNVEuum = VaiTroNhanVienEnum
 
 class NhanVien(BaseModel):
     """

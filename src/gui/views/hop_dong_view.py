@@ -4,7 +4,7 @@ Hợp đồng View - Giao diện Quản lý Hợp đồng
 """
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QFrame, QComboBox, QDateEdit, QMessageBox
+    QFrame, QComboBox, QDateEdit, QMessageBox, QDialog, QTextEdit
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QDate
 from datetime import datetime, timedelta
@@ -167,14 +167,14 @@ class HopDongView(QWidget):
                 padding: 12px;
             }
         """)
-        
+
         layout = QHBoxLayout(filter_bar)
         layout.setSpacing(12)
-        
+
         # Search box
         self.search_box = SearchBox(placeholder="🔍 Tìm theo mã, khách hàng, vị trí...")
         layout.addWidget(self.search_box, 1)
-        
+
         # Filter by status
         layout.addWidget(QLabel("Trạng thái:"))
         self.filter_trang_thai = QComboBox()
@@ -185,7 +185,7 @@ class HopDongView(QWidget):
         self.filter_trang_thai.addItem("🔄 Gia hạn", "gia_han")
         self.filter_trang_thai.setFixedWidth(180)
         layout.addWidget(self.filter_trang_thai)
-        
+
         # Date range filter
         layout.addWidget(QLabel("Từ ngày:"))
         self.filter_tu_ngay = QDateEdit()
@@ -193,14 +193,36 @@ class HopDongView(QWidget):
         self.filter_tu_ngay.setDate(QDate.currentDate().addMonths(-1))
         self.filter_tu_ngay.setFixedWidth(120)
         layout.addWidget(self.filter_tu_ngay)
-        
+
         layout.addWidget(QLabel("Đến ngày:"))
         self.filter_den_ngay = QDateEdit()
         self.filter_den_ngay.setCalendarPopup(True)
         self.filter_den_ngay.setDate(QDate.currentDate().addMonths(1))
         self.filter_den_ngay.setFixedWidth(120)
         layout.addWidget(self.filter_den_ngay)
-        
+
+        # Update status button
+        self.update_status_btn = QPushButton("🔄 Cập nhật trạng thái")
+        self.update_status_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #ff9800;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #f57c00;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+            }
+        """)
+        self.update_status_btn.setEnabled(False)
+        self.update_status_btn.clicked.connect(self._on_update_status_clicked)
+        layout.addWidget(self.update_status_btn)
+
         return filter_bar
     
     def setup_connections(self):
@@ -208,13 +230,79 @@ class HopDongView(QWidget):
         # Table events
         self.table_with_toolbar.row_selected.connect(self._on_row_selected)
         self.table_with_toolbar.row_double_clicked.connect(self._on_row_double_clicked)
-        
+
         # Toolbar buttons
         self.table_with_toolbar.add_clicked.connect(self._on_add_clicked)
         self.table_with_toolbar.edit_clicked.connect(self._on_edit_clicked)
         self.table_with_toolbar.delete_clicked.connect(self._on_delete_clicked)
         self.table_with_toolbar.refresh_clicked.connect(self._on_refresh_clicked)
+        self.table_with_toolbar.export_clicked.connect(self._on_export_excel_clicked)
         self.pdf_export_btn.clicked.connect(self._on_pdf_export_clicked)
+
+    def _on_export_excel_clicked(self):
+        """Handle Excel export button click"""
+        try:
+            from src.utils.export_service import export_to_excel
+            from PyQt6.QtWidgets import QFileDialog
+            from datetime import datetime
+
+            # Get all data from table
+            all_data = self.table_with_toolbar.table._data
+            if not all_data:
+                MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu để xuất")
+                return
+
+            # Prepare data for export
+            export_data = []
+            for row in all_data:
+                if "__data" in row:
+                    hd = row["__data"]
+                    # Get customer name
+                    try:
+                        khach_hang = self.khach_hang_service.get_by_id(hd.ma_khach_hang)
+                        ten_khach_hang = khach_hang.ho_ten if khach_hang else hd.ma_khach_hang
+                    except:
+                        ten_khach_hang = hd.ma_khach_hang
+
+                    # Get position info
+                    try:
+                        vi_tri = self.vi_tri_service.get_by_id(hd.ma_vi_tri)
+                        vi_tri_info = f"{vi_tri.khu_vuc}-{vi_tri.hang}-{vi_tri.tang}" if vi_tri else hd.ma_vi_tri
+                    except:
+                        vi_tri_info = hd.ma_vi_tri
+
+                    export_data.append({
+                        "Mã HĐ": hd.ma_hop_dong,
+                        "Khách Hàng": ten_khach_hang,
+                        "Vị Trí": vi_tri_info,
+                        "Ngày BĐ": hd.ngay_bat_dau.strftime("%d/%m/%Y") if hd.ngay_bat_dau else "",
+                        "Ngày KT": hd.ngay_ket_thuc.strftime("%d/%m/%Y") if hd.ngay_ket_thuc else "",
+                        "Giá Thuê": hd.gia_thue,
+                        "Tiền cọc": hd.tien_coc or 0,
+                        "Trạng thái": self._get_trang_thai_label(hd.trang_thai),
+                    })
+
+            if not export_data:
+                MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu hợp đồng để xuất")
+                return
+
+            # Ask for save location
+            default_name = f"hop_dong_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Xuất Excel",
+                default_name,
+                "Excel Files (*.xlsx)"
+            )
+
+            if file_path:
+                export_to_excel(export_data, file_path)
+                MessageDialog.success(self, "Thành công", f"Đã xuất file Excel:\n{file_path}")
+
+        except ImportError as e:
+            MessageDialog.error(self, "Thiếu thư viện", "Cần cài đặt pandas và openpyxl:\npip install pandas openpyxl")
+        except Exception as e:
+            MessageDialog.error(self, "Lỗi", f"Không thể xuất Excel:\n{str(e)}")
 
     def _on_pdf_export_clicked(self):
         """Handle PDF export button click"""
@@ -392,6 +480,7 @@ class HopDongView(QWidget):
             self.info_label.setText(
                 f"Đang xem: {self.current_hop_dong.ma_hop_dong} - {self._get_trang_thai_label(self.current_hop_dong.trang_thai)}"
             )
+            self.update_status_btn.setEnabled(True)
     
     def _on_row_double_clicked(self, row_index: int, row_data: dict):
         """Handle row double click"""
@@ -468,7 +557,7 @@ class HopDongView(QWidget):
         if not self.current_hop_dong:
             MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn một hợp đồng để chấm dứt")
             return
-        
+
         # Confirm terminate
         confirmed = ConfirmDialog.ask(
             self,
@@ -477,7 +566,7 @@ class HopDongView(QWidget):
             "❌ Chấm dứt",
             "⏹️ Hủy"
         )
-        
+
         if confirmed:
             # Ask for reason
             from PyQt6.QtWidgets import QInputDialog
@@ -486,7 +575,7 @@ class HopDongView(QWidget):
                 "Lý do chấm dứt",
                 "Vui lòng nhập lý do chấm dứt:"
             )
-            
+
             if ok and reason:
                 try:
                     success = self.service.terminate(self.current_hop_dong.ma_hop_dong, reason)
@@ -499,6 +588,143 @@ class HopDongView(QWidget):
                         MessageDialog.error(self, "Lỗi", "Không thể chấm dứt hợp đồng")
                 except Exception as e:
                     MessageDialog.error(self, "Lỗi", f"Không thể chấm dứt hợp đồng:\n{str(e)}")
+
+    def _on_update_status_clicked(self):
+        """Handle update status button click"""
+        if not self.current_hop_dong:
+            MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn một hợp đồng để cập nhật trạng thái")
+            return
+
+        # Get current status
+        current_status = self.current_hop_dong.trang_thai
+        current_status_value = current_status.value if hasattr(current_status, 'value') else str(current_status)
+
+        # Create status selection dialog
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Cập nhật trạng thái hợp đồng")
+        dialog.setMinimumWidth(400)
+        dialog.setModal(True)
+        dialog.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+            }
+        """)
+
+        layout = QVBoxLayout(dialog)
+        layout.setSpacing(16)
+        layout.setContentsMargins(30, 30, 30, 30)
+
+        # Info
+        info_label = QLabel(f"Hợp đồng: <b>{self.current_hop_dong.ma_hop_dong}</b>")
+        info_label.setStyleSheet("font-size: 14px; color: #31302e;")
+        layout.addWidget(info_label)
+
+        current_label = QLabel(f"Trạng thái hiện tại: <b>{self._get_trang_thai_label(current_status)}</b>")
+        current_label.setStyleSheet("font-size: 14px; color: #615d59;")
+        layout.addWidget(current_label)
+
+        # Status selection
+        layout.addWidget(QLabel("Chọn trạng thái mới:"))
+        status_combo = QComboBox()
+        status_options = [
+            ("✅ Hiệu lực", TrangThaiHDEnum.HIEU_LUC),
+            ("⏰ Hết hạn", TrangThaiHDEnum.HET_HAN),
+            ("🔄 Gia hạn", TrangThaiHDEnum.GIA_HAN),
+            ("❌ Chấm dứt", TrangThaiHDEnum.CHAM_DUT),
+        ]
+        for label, enum_val in status_options:
+            status_combo.addItem(label, enum_val)
+            # Set current status as selected
+            if enum_val.value == current_status_value:
+                status_combo.setCurrentIndex(status_combo.count() - 1)
+
+        layout.addWidget(status_combo)
+
+        # Reason field (only visible when terminating)
+        reason_label = QLabel("Lý do thay đổi:")
+        reason_label.setVisible(False)
+        layout.addWidget(reason_label)
+
+        reason_input = QTextEdit()
+        reason_input.setMaximumHeight(80)
+        reason_input.setPlaceholderText("Nhập lý do (bắt buộc khi chấm dứt)")
+        reason_input.setVisible(False)
+        layout.addWidget(reason_input)
+
+        def on_status_changed(index):
+            """Show/hide reason field based on status"""
+            selected_enum = status_combo.currentData()
+            is_termination = selected_enum == TrangThaiHDEnum.CHAM_DUT
+            reason_label.setVisible(is_termination)
+            reason_input.setVisible(is_termination)
+
+        status_combo.currentIndexChanged.connect(on_status_changed)
+
+        # Buttons
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+
+        cancel_btn = QPushButton("Hủy")
+        cancel_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #f6f5f4;
+                color: #31302e;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: 500;
+            }
+        """)
+        cancel_btn.setFixedWidth(100)
+        cancel_btn.clicked.connect(dialog.reject)
+        button_layout.addWidget(cancel_btn)
+
+        save_btn = QPushButton("Lưu")
+        save_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #0075de;
+                color: #ffffff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #005bab;
+            }
+        """)
+        save_btn.setFixedWidth(100)
+        save_btn.clicked.connect(dialog.accept)
+        button_layout.addWidget(save_btn)
+
+        layout.addLayout(button_layout)
+
+        # Execute dialog
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            new_status = status_combo.currentData()
+            reason = reason_input.toPlainText().strip() if new_status == TrangThaiHDEnum.CHAM_DUT else None
+
+            # Validate reason for termination
+            if new_status == TrangThaiHDEnum.CHAM_DUT and not reason:
+                MessageDialog.warning(self, "Cảnh báo", "Vui lòng nhập lý do chấm dứt hợp đồng")
+                return
+
+            try:
+                if new_status == TrangThaiHDEnum.CHAM_DUT:
+                    # Use terminate method for proper cleanup
+                    self.service.terminate(self.current_hop_dong.ma_hop_dong, reason or "Không có lý do")
+                else:
+                    # Use update_status for other status changes
+                    self.service.update_status(self.current_hop_dong.ma_hop_dong, new_status)
+
+                MessageDialog.success(self, "Thành công", "Đã cập nhật trạng thái hợp đồng")
+                self.load_data()
+                self.current_hop_dong = None
+                self.update_status_btn.setEnabled(False)
+            except Exception as e:
+                MessageDialog.error(self, "Lỗi", f"Không thể cập nhật trạng thái:\n{str(e)}")
     
     def _on_search_changed(self, text: str):
         """Handle search"""

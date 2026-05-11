@@ -243,7 +243,34 @@ class HangHoaService:
         self.db.delete(hang_hoa)
         self.db.commit()
         return True
-    
+
+    def update_status(self, ma_hang_hoa: str, trang_thai: str) -> HangHoa:
+        """
+        Cập nhật trạng thái hàng hóa
+
+        Args:
+            ma_hang_hoa: Mã hàng hóa
+            trang_thai: Trạng thái mới ('trong_kho', 'da_xuat')
+
+        Returns:
+            HangHoa: Hàng hóa đã update
+
+        Raises:
+            ValueError: Nếu hàng hóa không tồn tại
+        """
+        hang_hoa = self.db.query(HangHoa).filter(
+            HangHoa.ma_hang_hoa == ma_hang_hoa
+        ).first()
+
+        if not hang_hoa:
+            raise ValueError("Không tìm thấy hàng hóa")
+
+        hang_hoa.trang_thai = trang_thai
+        self.db.commit()
+        self.db.refresh(hang_hoa)
+
+        return hang_hoa
+
     # ==================== Import/Export Operations ====================
     
     def import_goods(self, data: Dict[str, Any]) -> HangHoa:
@@ -269,58 +296,60 @@ class HangHoaService:
         ).first()
         
         if existing:
-            # Update existing goods quantity
-            new_quantity = existing.so_luong + data['so_luong']
+            # Update existing goods quantity and recalculate value
+            old_value = existing.gia_tri or 0
+            new_value = data.get('gia_tri', 0)
+            new_total_value = old_value + new_value
+
             return self.update(existing.ma_hang_hoa, {
-                'so_luong': new_quantity,
-                'ngay_nhap': data['ngay_nhap']
+                'so_luong': existing.so_luong + data['so_luong'],
+                'ngay_nhap': data['ngay_nhap'],
+                'gia_tri': new_total_value
             })
         else:
             # Create new goods
             return self.create(data)
     
     def export_goods(self, ma_hang_hoa: str, so_luong: int, data: Dict[str, Any] = None) -> bool:
-        """
-        Export goods (xuất kho)
-        
+        """Export goods (xuất kho) with transaction safety.
+
         Args:
             ma_hang_hoa: Goods ID
             so_luong: Quantity to export
             data: Optional export data
-            
+
         Returns:
             True if exported, False otherwise
-            
+
         Raises:
-            ValueError: If insufficient quantity
+            ValueError: If insufficient quantity or goods not found
         """
-        hang_hoa = self.get_by_id(ma_hang_hoa)
-        if not hang_hoa:
-            raise ValueError("Không tìm thấy hàng hóa")
-        
         if so_luong <= 0:
             raise ValueError("Số lượng xuất phải lớn hơn 0")
-        
+
+        # Use row locking for transaction safety
+        hang_hoa = self.db.query(HangHoa).filter(
+            HangHoa.ma_hang_hoa == ma_hang_hoa
+        ).with_for_update().first()
+
+        if not hang_hoa:
+            raise ValueError("Không tìm thấy hàng hóa")
+
         if hang_hoa.so_luong < so_luong:
             raise ValueError(f"Số lượng không đủ. Hiện có: {hang_hoa.so_luong} {hang_hoa.don_vi}")
-        
-        # Update quantity
+
         new_quantity = hang_hoa.so_luong - so_luong
-        
-        update_data = {
-            'so_luong': new_quantity
-        }
-        
-        # If all goods exported, mark as exported
+
         if new_quantity == 0:
-            update_data['trang_thai'] = 'da_xuat'
-            update_data['ngay_xuat'] = datetime.now()
-        
-        if data:
-            if 'ghi_chu' in data:
-                update_data['ghi_chu'] = data['ghi_chu']
-        
-        self.update(ma_hang_hoa, update_data)
+            hang_hoa.trang_thai = 'da_xuat'
+            hang_hoa.ngay_xuat = datetime.now()
+
+        hang_hoa.so_luong = new_quantity
+
+        if data and 'ghi_chu' in data:
+            hang_hoa.ghi_chu = data['ghi_chu']
+
+        self.db.commit()
         return True
     
     # ==================== Query Methods ====================

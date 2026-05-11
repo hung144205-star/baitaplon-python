@@ -265,7 +265,42 @@ class KhachHangService:
             raise e
         finally:
             self._close_session(session)
-    
+
+    def update_status(self, ma_khach_hang: str, trang_thai: TrangThaiKHEnum) -> bool:
+        """
+        Cập nhật trạng thái khách hàng
+
+        Args:
+            ma_khach_hang: Mã khách hàng
+            trang_thai: Trạng thái mới (HOAT_DONG, TAM_KHOA)
+
+        Returns:
+            bool: True nếu thành công
+
+        Raises:
+            ValueError: Nếu khách hàng không tồn tại
+        """
+        session = self._get_session()
+        try:
+            khach_hang = session.query(KhachHang).filter(
+                KhachHang.ma_khach_hang == ma_khach_hang
+            ).first()
+
+            if not khach_hang:
+                raise ValueError("Không tìm thấy khách hàng")
+
+            khach_hang.trang_thai = trang_thai
+            khach_hang.ngay_cap_nhat = datetime.now()
+            session.commit()
+
+            return True
+
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            self._close_session(session)
+
     def get_by_status(self, trang_thai: str, skip: int = 0, 
                       limit: int = 100) -> List[KhachHang]:
         """
@@ -384,26 +419,25 @@ class KhachHangService:
             ValueError: Nếu dữ liệu không hợp lệ
         """
         errors = []
-        
+
         # Validate required fields
         if not is_update:
             required_fields = ['ho_ten', 'so_dien_thoai', 'dia_chi']
             for field in required_fields:
-                if field in data:
-                    result = validate_required(data[field], field)
-                    if not result:
-                        errors.append(result.message)
-        
+                result = validate_required(data.get(field), field)
+                if not result.is_valid:
+                    errors.append(result.message)
+
         # Validate email
-        if 'email' in data and data['email']:
+        if data.get('email'):
             result = validate_email(data['email'])
-            if not result:
+            if not result.is_valid:
                 errors.append(result.message)
-        
+
         # Validate phone
-        if 'so_dien_thoai' in data:
+        if data.get('so_dien_thoai'):
             result = validate_phone(data['so_dien_thoai'])
-            if not result:
+            if not result.is_valid:
                 errors.append(result.message)
         
         if errors:

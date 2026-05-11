@@ -4,19 +4,8 @@ Khách hàng model
 from sqlalchemy import Column, String, Date, Enum
 from sqlalchemy.orm import relationship
 from datetime import date
-import enum
 from .base import BaseModel
-
-class LoaiKhachEnum(enum.Enum):
-    """Loại khách hàng"""
-    CA_NHAN = 'ca_nhan'
-    DOANH_NGHIEP = 'doanh_nghiep'
-
-class TrangThaiKHEnum(enum.Enum):
-    """Trạng thái khách hàng"""
-    HOAT_DONG = 'hoat_dong'
-    TAM_KHOA = 'tam_khoa'
-    DA_XOA = 'da_xoa'
+from .enums import LoaiKhachEnum, TrangThaiKHEnum
 
 class KhachHang(BaseModel):
     """

@@ -1,17 +1,9 @@
 """
 System log model
 """
-import enum
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Enum
 from .base import BaseModel
-
-class HanhDongLogEnum(enum.Enum):
-    """Hành động log"""
-    THEM = 'THEM'
-    SUA = 'SUA'
-    XOA = 'XOA'
-    DANG_NHAP = 'DANG_NHAP'
-    DANG_XUAT = 'DANG_XUAT'
+from .enums import HanhDongLogEnum
 
 class SystemLog(BaseModel):
     """

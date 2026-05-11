@@ -58,8 +58,14 @@ class ReportService:
         """Get customer statistics"""
         try:
             khach_hangs = self.khach_hang_service.get_all(limit=1000)
-            active = sum(1 for kh in khach_hangs if kh.trang_thai == 'hoat_dong')
-            
+
+            def is_active(kh):
+                if hasattr(kh.trang_thai, 'value'):
+                    return kh.trang_thai.value == 'hoat_dong'
+                return str(kh.trang_thai) == 'hoat_dong'
+
+            active = sum(1 for kh in khach_hangs if is_active(kh))
+
             return {
                 'total': len(khach_hangs),
                 'active': active,
@@ -72,14 +78,20 @@ class ReportService:
         """Get warehouse statistics"""
         try:
             khos = self.kho_service.get_all(limit=100)
-            active = sum(1 for k in khos if str(k.trang_thai) == 'hoat_dong')
-            
+
+            def is_active_kho(k):
+                if hasattr(k.trang_thai, 'value'):
+                    return k.trang_thai.value == 'hoat_dong'
+                return str(k.trang_thai) == 'hoat_dong'
+
+            active = sum(1 for k in khos if is_active_kho(k))
+
             total_dien_tich = sum(k.dien_tich or 0 for k in khos)
             total_suc_chua = sum(k.suc_chua or 0 for k in khos)
-            
-            fill_rates = [self.kho_service.calculate_fill_rate(k.ma_kho) for k in khos if k.trang_thai == 'hoat_dong']
+
+            fill_rates = [self.kho_service.calculate_fill_rate(k.ma_kho) for k in khos if is_active_kho(k)]
             avg_fill_rate = sum(fill_rates) / len(fill_rates) if fill_rates else 0
-            
+
             return {
                 'total': len(khos),
                 'active': active,
@@ -94,27 +106,31 @@ class ReportService:
         """Get contract statistics"""
         try:
             hop_dongs = self.hop_dong_service.get_all(limit=1000)
-            
+
             by_status = {}
             for hd in hop_dongs:
-                status = str(hd.trang_thai)
-                by_status[status] = by_status.get(status, 0) + 1
-            
+                status_val = hd.trang_thai.value if hasattr(hd.trang_thai, 'value') else str(hd.trang_thai)
+                by_status[status_val] = by_status.get(status_val, 0) + 1
+
             # Expiring soon (within 30 days)
             today = date.today()
             expiring_soon = sum(
                 1 for hd in hop_dongs
-                if str(hd.trang_thai) == 'hieu_luc'
+                if (hd.trang_thai.value if hasattr(hd.trang_thai, 'value') else str(hd.trang_thai)) == 'hieu_luc'
                 and 0 <= (hd.ngay_ket_thuc - today).days <= 30
             )
-            
+
             # Total revenue from contracts
-            total_revenue = sum(
-                self.hop_dong_service.calculate_total_amount(hd.ma_hop_dong)['tong_tien_thue']
-                for hd in hop_dongs
-                if str(hd.trang_thai) == 'hieu_luc'
-            )
-            
+            total_revenue = 0
+            for hd in hop_dongs:
+                status_str = hd.trang_thai.value if hasattr(hd.trang_thai, 'value') else str(hd.trang_thai)
+                if status_str == 'hieu_luc':
+                    duration_months = self.hop_dong_service.get_contract_duration_months(hd.ma_hop_dong)
+                    if duration_months and duration_months > 0:
+                        gia_thue = hd.gia_thue or 0
+                        if isinstance(gia_thue, (int, float)):
+                            total_revenue += duration_months * gia_thue
+
             return {
                 'total': len(hop_dongs),
                 'by_status': by_status,
@@ -141,21 +157,22 @@ class ReportService:
         """Get revenue statistics"""
         try:
             hop_dongs = self.hop_dong_service.get_all(limit=1000)
-            
+
             # This month
             today = date.today()
             this_month_start = date(today.year, today.month, 1)
-            
+
             monthly_revenue = 0
             yearly_revenue = 0
-            
+
             for hd in hop_dongs:
-                if str(hd.trang_thai) == 'hieu_luc':
+                status_str = hd.trang_thai.value if hasattr(hd.trang_thai, 'value') else str(hd.trang_thai)
+                if status_str == 'hieu_luc':
                     # Simple calculation: monthly rent * months active
                     monthly_revenue += hd.gia_thue or 0
-            
+
             yearly_revenue = monthly_revenue * 12
-            
+
             return {
                 'monthly_revenue': monthly_revenue,
                 'yearly_revenue': yearly_revenue,
@@ -168,11 +185,17 @@ class ReportService:
         """Get alert statistics"""
         try:
             inventory_stats = self.inventory_service.get_alert_statistics()
-            
+
+            # Safely extract numeric values
+            def safe_int(val, default=0):
+                if isinstance(val, (int, float)):
+                    return int(val)
+                return default
+
             return {
-                'low_stock_count': inventory_stats.get('low', 0) + inventory_stats.get('critical', 0) + inventory_stats.get('empty', 0),
-                'critical_alerts': inventory_stats.get('critical', 0) + inventory_stats.get('empty', 0),
-                'expiring_contracts': self.hop_dong_service.get_expiring_soon(30).__len__() if hasattr(self.hop_dong_service, 'get_expiring_soon') else 0
+                'low_stock_count': safe_int(inventory_stats.get('low', 0)) + safe_int(inventory_stats.get('critical', 0)) + safe_int(inventory_stats.get('empty', 0)),
+                'critical_alerts': safe_int(inventory_stats.get('critical', 0)) + safe_int(inventory_stats.get('empty', 0)),
+                'expiring_contracts': len(self.hop_dong_service.get_expiring_soon(30)) if hasattr(self.hop_dong_service, 'get_expiring_soon') else 0
             }
         except:
             return {'low_stock_count': 0, 'critical_alerts': 0, 'expiring_contracts': 0}

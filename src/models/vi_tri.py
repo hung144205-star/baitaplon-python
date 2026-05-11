@@ -1,16 +1,10 @@
 """
 Vị trí lưu trữ model
 """
-import enum
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from .base import BaseModel
-
-class TrangThaiViTriEnum(enum.Enum):
-    """Trạng thái vị trí"""
-    TRONG = 'trong'
-    DA_THUE = 'da_thue'
-    BAO_TRI = 'bao_tri'
+from .enums import TrangThaiViTriEnum
 
 class ViTri(BaseModel):
     """

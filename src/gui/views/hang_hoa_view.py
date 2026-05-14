@@ -167,12 +167,27 @@ class HangHoaView(QWidget):
         layout.addWidget(QLabel("Loại hàng:"))
         self.filter_loai_hang = QComboBox()
         self.filter_loai_hang.addItem("Tất cả", "")
-        self.filter_loai_hang.addItem("Điện tử", "Điện tử")
-        self.filter_loai_hang.addItem("May mặc", "May mặc")
-        self.filter_loai_hang.addItem("Thực phẩm", "Thực phẩm")
-        self.filter_loai_hang.addItem("Khác", "Khác")
         self.filter_loai_hang.setFixedWidth(150)
+        self._load_loai_hangs()
         layout.addWidget(self.filter_loai_hang)
+
+        # Manage categories button
+        self.manage_loai_btn = QPushButton("📂 Quản lý loại")
+        self.manage_loai_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #7c4dff;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #651fff;
+            }
+        """)
+        self.manage_loai_btn.clicked.connect(self._on_manage_loai_hang)
+        layout.addWidget(self.manage_loai_btn)
         
         # Filter by status
         layout.addWidget(QLabel("Trạng thái:"))
@@ -216,6 +231,34 @@ class HangHoaView(QWidget):
                 self.filter_hop_dong.addItem(display, hd.ma_hop_dong)
         except Exception as e:
             print(f"Error loading contracts: {e}")
+
+    def _load_loai_hangs(self):
+        """Load goods types into filter"""
+        try:
+            from src.services import LoaiHangService
+            service = LoaiHangService()
+            loai_hangs = service.get_all(limit=100)
+
+            # Keep "Tất cả" item at index 0
+            while self.filter_loai_hang.count() > 1:
+                self.filter_loai_hang.removeItem(1)
+
+            for lh in loai_hangs:
+                self.filter_loai_hang.addItem(lh.ten_loai, lh.ten_loai)
+        except Exception as e:
+            print(f"Error loading loai hang: {e}")
+
+    def _on_manage_loai_hang(self):
+        """Handle manage categories button click"""
+        from src.gui.forms import LoaiHangManagerDialog
+        dialog = LoaiHangManagerDialog(self)
+        dialog.loai_hang_changed.connect(self._on_loai_hang_changed)
+        dialog.exec()
+
+    def _on_loai_hang_changed(self):
+        """Handle when loai hang changed"""
+        self._load_loai_hangs()
+        self._apply_filters()
     
     def setup_connections(self):
         """Setup signal connections"""
@@ -754,7 +797,7 @@ class HangHoaView(QWidget):
                 })
             
             self.table_with_toolbar.set_data(data)
-            self._update_statistics(data)
+            self._update_statistics(hang_hoas)
             self.info_label.setText(f"Tổng: {len(data)} mặt hàng")
             
         except Exception as e:

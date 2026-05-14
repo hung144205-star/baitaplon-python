@@ -34,6 +34,14 @@ from .inventory_service import InventoryService
 from .report_service import ReportService, ReportType
 from .base_service import BaseService
 from .transaction_context import TransactionContext, tx, transactional
+from .loai_hang_service import (
+    LoaiHangService,
+    create_loai_hang,
+    get_loai_hang,
+    get_all_loai_hangs,
+    update_loai_hang,
+    delete_loai_hang,
+)
 
 __all__ = [
     # Base classes
@@ -48,6 +56,7 @@ __all__ = [
     'ViTriService',
     'HopDongService',
     'HangHoaService',
+    'LoaiHangService',
     'ThanhToanService',
     'HopDongHistoryService',
     'InventoryService',
@@ -81,4 +90,9 @@ __all__ = [
     'get_inventory',
     'import_goods',
     'export_goods',
+    'create_loai_hang',
+    'get_loai_hang',
+    'get_all_loai_hangs',
+    'update_loai_hang',
+    'delete_loai_hang',
 ]

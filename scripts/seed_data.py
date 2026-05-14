@@ -14,11 +14,11 @@ sys.path.insert(0, project_root)
 
 from src.database.connection import get_connection
 from src.models import (
-    Base, KhachHang, Kho, ViTri, HopDong, HangHoa, 
-    ThanhToan, NhanVien, SystemLog, BaoCao,
-    LoaiKhachEnum, TrangThaiKHEnum, TrangThaiKhoEnum, 
-    TrangThaiViTriEnum, TrangThaiHDEnum, LoaiPhiEnum, 
-    TrangThaiTTEnum, VaiTroNVEuum, TrangThaiNhanVienEnum, HanhDongLogEnum
+    Base, KhachHang, Kho, ViTri, HopDong, HangHoa,
+    ThanhToan, NhanVien, SystemLog, BaoCao, LoaiHang,
+    LoaiKhachEnum, TrangThaiKHEnum, TrangThaiKhoEnum,
+    TrangThaiViTriEnum, TrangThaiHDEnum, LoaiPhiEnum,
+    TrangThaiTTEnum, VaiTroNhanVienEnum, TrangThaiNhanVienEnum, HanhDongLogEnum
 )
 from src.services.auth.auth_service import AuthService
 
@@ -28,70 +28,70 @@ def seed_nhan_vien(session, auth_service):
         NhanVien(
             ma_nhan_vien='NV001', ho_ten='Nguyễn Văn Admin',
             email='admin@warehouse.local', so_dien_thoai='0901000001',
-            vai_tro=VaiTroNVEuum.QUAN_TRI, tai_khoan='admin',
+            vai_tro=VaiTroNhanVienEnum.QUAN_TRI, tai_khoan='admin',
             mat_khau=auth_service.hash_password('admin123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV002', ho_ten='Trần Thị Mai',
             email='mai.tran@warehouse.local', so_dien_thoai='0901000002',
-            vai_tro=VaiTroNVEuum.KE_TOAN, tai_khoan='mayke',
+            vai_tro=VaiTroNhanVienEnum.KE_TOAN, tai_khoan='mayke',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV003', ho_ten='Lê Hoàng Nam',
             email='nam.hoang@warehouse.local', so_dien_thoai='0901000003',
-            vai_tro=VaiTroNVEuum.KINH_DOANH, tai_khoan='namkd',
+            vai_tro=VaiTroNhanVienEnum.KINH_DOANH, tai_khoan='namkd',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV004', ho_ten='Phạm Thị Lan',
             email='lan.pham@warehouse.local', so_dien_thoai='0901000004',
-            vai_tro=VaiTroNVEuum.KHO, tai_khoan='lankho',
+            vai_tro=VaiTroNhanVienEnum.KHO, tai_khoan='lankho',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV005', ho_ten='Đặng Minh Tuấn',
             email='tuan.dang@warehouse.local', so_dien_thoai='0901000005',
-            vai_tro=VaiTroNVEuum.KINH_DOANH, tai_khoan='tuankd',
+            vai_tro=VaiTroNhanVienEnum.KINH_DOANH, tai_khoan='tuankd',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV006', ho_ten='Bùi Thị Hương',
             email='huong.bui@warehouse.local', so_dien_thoai='0901000006',
-            vai_tro=VaiTroNVEuum.KE_TOAN, tai_khoan='huongkt',
+            vai_tro=VaiTroNhanVienEnum.KE_TOAN, tai_khoan='huongkt',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV007', ho_ten='Hoàng Văn Đức',
             email='duc.hoang@warehouse.local', so_dien_thoai='0901000007',
-            vai_tro=VaiTroNVEuum.KHO, tai_khoan='duckho',
+            vai_tro=VaiTroNhanVienEnum.KHO, tai_khoan='duckho',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV008', ho_ten='Vũ Thị Thanh',
             email='thanh.vu@warehouse.local', so_dien_thoai='0901000008',
-            vai_tro=VaiTroNVEuum.KINH_DOANH, tai_khoan='thanhkd',
+            vai_tro=VaiTroNhanVienEnum.KINH_DOANH, tai_khoan='thanhkd',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.NGUNG_HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV009', ho_ten='Đỗ Minh Quân',
             email='quan.do@warehouse.local', so_dien_thoai='0901000009',
-            vai_tro=VaiTroNVEuum.QUAN_TRI, tai_khoan='quanqt',
+            vai_tro=VaiTroNhanVienEnum.QUAN_TRI, tai_khoan='quanqt',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
         NhanVien(
             ma_nhan_vien='NV010', ho_ten='Ngô Thị Thu',
             email='thu.ngo@warehouse.local', so_dien_thoai='0901000010',
-            vai_tro=VaiTroNVEuum.KHO, tai_khoan='thukho',
+            vai_tro=VaiTroNhanVienEnum.KHO, tai_khoan='thukho',
             mat_khau=auth_service.hash_password('password123'),
             trang_thai=TrangThaiNhanVienEnum.HOAT_DONG
         ),
@@ -107,7 +107,7 @@ def seed_nhan_vien(session, auth_service):
             session.add(nv)
     
     session.commit()
-    print(f"  ✅ Added {len(nhan_viens)} NhanVien")
+    print(f"  [OK] Added {len(nhan_viens)} NhanVien")
     return nhan_viens
 
 
@@ -182,7 +182,7 @@ def seed_kho(session):
             session.add(kho)
     
     session.commit()
-    print(f"  ✅ Added {len(khos)} Kho")
+    print(f"  [OK] Added {len(khos)} Kho")
     return khos
 
 
@@ -257,7 +257,7 @@ def seed_vi_tri(session):
             session.add(vt)
     
     session.commit()
-    print(f"  ✅ Added {len(vi_tris)} ViTri")
+    print(f"  [OK] Added {len(vi_tris)} ViTri")
     return vi_tris
 
 
@@ -335,7 +335,7 @@ def seed_khach_hang(session):
             session.add(kh)
     
     session.commit()
-    print(f"  ✅ Added {len(khach_hangs)} KhachHang")
+    print(f"  [OK] Added {len(khach_hangs)} KhachHang")
     return khach_hangs
 
 
@@ -411,7 +411,7 @@ def seed_hop_dong(session):
             session.add(hd)
     
     session.commit()
-    print(f"  ✅ Added {len(hop_dongs)} HopDong")
+    print(f"  [OK] Added {len(hop_dongs)} HopDong")
     return hop_dongs
 
 
@@ -486,7 +486,7 @@ def seed_hang_hoa(session):
             session.add(hh)
     
     session.commit()
-    print(f"  ✅ Added {len(hang_hoas)} HangHoa")
+    print(f"  [OK] Added {len(hang_hoas)} HangHoa")
     return hang_hoas
 
 
@@ -562,8 +562,73 @@ def seed_thanh_toan(session):
             session.add(tt)
     
     session.commit()
-    print(f"  ✅ Added {len(thanh_toans)} ThanhToan")
+    print(f"  [OK] Added {len(thanh_toans)} ThanhToan")
     return thanh_toans
+
+
+def seed_loai_hang(session):
+    """Seed 10 loại hàng"""
+    loai_hangs = [
+        LoaiHang(
+            ma_loai='LH001', ten_loai='Điện tử',
+            mo_ta='Các sản phẩm điện tử như máy tính, điện thoại, tivi, thiết bị gia dụng',
+            ghi_chu='Cần bảo quản nơi khô ráo, tránh ẩm'
+        ),
+        LoaiHang(
+            ma_loai='LH002', ten_loai='Nội thất',
+            mo_ta='Bàn, ghế, tủ, giường, kệ và các sản phẩm trang trí nội thất',
+            ghi_chu='Cần không gian rộng, tránh va đập'
+        ),
+        LoaiHang(
+            ma_loai='LH003', ten_loai='Văn phòng phẩm',
+            mo_ta='Giấy, bút, máy in, văn phòng phẩm và vật tư văn phòng',
+            ghi_chu='Cần bảo quản nơi sạch sẽ'
+        ),
+        LoaiHang(
+            ma_loai='LH004', ten_loai='Thực phẩm',
+            mo_ta='Thực phẩm đóng gói, nông sản, thực phẩm khô',
+            ghi_chu='Cần kiểm tra hạn sử dụng, bảo quản lạnh nếu cần'
+        ),
+        LoaiHang(
+            ma_loai='LH005', ten_loai='Thiết bị an ninh',
+            mo_ta='Camera, báo động, khóa điện tử và các thiết bị bảo mật',
+            ghi_chu='Cần bảo quản cẩn thận, tránh va đập'
+        ),
+        LoaiHang(
+            ma_loai='LH006', ten_loai='May mặc',
+            mo_ta='Quần áo, vải, giày dép và các sản phẩm dệt may',
+            ghi_chu='Cần bảo quản nơi khô ráo, tránh ẩm mốc'
+        ),
+        LoaiHang(
+            ma_loai='LH007', ten_loai='Hóa chất',
+            mo_ta='Các loại hóa chất công nghiệp, phân bón, thuốc trừ sâu',
+            ghi_chu='Cần kho riêng biệt, tuân thủ quy định an toàn'
+        ),
+        LoaiHang(
+            ma_loai='LH008', ten_loai='Y tế',
+            mo_ta='Dược phẩm, thiết bị y tế, vật tư y tế',
+            ghi_chu='Cần kho đạt chuẩn GSP, bảo quản lạnh nếu cần'
+        ),
+        LoaiHang(
+            ma_loai='LH009', ten_loai='Ô tô - Phụ tùng',
+            mo_ta='Lốp xe, ắc quy, phụ tùng ô tô và xe máy',
+            ghi_chu='Cần không gian lớn, tránh ánh nắng trực tiếp'
+        ),
+        LoaiHang(
+            ma_loai='LH010', ten_loai='Vật liệu xây dựng',
+            mo_ta='Xi măng, sắt thép, gạch, đá, gỗ xẻ',
+            ghi_chu='Cần kho có mái che, chống ẩm'
+        ),
+    ]
+
+    for lh in loai_hangs:
+        existing = session.query(LoaiHang).filter(LoaiHang.ma_loai == lh.ma_loai).first()
+        if not existing:
+            session.add(lh)
+
+    session.commit()
+    print(f"  [OK] Added {len(loai_hangs)} LoaiHang")
+    return loai_hangs
 
 
 def seed_system_log(session):
@@ -638,7 +703,7 @@ def seed_system_log(session):
             pass
     
     session.commit()
-    print(f"  ✅ Added {len(logs)} SystemLog")
+    print(f"  [OK] Added {len(logs)} SystemLog")
     return logs
 
 
@@ -713,22 +778,22 @@ def seed_bao_cao(session):
             session.add(bc)
     
     session.commit()
-    print(f"  ✅ Added {len(bao_caos)} BaoCao")
+    print(f"  [OK] Added {len(bao_caos)} BaoCao")
     return bao_caos
 
 
 def main():
     print("=" * 60)
-    print("SEED DATA - Thêm dữ liệu mẫu")
+    print("SEED DATA - Add sample data")
     print("=" * 60)
-    
+
     # Get database connection
     conn = get_connection()
     session = conn.get_session()
     auth_service = AuthService()
-    
+
     try:
-        print("\n📊 Đang thêm dữ liệu mẫu...")
+        print("\n[INFO] Adding sample data...")
         
         seed_nhan_vien(session, auth_service)
         seed_kho(session)
@@ -737,16 +802,17 @@ def main():
         seed_hop_dong(session)
         seed_hang_hoa(session)
         seed_thanh_toan(session)
+        seed_loai_hang(session)
         seed_system_log(session)
         seed_bao_cao(session)
         
         print("\n" + "=" * 60)
-        print("✅ HOÀN THÀNH SEED DATA!")
+        print("[OK] HOÀN THÀNH SEED DATA!")
         print("=" * 60)
         
     except Exception as e:
         session.rollback()
-        print(f"\n❌ Lỗi: {e}")
+        print(f"\n[FAIL] Lỗi: {e}")
         raise
     finally:
         session.close()

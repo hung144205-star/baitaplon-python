@@ -24,6 +24,7 @@ from .kho import Kho
 from .vi_tri import ViTri
 from .hop_dong import HopDong
 from .hang_hoa import HangHoa
+from .loai_hang import LoaiHang
 from .thanh_toan import ThanhToan
 from .nhan_vien import NhanVien
 from .system_log import SystemLog
@@ -64,13 +65,14 @@ __all__ = [
     # Base
     'Base',
     'BaseModel',
-    
+
     # Models
     'KhachHang',
     'Kho',
     'ViTri',
     'HopDong',
     'HangHoa',
+    'LoaiHang',
     'ThanhToan',
     'NhanVien',
     'SystemLog',

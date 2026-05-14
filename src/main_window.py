@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
         modules = {
             "Khách hàng": ("ql_khach_hang", "Quản lý khách hàng", "Ctrl+K"),
             "Kho hàng": ("ql_kho", "Quản lý kho hàng", "Ctrl+O"),
+            "Vị trí": ("ql_vi_tri", "Quản lý vị trí", "Ctrl+V"),
             "Hợp đồng": ("ql_hop_dong", "Quản lý hợp đồng", "Ctrl+H"),
             "Hàng hóa": ("ql_hang_hoa", "Quản lý hàng hóa", "Ctrl+G"),
             "Thanh toán": ("ql_thanh_toan", "Quản lý thanh toán", "Ctrl+T"),
@@ -175,16 +176,18 @@ class MainWindow(QMainWindow):
         module_icons = {
             "ql_khach_hang": "👥",
             "ql_kho": "🏭",
+            "ql_vi_tri": "📍",
             "ql_hop_dong": "📄",
             "ql_hang_hoa": "📦",
             "ql_thanh_toan": "💰",
             "ql_bao_cao": "📈",
             "tro_giup": "❓",
         }
-        
+
         module_names = {
             "ql_khach_hang": "Khách hàng",
             "ql_kho": "Kho",
+            "ql_vi_tri": "Vị trí",
             "ql_hop_dong": "Hợp đồng",
             "ql_hang_hoa": "Hàng hóa",
             "ql_thanh_toan": "Thanh toán",
@@ -223,6 +226,7 @@ class MainWindow(QMainWindow):
             DashboardView,
             KhachHangView,
             KhoView,
+            ViTriView,
             HopDongView,
             HangHoaView,
             ThanhToanView,
@@ -238,6 +242,7 @@ class MainWindow(QMainWindow):
             "dashboard": DashboardView,
             "ql_khach_hang": KhachHangView,
             "ql_kho": KhoView,
+            "ql_vi_tri": ViTriView,
             "ql_hop_dong": HopDongView,
             "ql_hang_hoa": HangHoaView,
             "ql_thanh_toan": ThanhToanView,
@@ -250,6 +255,7 @@ class MainWindow(QMainWindow):
             ("dashboard", "Dashboard"),
             ("ql_khach_hang", "Quản lý Khách hàng"),
             ("ql_kho", "Quản lý Kho hàng"),
+            ("ql_vi_tri", "Quản lý Vị trí"),
             ("ql_hop_dong", "Quản lý Hợp đồng"),
             ("ql_hang_hoa", "Quản lý Hàng hóa"),
             ("ql_thanh_toan", "Quản lý Thanh toán"),
@@ -318,6 +324,7 @@ class MainWindow(QMainWindow):
             "dashboard": "Dashboard",
             "ql_khach_hang": "Khách hàng",
             "ql_kho": "Kho hàng",
+            "ql_vi_tri": "Vị trí",
             "ql_hop_dong": "Hợp đồng",
             "ql_hang_hoa": "Hàng hóa",
             "ql_thanh_toan": "Thanh toán",
@@ -344,6 +351,7 @@ class MainWindow(QMainWindow):
                 "dashboard": "Dashboard",
                 "ql_khach_hang": "Khách hàng",
                 "ql_kho": "Kho hàng",
+                "ql_vi_tri": "Vị trí",
                 "ql_hop_dong": "Hợp đồng",
                 "ql_hang_hoa": "Hàng hóa",
                 "ql_thanh_toan": "Thanh toán",

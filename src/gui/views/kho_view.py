@@ -66,7 +66,7 @@ class KhoView(QWidget):
         
         # Data table with toolbar
         self.table_with_toolbar = DataTableWithToolbar(
-            headers=["Mã Kho", "Tên Kho", "Địa Chỉ", "Diện Tích", "Sức Chứa", "Đã Sử Dụng", "% Lấp Đầy", "Trạng Thái"]
+            headers=["Mã Kho", "Tên Kho", "Địa Chỉ", "Diện Tích", "Sức Chứa", "Đã Sử Dụng", "% Lấp Đầy", "Vị Trí", "Trạng Thái"]
         )
         layout.addWidget(self.table_with_toolbar, 1)
         
@@ -178,17 +178,20 @@ class KhoView(QWidget):
         """Load data from database"""
         try:
             khos = self.service.get_all(limit=1000)
-            
+
             # Convert to table data
             data = []
             total_fill_rate = 0
-            
+
             for kho in khos:
                 if kho.trang_thai != TrangThaiKhoEnum.NGUNG:
                     # Calculate fill rate
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)
                     total_fill_rate += fill_rate
-                    
+
+                    # Get position count
+                    vi_tri_stats = self.service.get_vi_tri_count(kho.ma_kho)
+
                     data.append({
                         "Mã Kho": kho.ma_kho,
                         "Tên Kho": kho.ten_kho,
@@ -197,18 +200,19 @@ class KhoView(QWidget):
                         "Sức Chứa": f"{kho.suc_chua:,.0f} m³",
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
+                        "Vị Trí": vi_tri_stats['display'],
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
                         "__data": kho
                     })
-            
+
             self.table_with_toolbar.set_data(data)
-            
+
             # Update statistics
             self._update_statistics(khos, total_fill_rate)
-            
+
             # Update info
             self.info_label.setText(f"Tổng: {len(data)} kho")
-            
+
         except Exception as e:
             MessageDialog.error(self, "Lỗi", f"Không thể tải dữ liệu:\n{str(e)}")
     
@@ -322,27 +326,30 @@ class KhoView(QWidget):
         try:
             from src.utils.export_service import export_kho_to_excel
             from PyQt6.QtWidgets import QFileDialog
-            
+
             # Get all data
             khos_data = []
             for row in self.table_with_toolbar.table._data:
                 if "__data" in row:
                     kho = row["__data"]
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)
+                    vi_tri_stats = self.service.get_vi_tri_count(kho.ma_kho)
                     khos_data.append({
                         'ma_kho': kho.ma_kho,
                         'ten_kho': kho.ten_kho,
                         'dia_chi': kho.dia_chi,
                         'dien_tich': kho.dien_tich,
                         'suc_chua': kho.suc_chua,
+                        'vi_tri_trong': vi_tri_stats['trong'],
+                        'vi_tri_da_thue': vi_tri_stats['da_thue'],
                         'trang_thai_label': self._get_trang_thai_label(kho.trang_thai),
                         'fill_rate': fill_rate
                     })
-            
+
             if not khos_data:
                 MessageDialog.warning(self, "Cảnh báo", "Không có dữ liệu để xuất")
                 return
-            
+
             # Ask for save location
             default_name = f"kho_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
             file_path, _ = QFileDialog.getSaveFileName(
@@ -351,11 +358,11 @@ class KhoView(QWidget):
                 default_name,
                 "Excel Files (*.xlsx)"
             )
-            
+
             if file_path:
                 output = export_kho_to_excel(khos_data, file_path)
                 MessageDialog.success(self, "Thành công", f"Đã xuất file Excel:\n{output}")
-                
+
         except ImportError as e:
             MessageDialog.error(self, "Thiếu thư viện", "Cần cài đặt pandas và openpyxl:\npip install pandas openpyxl")
         except Exception as e:
@@ -368,11 +375,12 @@ class KhoView(QWidget):
         else:
             try:
                 results = self.service.search(text, limit=100)
-                
+
                 # Convert to table data
                 data = []
                 for kho in results:
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)
+                    vi_tri_stats = self.service.get_vi_tri_count(kho.ma_kho)
                     data.append({
                         "Mã Kho": kho.ma_kho,
                         "Tên Kho": kho.ten_kho,
@@ -381,32 +389,34 @@ class KhoView(QWidget):
                         "Sức Chứa": f"{kho.suc_chua:,.0f} m³",
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
+                        "Vị Trí": vi_tri_stats['display'],
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
                         "__data": kho
                     })
-                
+
                 self.table_with_toolbar.set_data(data)
                 self.info_label.setText(f"Tìm thấy: {len(data)} kho")
-                
+
             except Exception as e:
                 MessageDialog.error(self, "Lỗi", f"Không thể tìm kiếm:\n{str(e)}")
     
     def _apply_filters(self):
         """Apply filters"""
         try:
-            trang_thai = self.filter_trang_thai.itemData(filter_trang_thai.currentIndex())
-            
+            trang_thai = self.filter_trang_thai.itemData(self.filter_trang_thai.currentIndex())
+
             khos = self.service.get_all(limit=1000)
-            
+
             # Filter by status
             if trang_thai:
                 khos = [k for k in khos if str(k.trang_thai) == trang_thai]
-            
+
             # Convert to table data
             data = []
             for kho in khos:
                 if kho.trang_thai != TrangThaiKhoEnum.NGUNG:
                     fill_rate = self.service.calculate_fill_rate(kho.ma_kho)
+                    vi_tri_stats = self.service.get_vi_tri_count(kho.ma_kho)
                     data.append({
                         "Mã Kho": kho.ma_kho,
                         "Tên Kho": kho.ten_kho,
@@ -415,13 +425,14 @@ class KhoView(QWidget):
                         "Sức Chứa": f"{kho.suc_chua:,.0f} m³",
                         "Đã Sử Dụng": f"{kho.da_su_dung:,.0f} m³",
                         "% Lấp Đầy": f"{fill_rate:.1f}%",
+                        "Vị Trí": vi_tri_stats['display'],
                         "Trạng Thái": self._get_trang_thai_label(kho.trang_thai),
                         "__data": kho
                     })
-            
+
             self.table_with_toolbar.set_data(data)
             self.info_label.setText(f"Tổng: {len(data)} kho")
-            
+
         except Exception as e:
             MessageDialog.error(self, "Lỗi", f"Không thể lọc dữ liệu:\n{str(e)}")
     

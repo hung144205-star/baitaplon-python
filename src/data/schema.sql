@@ -96,6 +96,16 @@ CREATE TABLE IF NOT EXISTS hang_hoa (
     FOREIGN KEY (ma_hop_dong) REFERENCES hop_dong(ma_hop_dong) ON DELETE CASCADE
 );
 
+-- Bảng loại hàng hóa
+CREATE TABLE IF NOT EXISTS loai_hang (
+    ma_loai VARCHAR(30) PRIMARY KEY,
+    ten_loai VARCHAR(100) NOT NULL,
+    mo_ta TEXT,
+    ghi_chu TEXT,
+    ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ngay_cap_nhat DATETIME
+);
+
 -- Bảng thanh toán
 CREATE TABLE IF NOT EXISTS thanh_toan (
     ma_thanh_toan VARCHAR(30) PRIMARY KEY,

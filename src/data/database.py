@@ -17,9 +17,9 @@ sys.path.insert(0, project_root)
 
 # Import models
 from src.models import (
-    Base, KhachHang, Kho, ViTri, HopDong, HangHoa, 
+    Base, KhachHang, Kho, ViTri, HopDong, HangHoa,
     ThanhToan, NhanVien, SystemLog, BaoCao,
-    VaiTroNVEuum
+    VaiTroNhanVienEnum
 )
 
 # Default database path

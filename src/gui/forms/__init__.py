@@ -10,6 +10,7 @@ from .phieu_xuat_form import PhieuXuatForm
 from .hang_hoa_form import HangHoaForm
 from .khach_hang_form import KhachHangForm
 from .thanh_toan_form import ThanhToanForm
+from .loai_hang_form import LoaiHangForm, LoaiHangManagerDialog
 
 __all__ = [
     'KhoForm',
@@ -20,4 +21,6 @@ __all__ = [
     'HangHoaForm',
     'KhachHangForm',
     'ThanhToanForm',
+    'LoaiHangForm',
+    'LoaiHangManagerDialog',
 ]

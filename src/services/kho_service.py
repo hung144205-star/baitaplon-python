@@ -268,10 +268,10 @@ class KhoService:
     def calculate_fill_rate(self, ma_kho: str) -> float:
         """
         Tính tỷ lệ lấp đầy của kho
-        
+
         Args:
             ma_kho: Mã kho
-        
+
         Returns:
             float: Tỷ lệ lấp đầy (0-100)
         """
@@ -280,7 +280,7 @@ class KhoService:
             kho = self.get_by_id(ma_kho)
             if not kho:
                 return 0.0
-            
+
             # Calculate used capacity from positions
             used_capacity = session.query(
                 ViTri.dien_tich
@@ -288,15 +288,51 @@ class KhoService:
                 ViTri.ma_kho == ma_kho,
                 ViTri.trang_thai == TrangThaiViTriEnum.DA_THUE
             ).all()
-            
+
             total_used = sum([v[0] for v in used_capacity]) if used_capacity else 0
-            
+
             if kho.suc_chua == 0:
                 return 0.0
-            
+
             fill_rate = (total_used / kho.suc_chua) * 100
             return round(fill_rate, 2)
-            
+
+        finally:
+            self._close_session(session)
+
+    def get_vi_tri_count(self, ma_kho: str) -> Dict[str, int]:
+        """
+        Lấy số lượng vị trí theo trạng thái của một kho
+
+        Args:
+            ma_kho: Mã kho
+
+        Returns:
+            Dict với:
+                - tong: Tổng số vị trí
+                - trong: Số vị trí trống
+                - da_thue: Số vị trí đã thuê
+                - bao_tri: Số vị trí bảo trì
+        """
+        session = self._get_session()
+        try:
+            vi_tris = session.query(ViTri).filter(
+                ViTri.ma_kho == ma_kho
+            ).all()
+
+            tong = len(vi_tris)
+            trong = sum(1 for v in vi_tris if v.trang_thai == TrangThaiViTriEnum.TRONG)
+            da_thue = sum(1 for v in vi_tris if v.trang_thai == TrangThaiViTriEnum.DA_THUE)
+            bao_tri = sum(1 for v in vi_tris if v.trang_thai == TrangThaiViTriEnum.BAO_TRI)
+
+            return {
+                'tong': tong,
+                'trong': trong,
+                'da_thue': da_thue,
+                'bao_tri': bao_tri,
+                'display': f"{trong} trống / {da_thue} đã thuê"
+            }
+
         finally:
             self._close_session(session)
     

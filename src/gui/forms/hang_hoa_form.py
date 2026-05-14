@@ -30,18 +30,20 @@ class HangHoaForm(QDialog):
         self.hop_dong_service = HopDongService()
         self.hang_hoa_service = HangHoaService()
         self.vi_tri_service = ViTriService()
+        self.loai_hang_service = None
         self.hang_hoa = hang_hoa
         self.is_edit_mode = hang_hoa is not None
         self.setup_ui()
         self.setup_connections()
         self.load_hop_dongs()
         self.load_vi_tris()
-        
+        self.load_loai_hangs()
+
         if self.is_edit_mode:
             self.load_hang_hoa_data()
-            self.setWindowTitle("✏️ Chỉnh sửa hàng hóa")
+            self.setWindowTitle("Chinh sua hang hoa")
         else:
-            self.setWindowTitle("➕ Thêm hàng hóa mới")
+            self.setWindowTitle("Them hang hoa moi")
     
     def setup_ui(self):
         """Setup UI"""
@@ -133,13 +135,7 @@ class HangHoaForm(QDialog):
         
         # Goods type
         self.loai_hang_input = QComboBox()
-        self.loai_hang_input.setEditable(True)
-        self.loai_hang_input.addItem("Điện tử", "Điện tử")
-        self.loai_hang_input.addItem("May mặc", "May mặc")
-        self.loai_hang_input.addItem("Thực phẩm", "Thực phẩm")
-        self.loai_hang_input.addItem("Gia dụng", "Gia dụng")
-        self.loai_hang_input.addItem("Nguyên liệu", "Nguyên liệu")
-        self.loai_hang_input.addItem("Khác", "Khác")
+        self.loai_hang_input.setEditable(False)
         self.loai_hang_input.setFixedWidth(200)
         self.loai_hang_input.setStyleSheet("""
             QComboBox {
@@ -151,139 +147,158 @@ class HangHoaForm(QDialog):
                 border: 2px solid #1976d2;
             }
         """)
-        basic_layout.addRow("Loại hàng:", self.loai_hang_input)
-        
+        basic_layout.addRow("Loai hang:", self.loai_hang_input)
+
         form_layout.addRow(basic_group)
-        
+
+        # Horizontal container for qty and spec groups
+        h_container = QWidget()
+        h_layout = QHBoxLayout(h_container)
+        h_layout.setSpacing(12)
+        h_layout.setContentsMargins(0, 0, 0, 0)
+
         # Quantity group
-        qty_group = QGroupBox("📊 Số lượng & Đơn vị")
+        qty_group = QGroupBox("So luong & Don vi")
         qty_group.setStyleSheet("""
             QGroupBox {
                 font-weight: 600;
-                font-size: 14px;
+                font-size: 13px;
                 color: #31302e;
                 border: 1px solid #bdbdbd;
                 border-radius: 6px;
-                margin-top: 12px;
-                padding-top: 12px;
+                padding: 8px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px;
             }
         """)
         qty_layout = QFormLayout(qty_group)
-        qty_layout.setSpacing(12)
-        
-        # Quantity
+        qty_layout.setSpacing(8)
+
+        # So luong & Don vi on same row
+        h_qty_layout = QHBoxLayout()
+        h_qty_layout.setSpacing(8)
+
         self.so_luong_input = QSpinBox()
         self.so_luong_input.setRange(0, 1000000)
         self.so_luong_input.setValue(1)
         self.so_luong_input.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.so_luong_input.setFixedWidth(100)
         self.so_luong_input.setStyleSheet("""
             QSpinBox {
-                padding: 8px;
+                padding: 6px;
                 border-radius: 4px;
                 border: 1px solid #bdbdbd;
             }
-            QSpinBox:focus {
-                border: 2px solid #1976d2;
-            }
         """)
-        qty_layout.addRow("Số lượng:", self.so_luong_input)
-        
-        # Unit
+
         self.don_vi_input = QComboBox()
         self.don_vi_input.setEditable(True)
-        self.don_vi_input.addItem("cái", "cái")
-        self.don_vi_input.addItem("thùng", "thùng")
-        self.don_vi_input.addItem("hộp", "hộp")
+        self.don_vi_input.addItem("cai", "cái")
+        self.don_vi_input.addItem("thung", "thùng")
+        self.don_vi_input.addItem("hop", "hộp")
         self.don_vi_input.addItem("kg", "kg")
-        self.don_vi_input.addItem("lít", "lít")
-        self.don_vi_input.addItem("mét", "mét")
-        self.don_vi_input.addItem("cuộn", "cuộn")
+        self.don_vi_input.addItem("lit", "lít")
+        self.don_vi_input.addItem("met", "mét")
+        self.don_vi_input.addItem("cuon", "cuộn")
         self.don_vi_input.addItem("bao", "bao")
-        self.don_vi_input.setFixedWidth(200)
+        self.don_vi_input.setFixedWidth(100)
         self.don_vi_input.setStyleSheet("""
             QComboBox {
-                padding: 8px;
+                padding: 6px;
                 border-radius: 4px;
                 border: 1px solid #bdbdbd;
             }
-            QComboBox:focus {
-                border: 2px solid #1976d2;
-            }
         """)
-        qty_layout.addRow("Đơn vị:", self.don_vi_input)
-        
-        form_layout.addRow(qty_group)
-        
+
+        h_qty_layout.addWidget(QLabel("SL:"))
+        h_qty_layout.addWidget(self.so_luong_input)
+        h_qty_layout.addWidget(QLabel("DV:"))
+        h_qty_layout.addWidget(self.don_vi_input)
+        h_qty_layout.addStretch()
+        qty_layout.addRow(h_qty_layout)
+
         # Specifications group
-        spec_group = QGroupBox("⚙️ Thông số kỹ thuật")
+        spec_group = QGroupBox("Thong so ky thuat")
         spec_group.setStyleSheet("""
             QGroupBox {
                 font-weight: 600;
-                font-size: 14px;
+                font-size: 13px;
                 color: #31302e;
                 border: 1px solid #bdbdbd;
                 border-radius: 6px;
-                margin-top: 12px;
-                padding-top: 12px;
+                padding: 8px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px;
             }
         """)
         spec_layout = QFormLayout(spec_group)
-        spec_layout.setSpacing(12)
-        
-        # Weight
+        spec_layout.setSpacing(8)
+
+        # Weight, Dimensions, Value on same row
+        h_spec_layout = QHBoxLayout()
+        h_spec_layout.setSpacing(8)
+
         self.trong_luong_input = QDoubleSpinBox()
         self.trong_luong_input.setRange(0, 10000)
         self.trong_luong_input.setDecimals(2)
         self.trong_luong_input.setSuffix(" kg")
         self.trong_luong_input.setValue(0.0)
         self.trong_luong_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
+        self.trong_luong_input.setFixedWidth(100)
         self.trong_luong_input.setStyleSheet("""
             QDoubleSpinBox {
-                padding: 8px;
+                padding: 6px;
                 border-radius: 4px;
                 border: 1px solid #bdbdbd;
             }
-            QDoubleSpinBox:focus {
-                border: 2px solid #1976d2;
-            }
         """)
-        spec_layout.addRow("Trọng lượng:", self.trong_luong_input)
-        
-        # Dimensions
+
         self.kich_thuoc_input = QLineEdit()
-        self.kich_thuoc_input.setPlaceholderText("Dài x Rộng x Cao (cm)")
+        self.kich_thuoc_input.setPlaceholderText("D x R x C")
+        self.kich_thuoc_input.setFixedWidth(100)
         self.kich_thuoc_input.setStyleSheet("""
             QLineEdit {
-                padding: 8px;
+                padding: 6px;
                 border-radius: 4px;
                 border: 1px solid #bdbdbd;
             }
-            QLineEdit:focus {
-                border: 2px solid #1976d2;
-            }
         """)
-        spec_layout.addRow("Kích thước:", self.kich_thuoc_input)
-        
-        # Value
+
         self.gia_tri_input = QDoubleSpinBox()
         self.gia_tri_input.setRange(0, 1000000000)
         self.gia_tri_input.setDecimals(0)
         self.gia_tri_input.setSuffix(" ₫")
         self.gia_tri_input.setValue(0.0)
         self.gia_tri_input.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
+        self.gia_tri_input.setFixedWidth(120)
         self.gia_tri_input.setStyleSheet("""
             QDoubleSpinBox {
-                padding: 8px;
+                padding: 6px;
                 border-radius: 4px;
                 border: 1px solid #bdbdbd;
             }
-            QDoubleSpinBox:focus {
-                border: 2px solid #1976d2;
-            }
         """)
-        spec_layout.addRow("Giá trị:", self.gia_tri_input)
-        
-        form_layout.addRow(spec_group)
+
+        h_spec_layout.addWidget(QLabel("TL:"))
+        h_spec_layout.addWidget(self.trong_luong_input)
+        h_spec_layout.addWidget(QLabel("KT:"))
+        h_spec_layout.addWidget(self.kich_thuoc_input)
+        h_spec_layout.addWidget(QLabel("GT:"))
+        h_spec_layout.addWidget(self.gia_tri_input)
+        h_spec_layout.addStretch()
+        spec_layout.addRow(h_spec_layout)
+
+        # Add both groups to horizontal layout
+        h_layout.addWidget(qty_group, 1)
+        h_layout.addWidget(spec_group, 1)
+
+        form_layout.addRow(h_container)
         
         # Storage group
         storage_group = QGroupBox("📍 Vị trí lưu trữ")
@@ -458,7 +473,18 @@ class HangHoaForm(QDialog):
                     self.vi_tri_input.addItem(display, vt.ma_vi_tri)
         except Exception as e:
             print(f"Error loading positions: {e}")
-    
+
+    def load_loai_hangs(self):
+        """Load goods types from database"""
+        try:
+            from src.services import LoaiHangService
+            self.loai_hang_service = LoaiHangService()
+            loai_hangs = self.loai_hang_service.get_all(limit=100)
+            for lh in loai_hangs:
+                self.loai_hang_input.addItem(lh.ten_loai, lh.ten_loai)
+        except Exception as e:
+            print(f"Error loading loai hang: {e}")
+
     def load_hang_hoa_data(self):
         """Load existing goods data"""
         if not self.hang_hoa:
@@ -574,7 +600,7 @@ class HangHoaForm(QDialog):
             data = {
                 'ma_hop_dong': self.hop_dong_selector.currentData(),
                 'ten_hang': self.ten_hang_input.text().strip(),
-                'loai_hang': self.loai_hang_input.currentData(),
+                'loai_hang': self.loai_hang_input.currentText(),
                 'so_luong': self.so_luong_input.value(),
                 'don_vi': self.don_vi_input.currentData(),
                 'trong_luong': self.trong_luong_input.value() if self.trong_luong_input.value() > 0 else None,

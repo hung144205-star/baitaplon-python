@@ -314,6 +314,7 @@ class SidebarMenu(QFrame):
             ("📊", "dashboard", "Dashboard"),
             ("👥", "ql_khach_hang", "Khách hàng"),
             ("🏭", "ql_kho", "Kho hàng"),
+            ("📍", "ql_vi_tri", "Vị trí"),
             ("📄", "ql_hop_dong", "Hợp đồng"),
             ("📦", "ql_hang_hoa", "Hàng hóa"),
             ("💰", "ql_thanh_toan", "Thanh toán"),
@@ -425,6 +426,7 @@ class NavigationPanel(QWidget):
             "dashboard",
             "ql_khach_hang",
             "ql_kho",
+            "ql_vi_tri",
             "ql_hop_dong",
             "ql_hang_hoa",
             "ql_thanh_toan",
@@ -432,7 +434,7 @@ class NavigationPanel(QWidget):
             "tro_giup",
             "settings",
         ]
-        
+
         for i, view_key in enumerate(views):
             self.nav_manager.register_view(view_key, i)
 
@@ -457,6 +459,7 @@ class NavigationPanel(QWidget):
             "dashboard": "Dashboard",
             "ql_khach_hang": "Khách hàng",
             "ql_kho": "Kho hàng",
+            "ql_vi_tri": "Vị trí",
             "ql_hop_dong": "Hợp đồng",
             "ql_hang_hoa": "Hàng hóa",
             "ql_thanh_toan": "Thanh toán",

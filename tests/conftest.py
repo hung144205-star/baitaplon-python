@@ -1,71 +1,40 @@
-#!/usr/bin/env python3
 """
-Pytest configuration and fixtures
+Test configuration and fixtures
 """
 import pytest
 import sys
 from pathlib import Path
 
-# Add src to path
+# Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-@pytest.fixture(scope='session')
-def test_database():
-    """
-    Setup test database
-    Use a separate database for testing to avoid modifying production data
-    """
-    # TODO: Configure test database connection
-    # For now, tests will use the production database
-    # In the future, we should use an in-memory SQLite or separate test DB
-    yield 'test_db'
+@pytest.fixture(scope='function', autouse=True)
+def reset_db_connection():
+    """Reset database connection before each test"""
+    import src.database.connection as db_conn
+    # Reset singleton so each test gets fresh connection
+    db_conn.db_connection = None
+    yield
+    # Cleanup after test
+    db_conn.db_connection = None
 
 
 @pytest.fixture(scope='function')
-def cleanup_test_data():
-    """
-    Cleanup test data after each test
-    """
-    yield
-    # Cleanup logic will be in individual test fixtures
-    # This is a placeholder for future cleanup implementation
-    pass
+def clean_db():
+    """Provide clean database for tests"""
+    import src.database.connection as db_conn
+    from src.models import Base
 
+    # Reset connection
+    db_conn.db_connection = None
+    conn = db_conn.get_connection()
 
-def pytest_configure(config):
-    """Configure pytest"""
-    config.addinivalue_line(
-        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
-    )
-    config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests"
-    )
+    # Create all tables
+    Base.metadata.create_all(conn.get_engine())
 
+    yield conn
 
-@pytest.fixture
-def sample_kho_data():
-    """Sample kho data for testing"""
-    return {
-        'ten_kho': 'Kho Test',
-        'dia_chi': '123 Test St',
-        'dien_tich': 1000.0,
-        'suc_chua': 5000.0,
-        'trang_thai': 'hoat_dong',
-        'ghi_chu': 'Test kho'
-    }
-
-
-@pytest.fixture
-def sample_vi_tri_data():
-    """Sample vi_tri data for testing"""
-    return {
-        'ma_kho': 'KHO001',
-        'khu_vuc': 'A',
-        'hang': '01',
-        'tang': 1,
-        'dien_tich': 50.0,
-        'chieu_cao': 3.0,
-        'gia_thue': 150000.0,
-        'trang_thai': 'trong'
-    }
+    # Cleanup - drop all tables after test
+    Base.metadata.drop_all(conn.get_engine())
+    db_conn.db_connection = None

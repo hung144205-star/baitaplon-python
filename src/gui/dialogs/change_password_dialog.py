@@ -28,6 +28,7 @@ class ChangePasswordDialog(QDialog):
         """Setup UI"""
         self.setWindowTitle("🔐 Đổi mật khẩu")
         self.setMinimumWidth(420)
+        self.setMinimumHeight(500)
         self.setModal(True)
         
         self.setStyleSheet("""

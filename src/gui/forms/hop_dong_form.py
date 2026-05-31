@@ -48,7 +48,8 @@ class HopDongForm(QDialog):
     
     def setup_ui(self):
         """Setup UI"""
-        self.setMinimumWidth(600)
+        self.setMinimumWidth(700)
+        self.setMinimumHeight(800)
         self.setModal(True)
         
         layout = QVBoxLayout(self)

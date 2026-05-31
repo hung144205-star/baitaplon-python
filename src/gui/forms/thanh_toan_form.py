@@ -5,7 +5,7 @@ Thanh toán Form - Form nhập liệu Thanh toán
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QComboBox, QTextEdit, QDateEdit, QPushButton, QFrame,
-    QFormLayout, QMessageBox, QDoubleSpinBox, QSpinBox
+    QFormLayout, QMessageBox, QDoubleSpinBox, QSpinBox, QWidget
 )
 from PyQt6.QtCore import Qt, QDate, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -40,14 +40,14 @@ class ThanhToanForm(QDialog):
     def setup_ui(self):
         """Setup UI"""
         self.setWindowTitle("Thêm Thanh toán" if not self.is_edit_mode else "Sửa Thanh toán")
-        self.setMinimumWidth(600)
-        self.setMinimumHeight(600)
+        self.setMinimumWidth(700)
+        self.setMinimumHeight(650)
         self.setModal(True)
-        
+
         layout = QVBoxLayout(self)
         layout.setSpacing(16)
         layout.setContentsMargins(30, 30, 30, 30)
-        
+
         # Title
         title = QLabel("💰 THÔNG TIN THANH TOÁN" if not self.is_edit_mode else "✏️ CẬP NHẬT THANH TOÁN")
         title.setObjectName("titleLabel")
@@ -60,7 +60,7 @@ class ThanhToanForm(QDialog):
             }
         """)
         layout.addWidget(title)
-        
+
         # Main form
         form_container = QFrame()
         form_container.setFrameShape(QFrame.Shape.StyledPanel)
@@ -72,13 +72,20 @@ class ThanhToanForm(QDialog):
                 padding: 20px;
             }
         """)
-        
+
         form_layout = QFormLayout(form_container)
         form_layout.setSpacing(12)
         form_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
-        
-        # Mã thanh toán (auto-generate, read-only)
-        self.ma_tt_label = QLabel("Mã thanh toán:")
+
+        # Row 1: Mã thanh toán + Hợp đồng (same row)
+        row1 = QHBoxLayout()
+        row1.setSpacing(12)
+
+        ma_tt_widget = QWidget()
+        ma_tt_layout = QVBoxLayout(ma_tt_widget)
+        ma_tt_layout.setContentsMargins(0, 0, 0, 0)
+        ma_tt_layout.setSpacing(4)
+        ma_tt_layout.addWidget(QLabel("Mã thanh toán:"))
         self.ma_tt_input = QLineEdit()
         self.ma_tt_input.setReadOnly(True)
         self.ma_tt_input.setStyleSheet("""
@@ -87,77 +94,149 @@ class ThanhToanForm(QDialog):
                 color: #615d59;
             }
         """)
-        form_layout.addRow(self.ma_tt_label, self.ma_tt_input)
-        
-        # Hợp đồng (required)
-        self.hop_dong_label = QLabel("Hợp đồng <span style='color: #d32f2f;'>*</span>:")
+        ma_tt_layout.addWidget(self.ma_tt_input)
+
+        hd_widget = QWidget()
+        hd_layout = QVBoxLayout(hd_widget)
+        hd_layout.setContentsMargins(0, 0, 0, 0)
+        hd_layout.setSpacing(4)
+        hd_layout.addWidget(QLabel("Hợp đồng <span style='color: #d32f2f;'>*</span>:"))
         self.hop_dong_input = QComboBox()
         self.hop_dong_input.setEditable(True)
         self.hop_dong_input.lineEdit().setPlaceholderText("Chọn hoặc nhập mã hợp đồng")
         self._load_contracts()
-        form_layout.addRow(self.hop_dong_label, self.hop_dong_input)
-        
-        # Kỳ thanh toán
-        self.ky_tt_label = QLabel("Kỳ thanh toán:")
+        hd_layout.addWidget(self.hop_dong_input)
+
+        row1.addWidget(ma_tt_widget, 1)
+        row1.addWidget(hd_widget, 2)
+        form_layout.addRow(row1)
+
+        # Row 2: Kỳ thanh toán + Loại phí (same row)
+        row2 = QHBoxLayout()
+        row2.setSpacing(12)
+
+        ky_tt_widget = QWidget()
+        ky_tt_layout = QVBoxLayout(ky_tt_widget)
+        ky_tt_layout.setContentsMargins(0, 0, 0, 0)
+        ky_tt_layout.setSpacing(4)
+        ky_tt_layout.addWidget(QLabel("Kỳ thanh toán:"))
         self.ky_tt_input = QLineEdit()
         self.ky_tt_input.setPlaceholderText("Ví dụ: Kỳ 1/2026")
-        form_layout.addRow(self.ky_tt_label, self.ky_tt_input)
-        
-        # Số tiền (required)
-        self.so_tien_label = QLabel("Số tiền <span style='color: #d32f2f;'>*</span>:")
+        ky_tt_layout.addWidget(self.ky_tt_input)
+
+        loai_phi_widget = QWidget()
+        loai_phi_layout = QVBoxLayout(loai_phi_widget)
+        loai_phi_layout.setContentsMargins(0, 0, 0, 0)
+        loai_phi_layout.setSpacing(4)
+        loai_phi_layout.addWidget(QLabel("Loại phí <span style='color: #d32f2f;'>*</span>:"))
+        self.loai_phi_input = QComboBox()
+        self.loai_phi_input.addItem("Tiền cọc", "tien_coc")
+        self.loai_phi_input.addItem("Thuê tháng", "thue_thang")
+        self.loai_phi_input.addItem("Phụ phí", "phu_phi")
+        self.loai_phi_input.addItem("Phí phạt", "phi_phat")
+        loai_phi_layout.addWidget(self.loai_phi_input)
+
+        row2.addWidget(ky_tt_widget, 1)
+        row2.addWidget(loai_phi_widget, 1)
+        form_layout.addRow(row2)
+
+        # Row 3: Số tiền + Ngày đến hạn (same row)
+        row3 = QHBoxLayout()
+        row3.setSpacing(12)
+
+        so_tien_widget = QWidget()
+        so_tien_layout = QVBoxLayout(so_tien_widget)
+        so_tien_layout.setContentsMargins(0, 0, 0, 0)
+        so_tien_layout.setSpacing(4)
+        so_tien_layout.addWidget(QLabel("Số tiền <span style='color: #d32f2f;'>*</span>:"))
         self.so_tien_input = QDoubleSpinBox()
         self.so_tien_input.setRange(0, 999999999)
         self.so_tien_input.setDecimals(0)
         self.so_tien_input.setSuffix(" đ")
         self.so_tien_input.setStyleSheet("padding: 8px;")
-        form_layout.addRow(self.so_tien_label, self.so_tien_input)
-        
-        # Ngày đến hạn (required)
-        self.ngay_den_han_label = QLabel("Ngày đến hạn <span style='color: #d32f2f;'>*</span>:")
+        so_tien_layout.addWidget(self.so_tien_input)
+
+        ngay_den_han_widget = QWidget()
+        ngay_den_han_layout = QVBoxLayout(ngay_den_han_widget)
+        ngay_den_han_layout.setContentsMargins(0, 0, 0, 0)
+        ngay_den_han_layout.setSpacing(4)
+        ngay_den_han_layout.addWidget(QLabel("Ngày đến hạn <span style='color: #d32f2f;'>*</span>:"))
         self.ngay_den_han_input = QDateEdit()
         self.ngay_den_han_input.setCalendarPopup(True)
         self.ngay_den_han_input.setDate(QDate.currentDate())
         self.ngay_den_han_input.setStyleSheet("padding: 8px;")
-        form_layout.addRow(self.ngay_den_han_label, self.ngay_den_han_input)
-        
-        # Ngày thanh toán
+        ngay_den_han_layout.addWidget(self.ngay_den_han_input)
+
+        row3.addWidget(so_tien_widget, 1)
+        row3.addWidget(ngay_den_han_widget, 1)
+        form_layout.addRow(row3)
+
+        # Row 4: Ngày thanh toán (单独)
         self.ngay_tt_label = QLabel("Ngày thanh toán:")
         self.ngay_tt_input = QDateEdit()
         self.ngay_tt_input.setCalendarPopup(True)
         self.ngay_tt_input.setStyleSheet("padding: 8px;")
-        self.ngay_tt_input.setEnabled(False)  # Disabled until marked as paid
+        self.ngay_tt_input.setEnabled(False)
         form_layout.addRow(self.ngay_tt_label, self.ngay_tt_input)
-        
-        # Trạng thái
-        self.trang_thai_label = QLabel("Trạng thái:")
+
+        # Row 5: Trạng thái + Phương thức thanh toán (same row)
+        row5 = QHBoxLayout()
+        row5.setSpacing(12)
+
+        trang_thai_widget = QWidget()
+        trang_thai_layout = QVBoxLayout(trang_thai_widget)
+        trang_thai_layout.setContentsMargins(0, 0, 0, 0)
+        trang_thai_layout.setSpacing(4)
+        trang_thai_layout.addWidget(QLabel("Trạng thái:"))
         self.trang_thai_input = QComboBox()
         self.trang_thai_input.addItem("Chưa thanh toán", "chua_thanh_toan")
         self.trang_thai_input.addItem("Đã thanh toán", "da_thanh_toan")
         self.trang_thai_input.addItem("Quá hạn", "qua_han")
-        form_layout.addRow(self.trang_thai_label, self.trang_thai_input)
-        
-        # Phương thức thanh toán
-        self.phuong_thuc_label = QLabel("Phương thức thanh toán:")
+        trang_thai_layout.addWidget(self.trang_thai_input)
+
+        phuong_thuc_widget = QWidget()
+        phuong_thuc_layout = QVBoxLayout(phuong_thuc_widget)
+        phuong_thuc_layout.setContentsMargins(0, 0, 0, 0)
+        phuong_thuc_layout.setSpacing(4)
+        phuong_thuc_layout.addWidget(QLabel("Phương thức thanh toán:"))
         self.phuong_thuc_input = QComboBox()
         self.phuong_thuc_input.addItem("Tiền mặt", "tien_mat")
         self.phuong_thuc_input.addItem("Chuyển khoản", "chuyen_khoan")
         self.phuong_thuc_input.addItem("Ví điện tử", "vi_dien_tu")
         self.phuong_thuc_input.addItem("Khác", "khac")
-        form_layout.addRow(self.phuong_thuc_label, self.phuong_thuc_input)
-        
-        # Số giao dịch
-        self.so_gd_label = QLabel("Số giao dịch:")
+        phuong_thuc_layout.addWidget(self.phuong_thuc_input)
+
+        row5.addWidget(trang_thai_widget, 1)
+        row5.addWidget(phuong_thuc_widget, 1)
+        form_layout.addRow(row5)
+
+        # Row 6: Số giao dịch + Người thu (same row)
+        row6 = QHBoxLayout()
+        row6.setSpacing(12)
+
+        so_gd_widget = QWidget()
+        so_gd_layout = QVBoxLayout(so_gd_widget)
+        so_gd_layout.setContentsMargins(0, 0, 0, 0)
+        so_gd_layout.setSpacing(4)
+        so_gd_layout.addWidget(QLabel("Số giao dịch:"))
         self.so_gd_input = QLineEdit()
         self.so_gd_input.setPlaceholderText("Số bill, mã giao dịch...")
-        form_layout.addRow(self.so_gd_label, self.so_gd_input)
-        
-        # Người thu
-        self.nguoi_thu_label = QLabel("Người thu:")
+        so_gd_layout.addWidget(self.so_gd_input)
+
+        nguoi_thu_widget = QWidget()
+        nguoi_thu_layout = QVBoxLayout(nguoi_thu_widget)
+        nguoi_thu_layout.setContentsMargins(0, 0, 0, 0)
+        nguoi_thu_layout.setSpacing(4)
+        nguoi_thu_layout.addWidget(QLabel("Người thu:"))
         self.nguoi_thu_input = QLineEdit()
         self.nguoi_thu_input.setPlaceholderText("Tên người thu tiền")
-        form_layout.addRow(self.nguoi_thu_label, self.nguoi_thu_input)
-        
-        # Ghi chú
+        nguoi_thu_layout.addWidget(self.nguoi_thu_input)
+
+        row6.addWidget(so_gd_widget, 1)
+        row6.addWidget(nguoi_thu_widget, 1)
+        form_layout.addRow(row6)
+
+        # Row 7: Ghi chú (full width)
         self.ghi_chu_label = QLabel("Ghi chú:")
         self.ghi_chu_input = QTextEdit()
         self.ghi_chu_input.setPlaceholderText("Nhập ghi chú (nếu có)")
@@ -289,7 +368,14 @@ class ThanhToanForm(QDialog):
             if self.hop_dong_input.itemData(i) == tt.ma_hop_dong:
                 self.hop_dong_input.setCurrentIndex(i)
                 break
-        
+
+        # Set loai phi
+        loai_phi = tt.loai_phi.value if hasattr(tt.loai_phi, 'value') else str(tt.loai_phi)
+        for i in range(self.loai_phi_input.count()):
+            if self.loai_phi_input.itemData(i) == loai_phi:
+                self.loai_phi_input.setCurrentIndex(i)
+                break
+
         self.ky_tt_input.setText(tt.ky_thanh_toan or "")
         self.so_tien_input.setValue(tt.so_tien or 0)
         
@@ -332,7 +418,11 @@ class ThanhToanForm(QDialog):
         if self.hop_dong_input.currentData() is None:
             MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn hợp đồng")
             return
-        
+
+        if self.loai_phi_input.currentData() is None:
+            MessageDialog.warning(self, "Cảnh báo", "Vui lòng chọn loại phí")
+            return
+
         so_tien = self.so_tien_input.value()
         if so_tien <= 0:
             MessageDialog.warning(self, "Cảnh báo", "Số tiền phải lớn hơn 0")
@@ -343,6 +433,7 @@ class ThanhToanForm(QDialog):
         # Build data dict
         data = {
             'ma_hop_dong': self.hop_dong_input.currentData(),
+            'loai_phi': self.loai_phi_input.currentData(),
             'ky_thanh_toan': self.ky_tt_input.text().strip() or None,
             'so_tien': so_tien,
             'ngay_den_han': ngay_den_han,

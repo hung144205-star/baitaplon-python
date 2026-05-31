@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QTextEdit, QDoubleSpinBox, QComboBox, QDialogButtonBox,
     QFormLayout, QFrame, QGroupBox, QSpinBox, QDateEdit,
-    QMessageBox, QPushButton, QFileDialog
+    QMessageBox, QPushButton, QFileDialog, QWidget
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QDate
 from datetime import datetime
@@ -47,7 +47,8 @@ class HangHoaForm(QDialog):
     
     def setup_ui(self):
         """Setup UI"""
-        self.setMinimumWidth(650)
+        self.setMinimumWidth(700)
+        self.setMinimumHeight(800)
         self.setModal(True)
         
         layout = QVBoxLayout(self)

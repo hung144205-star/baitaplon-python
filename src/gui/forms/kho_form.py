@@ -40,6 +40,7 @@ class KhoForm(QDialog):
     def setup_ui(self):
         """Setup UI"""
         self.setMinimumWidth(500)
+        self.setMinimumHeight(600)
         self.setModal(True)
         
         layout = QVBoxLayout(self)

@@ -24,30 +24,38 @@ class ThanhToanService:
     def create(self, data: Dict[str, Any]) -> ThanhToan:
         """Create new payment"""
         # Validate required fields
-        required = ['ma_hop_dong', 'ky_thanh_toan', 'ngay_den_han', 'so_tien']
+        required = ['ma_hop_dong', 'ky_thanh_toan', 'ngay_den_han', 'so_tien', 'loai_phi']
         for field in required:
             if field not in data or not data[field]:
                 raise ValueError(f"Thiếu trường bắt buộc: {field}")
-        
+
         # Validate contract exists
         hop_dong = self.db.query(HopDong).filter(
             HopDong.ma_hop_dong == data['ma_hop_dong']
         ).first()
         if not hop_dong:
             raise ValueError("Không tìm thấy hợp đồng")
-        
+
         # Auto-generate ID
         ma_thanh_toan = self._auto_generate_ma_thanh_toan(data['ma_hop_dong'])
-        
+
+        # Import LoaiPhiEnum
+        from src.models.enums import LoaiPhiEnum
+
         thanh_toan = ThanhToan(
             ma_thanh_toan=ma_thanh_toan,
             ma_hop_dong=data['ma_hop_dong'],
+            loai_phi=LoaiPhiEnum(data['loai_phi']),
             ky_thanh_toan=data['ky_thanh_toan'],
             ngay_den_han=data['ngay_den_han'],
             so_tien=data['so_tien'],
             trang_thai=data.get('trang_thai', TrangThaiTTEnum.CHUA_THANH_TOAN),
             ngay_thanh_toan=data.get('ngay_thanh_toan'),
-            ghi_chu=data.get('ghi_chu', '')
+            phuong_thuc=data.get('phuong_thuc'),
+            so_giao_dich=data.get('so_giao_dich'),
+            ghi_chu=data.get('ghi_chu', ''),
+            nguoi_thu=data.get('nguoi_thu'),
+            phi_phat=data.get('phi_phat', 0)
         )
         
         self.db.add(thanh_toan)

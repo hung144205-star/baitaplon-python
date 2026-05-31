@@ -43,6 +43,7 @@ class ViTriForm(QDialog):
     def setup_ui(self):
         """Setup UI"""
         self.setMinimumWidth(550)
+        self.setMinimumHeight(650)
         self.setModal(True)
         
         layout = QVBoxLayout(self)

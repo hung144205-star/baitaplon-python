@@ -139,10 +139,6 @@ class BaoCaoView(QWidget):
             summary_section = self._create_summary_section()
             self.content_layout.addWidget(summary_section)
 
-            # Extended summary section (4 cards)
-            extended_summary = self._create_extended_summary_section()
-            self.content_layout.addWidget(extended_summary)
-
             # Growth chart
             growth_chart = self._create_growth_chart()
             self.content_layout.addWidget(growth_chart)
@@ -268,84 +264,51 @@ class BaoCaoView(QWidget):
 
         return frame
 
-    def _create_extended_summary_section(self) -> QFrame:
-        """Create extended summary section with 4 cards: Kho, Ty le lap day, Mat hang, Gia tri"""
-        frame = QFrame()
-        frame.setStyleSheet("""
-            QFrame {
-                background-color: #ffffff;
-                border: 1px solid rgba(0, 0, 0, 0.08);
-                border-radius: 10px;
-                padding: 12px;
-            }
-        """)
-        layout = QHBoxLayout(frame)
-        layout.setSpacing(16)
-        layout.setContentsMargins(16, 12, 16, 12)
-
-        # Card 1: Tong so kho
-        kho_card = self._create_stat_card('kho', '🏭', 'Tổng số kho', '#1976d2')
-        layout.addWidget(kho_card)
-
-        # Card 2: Ty le lap day
-        fill_card = self._create_stat_card('fill_rate', '📊', 'Tỷ lệ lấp đầy TB', '#ff9800')
-        layout.addWidget(fill_card)
-
-        # Card 3: Tong mat hang
-        mat_hang_card = self._create_stat_card('mat_hang', '📦', 'Tổng mặt hàng', '#9c27b0')
-        layout.addWidget(mat_hang_card)
-
-        # Card 4: Gia tri ton kho
-        gia_tri_card = self._create_stat_card('gia_tri', '💰', 'Giá trị tồn kho', '#43a047', is_currency=True)
-        layout.addWidget(gia_tri_card)
-
-        return frame
-
-    def _create_stat_card(self, category: str, icon: str, title: str, color: str, is_currency: bool = False) -> QFrame:
+    def _create_growth_chart(self) -> QFrame:
         """Create a statistics card"""
         card = QFrame()
-        card.setMinimumSize(150, 90)  # Explicit minimum size
+        card.setMinimumSize(200, 120)  # Increased size for bigger cards
         card.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         card.setStyleSheet(f"""
             QFrame {{
                 background-color: #f8f9fa;
                 border: 1px solid #e0e0e0;
                 border-radius: 8px;
-                padding: 8px;
+                padding: 10px;
             }}
         """)
         card.setAutoFillBackground(True)
 
         layout = QVBoxLayout(card)
-        layout.setSpacing(4)
-        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(6)
+        layout.setContentsMargins(10, 8, 10, 8)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         icon_label = QLabel(icon)
-        icon_label.setStyleSheet("font-size: 20px; background-color: transparent;")
+        icon_label.setStyleSheet("font-size: 28px; background-color: transparent;")
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        icon_label.setFixedHeight(24)
+        icon_label.setFixedHeight(32)
         layout.addWidget(icon_label)
 
         self.stats_labels[f"{category}_value"] = QLabel("0")
         value_color = color if not is_currency else "#43a047"
         self.stats_labels[f"{category}_value"].setStyleSheet(f"""
             QLabel {{
-                font-size: 20px;
+                font-size: 24px;
                 font-weight: 700;
                 color: {value_color};
                 background-color: transparent;
             }}
         """)
         self.stats_labels[f"{category}_value"].setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.stats_labels[f"{category}_value"].setFixedHeight(26)
+        self.stats_labels[f"{category}_value"].setFixedHeight(32)
         layout.addWidget(self.stats_labels[f"{category}_value"])
 
         title_label = QLabel(title)
-        title_label.setStyleSheet("font-size: 11px; color: #616161; font-weight: 500; background-color: transparent;")
+        title_label.setStyleSheet("font-size: 13px; color: #616161; font-weight: 500; background-color: transparent;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setWordWrap(True)
-        title_label.setFixedHeight(20)
+        title_label.setFixedHeight(24)
         layout.addWidget(title_label)
 
         return card
@@ -353,7 +316,7 @@ class BaoCaoView(QWidget):
     def _create_growth_chart(self) -> QFrame:
         """Create growth bar chart"""
         frame = QFrame()
-        frame.setFixedHeight(380)  # Increased height for larger chart card
+        frame.setFixedHeight(500)  # Increased height for larger chart card
         frame.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         frame.setStyleSheet("""
             QFrame {
@@ -620,10 +583,6 @@ class BaoCaoView(QWidget):
             self.kho_labels['suc_chua'].setText(f"{kho_data.get('total_suc_chua', 0):,.0f} m³")
             self.kho_labels['fill_rate'].setText(f"{kho_data.get('avg_fill_rate', 0):.1f}%")
 
-            # Update extended summary stat cards
-            self.stats_labels['kho_value'].setText(str(kho_data.get('total', 0)))
-            self.stats_labels['fill_rate_value'].setText(f"{kho_data.get('avg_fill_rate', 0):.1f}%")
-
             # Update khach hang labels
             kh_data = summary.get('khach_hang', {})
             self.khach_hang_labels['total'].setText(str(kh_data.get('total', 0)))
@@ -635,10 +594,6 @@ class BaoCaoView(QWidget):
             self.hang_hoa_labels['total'].setText(str(hh_data.get('total_items', 0)))
             self.hang_hoa_labels['in_stock'].setText(str(hh_data.get('in_stock', 0)))
             self.hang_hoa_labels['value'].setText(format_currency(hh_data.get('total_value', 0)))
-
-            # Update extended summary cards for hang hoa
-            self.stats_labels['mat_hang_value'].setText(str(hh_data.get('total_items', 0)))
-            self.stats_labels['gia_tri_value'].setText(format_currency(hh_data.get('total_value', 0)))
 
             # Update growth chart
             self._update_growth_chart(revenue)

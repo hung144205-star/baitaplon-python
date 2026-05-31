@@ -15,7 +15,19 @@
       "Bash(pip show *)",
       "WebFetch(domain:minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com)",
       "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
-      "Bash(sqlite3 *)"
+      "Bash(sqlite3 *)",
+      "Bash(pytest tests/test_kho_service.py tests/test_hop_dong_service.py tests/test_utils/test_validators.py -v --tb=short)",
+      "Bash(pytest tests/test_kho_service.py tests/test_hop_dong_service.py tests/test_utils/test_validators.py -v --tb=line)",
+      "Bash(pytest tests/test_kho_service.py::TestKhoServiceCreate::test_create_kho_success -v --tb=short)",
+      "Bash(pytest tests/test_kho_service.py -v --tb=short)",
+      "Bash(pytest tests/test_kho_service.py -v --tb=line)",
+      "Bash(pytest tests/test_kho_service.py tests/test_utils/test_validators.py -v --tb=line)",
+      "Bash(pytest tests/test_kho_service.py tests/test_utils/test_validators.py -v --tb=no)",
+      "Bash(where python *)",
+      "Bash(./venv/Scripts/python.exe --version)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

@@ -43,6 +43,7 @@ class PhieuXuatForm(QDialog):
     def setup_ui(self):
         """Setup UI"""
         self.setMinimumWidth(600)
+        self.setMinimumHeight(600)
         self.setModal(True)
         
         layout = QVBoxLayout(self)

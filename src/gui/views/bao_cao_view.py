@@ -139,6 +139,10 @@ class BaoCaoView(QWidget):
             summary_section = self._create_summary_section()
             self.content_layout.addWidget(summary_section)
 
+            # Extended summary section (4 cards)
+            extended_summary = self._create_extended_summary_section()
+            self.content_layout.addWidget(extended_summary)
+
             # Growth chart
             growth_chart = self._create_growth_chart()
             self.content_layout.addWidget(growth_chart)
@@ -245,6 +249,39 @@ class BaoCaoView(QWidget):
 
         return frame
 
+    def _create_extended_summary_section(self) -> QFrame:
+        """Create extended summary section with 4 cards: Kho, Ty le lap day, Mat hang, Gia tri"""
+        frame = QFrame()
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 10px;
+                padding: 12px;
+            }
+        """)
+        layout = QHBoxLayout(frame)
+        layout.setSpacing(16)
+        layout.setContentsMargins(16, 12, 16, 12)
+
+        # Card 1: Tong so kho
+        kho_card = self._create_stat_card('kho', '🏭', 'Tổng số kho', '#1976d2')
+        layout.addWidget(kho_card)
+
+        # Card 2: Ty le lap day
+        fill_card = self._create_stat_card('fill_rate', '📊', 'Tỷ lệ lấp đầy TB', '#ff9800')
+        layout.addWidget(fill_card)
+
+        # Card 3: Tong mat hang
+        mat_hang_card = self._create_stat_card('mat_hang', '📦', 'Tổng mặt hàng', '#9c27b0')
+        layout.addWidget(mat_hang_card)
+
+        # Card 4: Gia tri ton kho
+        gia_tri_card = self._create_stat_card('gia_tri', '💰', 'Giá trị tồn kho', '#43a047', is_currency=True)
+        layout.addWidget(gia_tri_card)
+
+        return frame
+
     def _create_stat_card(self, category: str, icon: str, title: str, color: str, is_currency: bool = False) -> QFrame:
         """Create a statistics card"""
         card = QFrame()
@@ -297,27 +334,27 @@ class BaoCaoView(QWidget):
     def _create_growth_chart(self) -> QFrame:
         """Create growth bar chart"""
         frame = QFrame()
-        frame.setFixedHeight(220)  # Fixed height for compactness
+        frame.setFixedHeight(380)  # Increased height for larger chart card
         frame.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         frame.setStyleSheet("""
             QFrame {
                 background-color: #ffffff;
                 border: 1px solid rgba(0, 0, 0, 0.08);
                 border-radius: 10px;
-                padding: 12px;
+                padding: 16px;
             }
         """)
 
         layout = QVBoxLayout(frame)
-        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setContentsMargins(12, 12, 12, 12)
 
         title = QLabel("📈 Mức độ tăng trưởng")
-        title.setStyleSheet("font-size: 14px; font-weight: 600; color: #31302e; padding-bottom: 6px;")
+        title.setStyleSheet("font-size: 15px; font-weight: 600; color: #31302e; padding-bottom: 8px;")
         layout.addWidget(title)
 
         self.charts['growth'] = BarChartCanvas(
             data={}, title="", x_label="Tháng", y_label="Doanh thu (VNĐ)",
-            colors='#1976d2', width=10, height=2.8
+            colors='#1976d2', width=12, height=6.5
         )
         layout.addWidget(self.charts['growth'])
 
@@ -405,20 +442,58 @@ class BaoCaoView(QWidget):
             MessageDialog.error(self, "Lỗi", f"Không thể tải dữ liệu:\n{str(e)}")
 
     def _update_growth_chart(self, revenue: dict):
-        """Update growth bar chart"""
-        # Create mock monthly data for demonstration
-        # In production, this would come from actual historical data
-        monthly_data = {
-            'T1': 0, 'T2': 0, 'T3': 0, 'T4': 0, 'T5': 0, 'T6': 0,
-            'T7': 0, 'T8': 0, 'T9': 0, 'T10': 0, 'T11': 0, 'T12': 0
-        }
-        monthly_rev = revenue.get('monthly_revenue', 0)
-        if monthly_rev > 0:
-            for key in monthly_data:
-                monthly_data[key] = monthly_rev // 12
+        """Update growth bar chart with actual payment data"""
+        try:
+            from src.database import get_session
+            from src.models import ThanhToan
+            from collections import defaultdict
+            from datetime import datetime
 
-        if 'growth' in self.charts:
-            self.charts['growth'].update_data(monthly_data)
+            session = get_session()
+            today = datetime.now()
+            current_year = today.year
+
+            # Get payments for current year grouped by month
+            payments = session.query(ThanhToan).filter(
+                ThanhToan.trang_thai == 'da_thanh_toan'
+            ).all()
+
+            # Initialize monthly data
+            monthly_data = {
+                'T1': 0, 'T2': 0, 'T3': 0, 'T4': 0, 'T5': 0, 'T6': 0,
+                'T7': 0, 'T8': 0, 'T9': 0, 'T10': 0, 'T11': 0, 'T12': 0
+            }
+
+            # Group payments by month
+            for payment in payments:
+                if payment.ngay_thanh_toan and payment.ngay_thanh_toan.year == current_year:
+                    month_key = f"T{payment.ngay_thanh_toan.month}"
+                    monthly_data[month_key] += payment.so_tien or 0
+
+            # Also include contract revenue for months without payments
+            monthly_rev = revenue.get('monthly_revenue', 0)
+            if monthly_rev > 0:
+                for key in monthly_data:
+                    if monthly_data[key] == 0:  # No payments that month
+                        monthly_data[key] = monthly_rev // 12
+
+            session.close()
+
+            if 'growth' in self.charts:
+                self.charts['growth'].update_data(monthly_data)
+        except Exception as e:
+            print(f"Error updating growth chart: {e}")
+            # Fallback to showing revenue evenly distributed
+            monthly_data = {
+                'T1': 0, 'T2': 0, 'T3': 0, 'T4': 0, 'T5': 0, 'T6': 0,
+                'T7': 0, 'T8': 0, 'T9': 0, 'T10': 0, 'T11': 0, 'T12': 0
+            }
+            monthly_rev = revenue.get('monthly_revenue', 0)
+            if monthly_rev > 0:
+                for key in monthly_data:
+                    monthly_data[key] = monthly_rev // 12
+            if 'growth' in self.charts:
+                self.charts['growth'].update_data(monthly_data)
 
     def _update_recent_contracts_table(self):
         """Update recent contracts table"""

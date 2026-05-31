@@ -156,12 +156,19 @@ class BaoCaoView(QWidget):
             kho_panel = self._create_kho_detail_panel()
             detail_panels_layout.addWidget(kho_panel, 1)
 
-            # Placeholders for other panels (will be added in subsequent tasks)
-            self.khach_hang_panel_placeholder = QFrame()
-            self.khach_hang_panel_placeholder.setStyleSheet("background-color: #f5f5f5; border-radius: 10px;")
-            self.khach_hang_panel_placeholder.setMinimumHeight(120)
-            detail_panels_layout.addWidget(self.khach_hang_panel_placeholder, 1)
+            # Replace placeholder with actual panel
+            self.khach_hang_panel = self._create_khach_hang_detail_panel()
+            # Find the placeholder index and replace it
+            for i in range(detail_panels_layout.count()):
+                item = detail_panels_layout.itemAt(i)
+                if item.widget() == self.khach_hang_panel_placeholder:
+                    # Remove placeholder
+                    self.khach_hang_panel_placeholder.setParent(None)
+                    # Insert actual panel
+                    detail_panels_layout.insertWidget(i, self.khach_hang_panel)
+                    break
 
+            # Placeholders for other panels (will be added in subsequent tasks)
             self.hang_hoa_panel_placeholder = QFrame()
             self.hang_hoa_panel_placeholder.setStyleSheet("background-color: #f5f5f5; border-radius: 10px;")
             self.hang_hoa_panel_placeholder.setMinimumHeight(120)
@@ -439,6 +446,56 @@ class BaoCaoView(QWidget):
         row3.addWidget(self.kho_labels['fill_rate'])
         row3.addStretch()
         grid.addLayout(row3)
+
+        layout.addLayout(grid)
+        return frame
+
+    def _create_khach_hang_detail_panel(self) -> QFrame:
+        """Create detailed panel for customer statistics"""
+        frame = QFrame()
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 10px;
+                padding: 16px;
+            }
+        """)
+
+        layout = QVBoxLayout(frame)
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(8)
+
+        # Title
+        title = QLabel("👥 Thông tin Khách hàng")
+        title.setStyleSheet("font-size: 14px; font-weight: 600; color: #31302e; padding-bottom: 8px;")
+        layout.addWidget(title)
+
+        # Content grid
+        grid = QVBoxLayout()
+        grid.setSpacing(6)
+
+        self.khach_hang_labels = {
+            'total': QLabel("0"),
+            'active': QLabel("0"),
+            'inactive': QLabel("0")
+        }
+
+        # Row 1
+        row1 = QHBoxLayout()
+        row1.addWidget(QLabel("Tổng khách hàng:"))
+        row1.addWidget(self.khach_hang_labels['total'])
+        row1.addWidget(QLabel("| Đang hoạt động:"))
+        row1.addWidget(self.khach_hang_labels['active'])
+        row1.addStretch()
+        grid.addLayout(row1)
+
+        # Row 2
+        row2 = QHBoxLayout()
+        row2.addWidget(QLabel("Không hoạt động:"))
+        row2.addWidget(self.khach_hang_labels['inactive'])
+        row2.addStretch()
+        grid.addLayout(row2)
 
         layout.addLayout(grid)
         return frame

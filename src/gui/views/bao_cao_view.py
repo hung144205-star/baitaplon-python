@@ -625,6 +625,34 @@ class BaoCaoView(QWidget):
             total_customers = khach_hang.get('total', 0)
             self.summary_labels['total_customers'].setText(str(total_customers))
 
+            # Update kho labels
+            kho_data = summary.get('kho', {})
+            self.kho_labels['total'].setText(str(kho_data.get('total', 0)))
+            self.kho_labels['active'].setText(str(kho_data.get('active', 0)))
+            self.kho_labels['dien_tich'].setText(f"{kho_data.get('total_dien_tich', 0):,.0f} m²")
+            self.kho_labels['suc_chua'].setText(f"{kho_data.get('total_suc_chua', 0):,.0f} m³")
+            self.kho_labels['fill_rate'].setText(f"{kho_data.get('avg_fill_rate', 0):.1f}%")
+
+            # Update extended summary stat cards
+            self.stats_labels['kho_value'].setText(str(kho_data.get('total', 0)))
+            self.stats_labels['fill_rate_value'].setText(f"{kho_data.get('avg_fill_rate', 0):.1f}%")
+
+            # Update khach hang labels
+            kh_data = summary.get('khach_hang', {})
+            self.khach_hang_labels['total'].setText(str(kh_data.get('total', 0)))
+            self.khach_hang_labels['active'].setText(str(kh_data.get('active', 0)))
+            self.khach_hang_labels['inactive'].setText(str(kh_data.get('inactive', 0)))
+
+            # Update hang hoa labels
+            hh_data = summary.get('hang_hoa', {})
+            self.hang_hoa_labels['total'].setText(str(hh_data.get('total_items', 0)))
+            self.hang_hoa_labels['in_stock'].setText(str(hh_data.get('in_stock', 0)))
+            self.hang_hoa_labels['value'].setText(format_currency(hh_data.get('total_value', 0)))
+
+            # Update extended summary cards for hang hoa
+            self.stats_labels['mat_hang_value'].setText(str(hh_data.get('total_items', 0)))
+            self.stats_labels['gia_tri_value'].setText(format_currency(hh_data.get('total_value', 0)))
+
             # Update growth chart
             self._update_growth_chart(revenue)
 

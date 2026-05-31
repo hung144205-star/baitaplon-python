@@ -147,6 +147,28 @@ class BaoCaoView(QWidget):
             growth_chart = self._create_growth_chart()
             self.content_layout.addWidget(growth_chart)
 
+            # Detail panels
+            detail_panels_container = QFrame()
+            detail_panels_layout = QHBoxLayout(detail_panels_container)
+            detail_panels_layout.setSpacing(12)
+
+            # Kho panel
+            kho_panel = self._create_kho_detail_panel()
+            detail_panels_layout.addWidget(kho_panel, 1)
+
+            # Placeholders for other panels (will be added in subsequent tasks)
+            self.khach_hang_panel_placeholder = QFrame()
+            self.khach_hang_panel_placeholder.setStyleSheet("background-color: #f5f5f5; border-radius: 10px;")
+            self.khach_hang_panel_placeholder.setMinimumHeight(120)
+            detail_panels_layout.addWidget(self.khach_hang_panel_placeholder, 1)
+
+            self.hang_hoa_panel_placeholder = QFrame()
+            self.hang_hoa_panel_placeholder.setStyleSheet("background-color: #f5f5f5; border-radius: 10px;")
+            self.hang_hoa_panel_placeholder.setMinimumHeight(120)
+            detail_panels_layout.addWidget(self.hang_hoa_panel_placeholder, 1)
+
+            self.content_layout.addWidget(detail_panels_container)
+
             # Recent contracts table (will take remaining space)
             recent_table = self._create_recent_contracts_table()
             self.content_layout.addWidget(recent_table, 1)  # Stretch factor 1
@@ -358,6 +380,67 @@ class BaoCaoView(QWidget):
         )
         layout.addWidget(self.charts['growth'])
 
+        return frame
+
+    def _create_kho_detail_panel(self) -> QFrame:
+        """Create detailed panel for warehouse statistics"""
+        frame = QFrame()
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 10px;
+                padding: 16px;
+            }
+        """)
+
+        layout = QVBoxLayout(frame)
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(8)
+
+        # Title
+        title = QLabel("🏭 Thông tin Kho")
+        title.setStyleSheet("font-size: 14px; font-weight: 600; color: #31302e; padding-bottom: 8px;")
+        layout.addWidget(title)
+
+        # Content grid
+        grid = QVBoxLayout()
+        grid.setSpacing(6)
+
+        self.kho_labels = {
+            'total': QLabel("0"),
+            'active': QLabel("0"),
+            'dien_tich': QLabel("0 m²"),
+            'suc_chua': QLabel("0 m³"),
+            'fill_rate': QLabel("0%")
+        }
+
+        # Row 1
+        row1 = QHBoxLayout()
+        row1.addWidget(QLabel("Tổng số kho:"))
+        row1.addWidget(self.kho_labels['total'])
+        row1.addWidget(QLabel("| Đang hoạt động:"))
+        row1.addWidget(self.kho_labels['active'])
+        row1.addStretch()
+        grid.addLayout(row1)
+
+        # Row 2
+        row2 = QHBoxLayout()
+        row2.addWidget(QLabel("Tổng diện tích:"))
+        row2.addWidget(self.kho_labels['dien_tich'])
+        row2.addWidget(QLabel("| Tổng sức chứa:"))
+        row2.addWidget(self.kho_labels['suc_chua'])
+        row2.addStretch()
+        grid.addLayout(row2)
+
+        # Row 3
+        row3 = QHBoxLayout()
+        row3.addWidget(QLabel("Tỷ lệ lấp đầy TB:"))
+        row3.addWidget(self.kho_labels['fill_rate'])
+        row3.addStretch()
+        grid.addLayout(row3)
+
+        layout.addLayout(grid)
         return frame
 
     def _create_recent_contracts_table(self) -> QFrame:

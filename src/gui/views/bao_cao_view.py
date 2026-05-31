@@ -168,11 +168,14 @@ class BaoCaoView(QWidget):
                     detail_panels_layout.insertWidget(i, self.khach_hang_panel)
                     break
 
-            # Placeholders for other panels (will be added in subsequent tasks)
-            self.hang_hoa_panel_placeholder = QFrame()
-            self.hang_hoa_panel_placeholder.setStyleSheet("background-color: #f5f5f5; border-radius: 10px;")
-            self.hang_hoa_panel_placeholder.setMinimumHeight(120)
-            detail_panels_layout.addWidget(self.hang_hoa_panel_placeholder, 1)
+            # Replace placeholder with actual panel
+            self.hang_hoa_panel = self._create_hang_hoa_detail_panel()
+            for i in range(detail_panels_layout.count()):
+                item = detail_panels_layout.itemAt(i)
+                if item.widget() == self.hang_hoa_panel_placeholder:
+                    self.hang_hoa_panel_placeholder.setParent(None)
+                    detail_panels_layout.insertWidget(i, self.hang_hoa_panel)
+                    break
 
             self.content_layout.addWidget(detail_panels_container)
 
@@ -494,6 +497,56 @@ class BaoCaoView(QWidget):
         row2 = QHBoxLayout()
         row2.addWidget(QLabel("Không hoạt động:"))
         row2.addWidget(self.khach_hang_labels['inactive'])
+        row2.addStretch()
+        grid.addLayout(row2)
+
+        layout.addLayout(grid)
+        return frame
+
+    def _create_hang_hoa_detail_panel(self) -> QFrame:
+        """Create detailed panel for goods statistics"""
+        frame = QFrame()
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 10px;
+                padding: 16px;
+            }
+        """)
+
+        layout = QVBoxLayout(frame)
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(8)
+
+        # Title
+        title = QLabel("📦 Thông tin Hàng hóa")
+        title.setStyleSheet("font-size: 14px; font-weight: 600; color: #31302e; padding-bottom: 8px;")
+        layout.addWidget(title)
+
+        # Content grid
+        grid = QVBoxLayout()
+        grid.setSpacing(6)
+
+        self.hang_hoa_labels = {
+            'total': QLabel("0"),
+            'in_stock': QLabel("0"),
+            'value': QLabel("0 đ")
+        }
+
+        # Row 1
+        row1 = QHBoxLayout()
+        row1.addWidget(QLabel("Tổng mặt hàng:"))
+        row1.addWidget(self.hang_hoa_labels['total'])
+        row1.addWidget(QLabel("| Đang trong kho:"))
+        row1.addWidget(self.hang_hoa_labels['in_stock'])
+        row1.addStretch()
+        grid.addLayout(row1)
+
+        # Row 2
+        row2 = QHBoxLayout()
+        row2.addWidget(QLabel("Tổng giá trị:"))
+        row2.addWidget(self.hang_hoa_labels['value'])
         row2.addStretch()
         grid.addLayout(row2)
 

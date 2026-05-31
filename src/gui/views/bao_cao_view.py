@@ -156,26 +156,13 @@ class BaoCaoView(QWidget):
             kho_panel = self._create_kho_detail_panel()
             detail_panels_layout.addWidget(kho_panel, 1)
 
-            # Replace placeholder with actual panel
+            # KhachHang panel
             self.khach_hang_panel = self._create_khach_hang_detail_panel()
-            # Find the placeholder index and replace it
-            for i in range(detail_panels_layout.count()):
-                item = detail_panels_layout.itemAt(i)
-                if item.widget() == self.khach_hang_panel_placeholder:
-                    # Remove placeholder
-                    self.khach_hang_panel_placeholder.setParent(None)
-                    # Insert actual panel
-                    detail_panels_layout.insertWidget(i, self.khach_hang_panel)
-                    break
+            detail_panels_layout.addWidget(self.khach_hang_panel, 1)
 
-            # Replace placeholder with actual panel
+            # HangHoa panel
             self.hang_hoa_panel = self._create_hang_hoa_detail_panel()
-            for i in range(detail_panels_layout.count()):
-                item = detail_panels_layout.itemAt(i)
-                if item.widget() == self.hang_hoa_panel_placeholder:
-                    self.hang_hoa_panel_placeholder.setParent(None)
-                    detail_panels_layout.insertWidget(i, self.hang_hoa_panel)
-                    break
+            detail_panels_layout.addWidget(self.hang_hoa_panel, 1)
 
             self.content_layout.addWidget(detail_panels_container)
 

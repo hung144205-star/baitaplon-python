@@ -782,6 +782,7 @@ class HopDongView(QWidget):
                     })
                 
                 self.table_with_toolbar.set_data(data)
+                self._update_statistics(hop_dongs, today)
                 self.info_label.setText(f"Tìm thấy: {len(data)} hợp đồng")
                 
             except Exception as e:

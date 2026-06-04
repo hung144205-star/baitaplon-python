@@ -463,10 +463,24 @@ class HopDongView(QWidget):
     def _update_statistics(self, hop_dongs: list, today):
         """Update statistics bar"""
         tong = len(hop_dongs)
-        hieu_luc = sum(1 for h in hop_dongs if str(h.trang_thai) == 'hieu_luc')
-        sap_het_han = sum(1 for h in hop_dongs if str(h.trang_thai) == 'hieu_luc' and 0 < (h.ngay_ket_thuc - today).days <= 30)
-        het_han = sum(1 for h in hop_dongs if str(h.trang_thai) == 'het_han')
-        
+
+        # Đếm theo logic thực tế:
+        # Hiệu lực: còn ngày > 0 (chưa hết hạn)
+        # Sắp hết hạn: còn ngày > 0 và <= 30
+        # Hết hạn: còn ngày <= 0 (đã quá ngày kết thúc)
+        hieu_luc = 0
+        sap_het_han = 0
+        het_han = 0
+
+        for h in hop_dongs:
+            remaining_days = (h.ngay_ket_thuc - today).days
+            if remaining_days > 0:
+                hieu_luc += 1
+                if remaining_days <= 30:
+                    sap_het_han += 1
+            else:
+                het_han += 1
+
         self.stat_tong.setText(str(tong))
         self.stat_hieu_luc.setText(str(hieu_luc))
         self.stat_sap_het_han.setText(str(sap_het_han))
@@ -823,7 +837,7 @@ class HopDongView(QWidget):
                 })
             
             self.table_with_toolbar.set_data(data)
-            self._update_statistics(data, today)
+            self._update_statistics(hop_dongs, today)
             self.info_label.setText(f"Tổng: {len(data)} hợp đồng")
             
         except Exception as e:

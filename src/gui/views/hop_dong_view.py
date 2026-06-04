@@ -430,6 +430,11 @@ class HopDongView(QWidget):
             return f"{days} ngày"
         else:
             return f"{days} ngày"
+
+    @staticmethod
+    def _get_trang_thai_value(trang_thai) -> str:
+        """Get status value from enum or string"""
+        return trang_thai.value if hasattr(trang_thai, 'value') else str(trang_thai)
     
     def _get_trang_thai_label(self, trang_thai) -> str:
         """Get status label with emoji - handles both enum objects and string values"""
@@ -461,25 +466,16 @@ class HopDongView(QWidget):
         return common_labels.get(status_value, str(trang_thai))
     
     def _update_statistics(self, hop_dongs: list, today):
-        """Update statistics bar"""
+        """Update statistics bar based on database trang_thai field"""
         tong = len(hop_dongs)
 
-        # Đếm theo logic thực tế:
-        # Hiệu lực: còn ngày > 0 (chưa hết hạn)
-        # Sắp hết hạn: còn ngày > 0 và <= 30
-        # Hết hạn: còn ngày <= 0 (đã quá ngày kết thúc)
-        hieu_luc = 0
-        sap_het_han = 0
-        het_han = 0
-
-        for h in hop_dongs:
-            remaining_days = (h.ngay_ket_thuc - today).days
-            if remaining_days > 0:
-                hieu_luc += 1
-                if remaining_days <= 30:
-                    sap_het_han += 1
-            else:
-                het_han += 1
+        hieu_luc = sum(1 for h in hop_dongs
+                      if self._get_trang_thai_value(h.trang_thai) == 'hieu_luc')
+        sap_het_han = sum(1 for h in hop_dongs
+                         if self._get_trang_thai_value(h.trang_thai) == 'hieu_luc'
+                         and 0 < (h.ngay_ket_thuc - today).days <= 30)
+        het_han = sum(1 for h in hop_dongs
+                     if self._get_trang_thai_value(h.trang_thai) == 'het_han')
 
         self.stat_tong.setText(str(tong))
         self.stat_hieu_luc.setText(str(hieu_luc))
@@ -797,9 +793,10 @@ class HopDongView(QWidget):
             
             hop_dongs = self.service.get_all(limit=1000)
             
-            # Filter by status
+            # Filter by status - use the same _get_trang_thai_value helper
             if trang_thai:
-                hop_dongs = [h for h in hop_dongs if str(h.trang_thai) == trang_thai]
+                trang_thai_str = trang_thai.value if hasattr(trang_thai, 'value') else str(trang_thai)
+                hop_dongs = [h for h in hop_dongs if self._get_trang_thai_value(h.trang_thai) == trang_thai_str]
             
             # Filter by date range
             hop_dongs = [h for h in hop_dongs if tu_ngay <= h.ngay_ket_thuc <= den_ngay]

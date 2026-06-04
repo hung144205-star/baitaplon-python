@@ -7,10 +7,11 @@ from PyQt6.QtWidgets import (
     QGridLayout, QProgressBar, QScrollArea, QPushButton
 )
 from PyQt6.QtCore import Qt, QTimer
+from datetime import datetime
 from typing import Dict, Any, List
 
-from src.services import KhoService, ViTriService
-from src.models import Kho, TrangThaiKhoEnum
+from src.services import KhoService, ViTriService, HopDongService
+from src.models import Kho, TrangThaiKhoEnum, TrangThaiViTriEnum, TrangThaiHDEnum
 from src.gui.dialogs import MessageDialog
 from src.gui.widgets.charts import PieChartCanvas, FillRateBarChart
 from src.utils.formatters import format_currency, format_number
@@ -25,6 +26,7 @@ class DashboardView(QWidget):
         super().__init__(parent)
         self.kho_service = KhoService()
         self.vi_tri_service = ViTriService()
+        self.hop_dong_service = HopDongService()
         self.setup_ui()
         self.load_data()
         
@@ -60,6 +62,10 @@ class DashboardView(QWidget):
         # Key metrics
         metrics = self._create_key_metrics()
         layout.addWidget(metrics)
+
+        # Contract stats
+        contract_stats = self._create_contract_stats()
+        layout.addWidget(contract_stats)
         
         # Warehouse stats
         warehouse_stats = self._create_warehouse_stats()
@@ -115,7 +121,36 @@ class DashboardView(QWidget):
         layout.addWidget(self.metric_kho_hoat_dong, 0, 1)
         layout.addWidget(self.metric_tong_vi_tri, 1, 0)
         layout.addWidget(self.metric_vi_tri_trong, 1, 1)
-        
+
+        return frame
+
+    def _create_contract_stats(self) -> QFrame:
+        """Create contract statistics section"""
+        frame = QFrame()
+        frame.setFrameShape(QFrame.Shape.StyledPanel)
+        frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+                padding: 20px;
+            }
+        """)
+
+        layout = QGridLayout(frame)
+        layout.setSpacing(20)
+
+        # Contract metric cards
+        self.metric_tong_hd = self._create_metric_card("📋", "Tổng HĐ", "0", "#1976d2")
+        self.metric_hd_hieu_luc = self._create_metric_card("✅", "Hiệu Lực", "0", "#1aae39")
+        self.metric_hd_sap_het_han = self._create_metric_card("⏰", "Sắp Hết Hạn", "0", "#ff9800")
+        self.metric_hd_het_han = self._create_metric_card("❌", "Hết Hạn", "0", "#f44336")
+
+        layout.addWidget(self.metric_tong_hd, 0, 0)
+        layout.addWidget(self.metric_hd_hieu_luc, 0, 1)
+        layout.addWidget(self.metric_hd_sap_het_han, 0, 2)
+        layout.addWidget(self.metric_hd_het_han, 0, 3)
+
         return frame
     
     def _create_metric_card(self, icon: str, label: str, value: str, color: str) -> QFrame:
@@ -475,14 +510,17 @@ class DashboardView(QWidget):
                 all_vi_tris.extend(vi_tris)
             
             tong_vi_tri = len(all_vi_tris)
-            vi_tri_trong = sum(1 for v in all_vi_tris if str(v.trang_thai) == 'trong')
+            vi_tri_trong = sum(1 for v in all_vi_tris if v.trang_thai == TrangThaiViTriEnum.TRONG)
             
             # Update metrics
             self._update_metric(self.metric_tong_kho, str(tong_kho))
             self._update_metric(self.metric_kho_hoat_dong, str(kho_hoat_dong))
             self._update_metric(self.metric_tong_vi_tri, str(tong_vi_tri))
             self._update_metric(self.metric_vi_tri_trong, str(vi_tri_trong))
-            
+
+            # Update contract stats
+            self._update_contract_stats()
+
             # Update warehouse list
             self._update_warehouse_list(khos)
             
@@ -505,7 +543,27 @@ class DashboardView(QWidget):
             if child.styleSheet() and "font-size: 32px" in child.styleSheet():
                 child.setText(value)
                 break
-    
+
+    def _update_contract_stats(self):
+        """Update contract statistics cards"""
+        try:
+            hop_dongs = self.hop_dong_service.get_all(limit=1000)
+            today = datetime.now().date()
+
+            tong = len(hop_dongs)
+            hieu_luc = sum(1 for h in hop_dongs if h.trang_thai == TrangThaiHDEnum.HIEU_LUC)
+            sap_het_han = sum(1 for h in hop_dongs
+                           if h.trang_thai == TrangThaiHDEnum.HIEU_LUC
+                           and 0 < (h.ngay_ket_thuc - today).days <= 30)
+            het_han = sum(1 for h in hop_dongs if h.trang_thai == TrangThaiHDEnum.HET_HAN)
+
+            self._update_metric(self.metric_tong_hd, str(tong))
+            self._update_metric(self.metric_hd_hieu_luc, str(hieu_luc))
+            self._update_metric(self.metric_hd_sap_het_han, str(sap_het_han))
+            self._update_metric(self.metric_hd_het_han, str(het_han))
+        except Exception as e:
+            pass  # Silently fail, don't disrupt dashboard
+
     def _update_warehouse_list(self, khos: List[Kho]):
         """Update warehouse list with fill rates"""
         # Clear existing
